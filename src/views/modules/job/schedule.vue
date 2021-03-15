@@ -117,8 +117,8 @@
 </template>
 
 <script>
-import AddOrUpdate from './schedule-add-or-update'
-import Log from './schedule-log'
+import AddOrUpdate from './schedule-add-or-update.vue'
+import Log from './schedule-log.vue'
 
 export default {
   data () {

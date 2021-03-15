@@ -10,12 +10,11 @@
  * 注意:
  *  1. 通过2-2 添加icons, getNameList方法无法返回对应数据
  */
-const svgFiles = require.context('./svg', true, /\.svg$/)
-const iconList = svgFiles.keys().map(item => svgFiles(item))
+const svgFiles = import.meta.globEager('./svg/*.svg')
 
 export default {
   // 获取图标icon-(*).svg名称列表, 例如[shouye, xitong, zhedie, ...]
   getNameList () {
-    return iconList.map(item => item.default.id.replace('icon-', ''))
+    return Object.keys(svgFiles).map(item => item.default.id.replace('icon-', ''))
   }
 }

@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './user-add-or-update'
+import AddOrUpdate from './user-add-or-update.vue'
 import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
 import { isAuth } from '@/utils'

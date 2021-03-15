@@ -6,7 +6,7 @@ const commonModules = import.meta.glob('../views/common/*.vue')
 console.log(commonModules)
 const layoutModules = import.meta.glob('../views/layout/*.vue')
 console.log(layoutModules)
-const dynamicModules = import.meta.glob('../views/modules/*/*.vue')
+const dynamicModules = import.meta.globEager('../views/modules/*/*.vue')
 console.log(dynamicModules)
 
 // 全局路由(无需嵌套上左右整体布局)

@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './role-add-or-update'
+import AddOrUpdate from './role-add-or-update.vue'
 
 export default {
   data () {

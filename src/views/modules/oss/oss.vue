@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import Config from './oss-config'
-import Upload from './oss-upload'
+import Config from './oss-config.vue'
+import Upload from './oss-upload.vue'
 export default {
   data () {
     return {
