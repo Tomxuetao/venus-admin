@@ -10,9 +10,7 @@ export default defineConfig({
 				target: 'http://demo.open.renren.io/renren-fast-server',
 				changeOrigin: true,
 				secure: false,
-				pathRewrite: {
-					'^/proxyApi': ''
-				}
+				rewrite: (path) => path.replace(/^\/proxyApi/, '')
 			}
 		}
 	},

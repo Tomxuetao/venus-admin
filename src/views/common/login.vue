@@ -1,4 +1,4 @@
-<template>
+<template xmlns="">
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
       <div class="site-content">

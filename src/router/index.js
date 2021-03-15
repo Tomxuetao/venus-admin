@@ -6,6 +6,8 @@ const commonModules = import.meta.glob('../views/common/*.vue')
 console.log(commonModules)
 const layoutModules = import.meta.glob('../views/layout/*.vue')
 console.log(layoutModules)
+const dynamicModules = import.meta.glob('../views/modules/*/*.vue')
+console.log(dynamicModules)
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
@@ -138,7 +140,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
         route.meta.iframeUrl = menuList[i].url
       } else {
         try {
-          route.component = import(`@/views/modules/${menuList[i].url}`) || null
+          route.component = dynamicModules[`../views/modules/${menuList[i].url}`] || null
         } catch (e) {
         }
       }

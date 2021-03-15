@@ -18,9 +18,9 @@
 import { computed, ref, provide, nextTick, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useHttp } from '@/utils/http'
-import MainNavbar from './main-navbar'
-import MainSidebar from './main-sidebar'
-import MainContent from './main-content'
+import MainNavbar from './main-navbar.vue'
+import MainSidebar from './main-sidebar.vue'
+import MainContent from './main-content.vue'
 
 export default {
   components: {

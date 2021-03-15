@@ -59,7 +59,7 @@
 <script>
 import { ref, computed, nextTick, getCurrentInstance } from 'vue'
 import { useStore } from 'vuex'
-import UpdatePassword from './main-navbar-update-password'
+import UpdatePassword from './main-navbar-update-password.vue'
 import { clearLoginInfo } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'

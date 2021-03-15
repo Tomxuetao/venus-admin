@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import SubMenu from './main-sidebar-sub-menu'
+import SubMenu from './main-sidebar-sub-menu.vue'
 import { isURL } from '@/utils'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
