@@ -92,7 +92,7 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
+<!--    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>-->
   </div>
 </template>
 
@@ -138,10 +138,7 @@ export default {
           limit: searchForm.pageSize,
           username: searchForm.userName
         })
-      }).then(({
-        code,
-        page
-      }) => {
+      }).then(({ code, page }) => {
         if (code === 0) {
           dataList.value = page.list
           searchForm.totalPage = page.totalCount

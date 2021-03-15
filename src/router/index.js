@@ -140,7 +140,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
         route.meta.iframeUrl = menuList[i].url
       } else {
         try {
-          route.component = dynamicModules[`../views/modules/${menuList[i].url}`] || null
+          route.component = dynamicModules[`../views/modules/${menuList[i].url}.vue`] || null
         } catch (e) {
         }
       }
