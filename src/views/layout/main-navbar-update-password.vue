@@ -81,7 +81,6 @@ export default {
 
     const dataFormSubmit = () => {
       dataFormRef.value.validate((valid) => {
-        console.log(valid)
         if (valid) {
           http({
             url: http.adornUrl('/sys/user/password'),

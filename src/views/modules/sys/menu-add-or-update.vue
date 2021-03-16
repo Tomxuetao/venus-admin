@@ -88,7 +88,7 @@ import Icon from '@/icons'
 
 export default {
   data () {
-    var validateUrl = (rule, value, callback) => {
+    const validateUrl = (rule, value, callback) => {
       if (this.dataForm.type === 1 && !/\S/.test(value)) {
         callback(new Error('菜单URL不能为空'))
       } else {

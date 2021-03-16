@@ -3,8 +3,8 @@
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">renren-fast-vue</h2>
-          <p class="brand-info__intro">renren-fast-vue基于vue、element-ui构建开发，实现renren-fast后台管理前端功能，提供一套更优的前端解决方案。</p>
+          <h2 class="brand-info__text">VenusAdmin</h2>
+          <p class="brand-info__intro">VenusAdmin基于Vue3、Element Plus构建开发，实现RenrenFast后台管理前端功能，提供一套更优的前端解决方案。</p>
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
@@ -121,7 +121,6 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(38, 50, 56, .6);
   overflow: hidden;
 
   &:before {
@@ -132,7 +131,7 @@ export default {
     width: 100%;
     height: 100%;
     content: "";
-    background-image: url(@/assets/img/login_bg.jpg);
+    background-image: url(@/assets/img/login-bg.png);
     background-size: cover;
   }
 
@@ -155,7 +154,7 @@ export default {
   }
 
   .brand-info {
-    margin: 220px 100px 0 90px;
+    margin: 120px 100px 0 90px;
     color: #fff;
   }
 
@@ -163,7 +162,6 @@ export default {
     margin: 0 0 22px 0;
     font-size: 48px;
     font-weight: 400;
-    text-transform: uppercase;
   }
 
   .brand-info__intro {

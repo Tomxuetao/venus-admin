@@ -30,7 +30,7 @@
     </el-tabs>
     <!-- 主入口标签页 e -->
     <el-card v-else :body-style="siteContentViewHeight">
-      <router-view/>
+      <router-view></router-view>
     </el-card>
   </main>
 </template>
@@ -72,9 +72,6 @@ export default {
         store.commit('common/updateMainTabs', value)
       }
     })
-
-    console.log(mainTabs.value)
-    console.log(router.getRoutes())
 
     const mainTabsActiveName = computed({
       get: () => {
