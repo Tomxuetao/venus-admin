@@ -57,12 +57,8 @@
         width="150"
         label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:role:update')" type="text" size="small"
-                     @click="addOrUpdateHandle(scope.row.roleId)">修改
-          </el-button>
-          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">
-            删除
-          </el-button>
+          <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
+          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -76,13 +72,13 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
 import AddOrUpdate from './role-add-or-update.vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
@@ -93,6 +89,7 @@ export default {
 
   setup() {
     const http = useHttp()
+    const { ctx } = getCurrentInstance()
 
     const searchForm = reactive({
       page: 1,
@@ -105,6 +102,7 @@ export default {
     let dataListLoading = ref(false)
     const dataListSelections = ref([])
     let addOrUpdateVisible = ref(false)
+    const addOrUpdateRef = ref(null)
 
     const getDataList = () => {
       dataListLoading.value = true
@@ -138,9 +136,44 @@ export default {
       dataListSelections.value = value
     }
 
-    const addOrUpdateHandle = () => {}
+    const addOrUpdateHandle = (id) => {
+      addOrUpdateVisible.value = true
+      nextTick(() => {
+        debugger
+        addOrUpdateRef.value.init(id)
+      })
+    }
 
-    const deleteHandle = () => {}
+    const deleteHandle = () => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
+        return item.roleId
+      })
+      this.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        http({
+          url: http.adornUrl('/sys/role/delete'),
+          method: 'post',
+          data: http.adornData(ids, false)
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            ctx.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                getDataList()
+              }
+            })
+          } else {
+            ctx.$message.error(data.msg)
+          }
+        })
+      }).catch(() => {
+      })
+    }
 
 
     return {
@@ -150,6 +183,7 @@ export default {
       dataListLoading,
       dataListSelections,
       addOrUpdateVisible,
+      addOrUpdateRef,
 
       getDataList,
       deleteHandle,
