@@ -88,7 +88,7 @@
       :current-page="searchForm.pageIndex"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="searchForm.pageSize"
-      :total="searchForm.totalPage"
+      :total="total"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './user-add-or-update'
+import AddOrUpdate from './user-add-or-update.vue'
 import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
 import { isAuth } from '@/utils'
@@ -114,11 +114,12 @@ export default {
     const addOrUpdateRef = ref(null)
 
     const searchForm = reactive({
-      userName: '',
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0
+      userName: null,
+      page: 1,
+      limit: 10
     })
+
+    let total = ref(0)
 
     const dataList = ref([])
 
@@ -133,21 +134,14 @@ export default {
       http({
         url: http.adornUrl('/sys/user/list'),
         method: 'get',
-        params: http.adornParams({
-          page: searchForm.pageIndex,
-          limit: searchForm.pageSize,
-          username: searchForm.userName
-        })
-      }).then(({
-        code,
-        page
-      }) => {
+        params: http.adornParams(searchForm)
+      }).then(({ code, page }) => {
         if (code === 0) {
           dataList.value = page.list
-          searchForm.totalPage = page.totalCount
+          total.value = page.totalCount
         } else {
           dataList.value = []
-          searchForm.totalPage = 0
+          total.value = 0
         }
         dataListLoading.value = false
       })
@@ -210,6 +204,7 @@ export default {
     }
 
     return {
+      total,
       addOrUpdateRef,
       searchForm,
       dataList,

@@ -7,5 +7,7 @@ import 'element-plus/lib/theme-chalk/index.css'
 import '@/assets/scss/index.scss'
 import 'normalize.css/normalize.css'
 import http from '@/utils/http'
+import '@/icons'
+import IconSvg from '@/components/index'
 
-createApp(App).use(store).use(router).use(ElementUI).use(http).mount('#app')
+createApp(App).use(store).use(router).use(ElementUI).use(IconSvg).use(http).mount('#app')

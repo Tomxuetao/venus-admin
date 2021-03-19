@@ -5,4 +5,4 @@ dist-ssr
 *.local
 .idea
 yarn.lock
-yarn-error.log
+*.log

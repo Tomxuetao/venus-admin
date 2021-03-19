@@ -1,10 +1,6 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    v-model:visible="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
-             label-width="80px">
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="dataForm.roleName" placeholder="角色名称"></el-input>
       </el-form-item>
@@ -13,116 +9,143 @@
       </el-form-item>
       <el-form-item size="mini" label="授权">
         <el-tree
-          :data="menuList"
-          :props="menuListTreeProps"
-          node-key="menuId"
-          ref="menuListTree"
-          :default-expand-all="true"
-          show-checkbox>
+            :data="menuList"
+            :props="{ label: 'name',children: 'children' }"
+            :default-expanded-keys="expandedKeys"
+            ref="menuListTreeRef"
+            node-key="menuId"
+            show-checkbox>
         </el-tree>
       </el-form-item>
     </el-form>
     <span class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
+      <el-button @click="closeDialogHandle">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
 
 export default {
-  data () {
-    return {
-      visible: false,
-      menuList: [],
-      menuListTreeProps: {
-        label: 'name',
-        children: 'children'
-      },
-      dataForm: {
-        id: 0,
-        roleName: '',
-        remark: ''
-      },
-      dataRule: {
-        roleName: [
-          {
-            required: true,
-            message: '角色名称不能为空',
-            trigger: 'blur'
-          }
-        ]
-      },
-      tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
-    }
-  },
-  methods: {
-    init (id) {
-      this.dataForm.id = id || 0
-      this.$http({
-        url: this.$http.adornUrl('/sys/menu/list'),
-        method: 'get',
-        params: this.$http.adornParams()
-      }).then(({ data }) => {
-        this.menuList = treeDataTranslate(data, 'menuId')
+  emits: ['refresh-data-list'],
+
+  setup(props, { emit }) {
+    const http = useHttp()
+    const { ctx } = getCurrentInstance()
+
+    let visible = ref(null)
+    let menuList = ref([])
+    let expandedKeys = ref([1])
+    let dataForm = reactive({
+      id: 0,
+      roleName: '',
+      remark: ''
+    })
+
+    const dataFormRef = ref(null)
+    const menuListTreeRef = ref(null)
+    const dataRule = ref({
+      roleName: [{
+        required: true,
+        message: '角色名称不能为空',
+        trigger: 'blur'
+      }]
+    })
+    const tempKey = ref(-666666)
+
+    const init = (id) => {
+      dataForm.id = id || 0
+      http({
+        url: http.adornUrl('/sys/menu/list'),
+        method: 'get'
+      }).then(data => {
+        menuList.value = treeDataTranslate(data, 'menuId')
+        console.log(menuList.value)
       }).then(() => {
-        this.visible = true
-        this.$nextTick(() => {
-          this.$refs.dataForm.resetFields()
-          this.$refs.menuListTree.setCheckedKeys([])
+        visible.value = true
+        nextTick(() => {
+          if (dataFormRef.value && menuListTreeRef.value) {
+            dataFormRef.value.resetFields()
+            menuListTreeRef.value.setCheckedKeys([])
+          }
         })
       }).then(() => {
-        if (this.dataForm.id) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/role/info/${this.dataForm.id}`),
+        if (dataForm.id) {
+          http({
+            url: http.adornUrl(`/sys/role/info/${ dataForm.id }`),
             method: 'get',
-            params: this.$http.adornParams()
+            params: http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.roleName = data.role.roleName
-              this.dataForm.remark = data.role.remark
-              var idx = data.role.menuIdList.indexOf(this.tempKey)
+              dataForm.roleName = data.role.roleName
+              dataForm.remark = data.role.remark
+              const idx = data.role.menuIdList.indexOf(tempKey)
               if (idx !== -1) {
                 data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
               }
-              this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
+              menuListTreeRef.value.setCheckedKeys(data.role.menuIdList)
             }
           })
         }
       })
-    },
-    // 表单提交
-    dataFormSubmit () {
-      this.$refs.dataForm.validate((valid) => {
+    }
+
+    const dataFormSubmit = () => {
+      nextTick(() => {
+
+      })
+      debugger
+      dataFormRef.value.validate((valid) => {
         if (valid) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/role/${!this.dataForm.id ? 'save' : 'update'}`),
+          http({
+            url: http.adornUrl(`/sys/role/${ !dataForm.id ? 'save' : 'update' }`),
             method: 'post',
-            data: this.$http.adornData({
-              roleId: this.dataForm.id || undefined,
-              roleName: this.dataForm.roleName,
-              remark: this.dataForm.remark,
-              menuIdList: [].concat(this.$refs.menuListTree.getCheckedKeys(), [this.tempKey], this.$refs.menuListTree.getHalfCheckedKeys())
+            data: http.adornData({
+              roleId: dataForm.id || undefined,
+              roleName: dataForm.roleName,
+              remark: dataForm.remark,
+              menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey], menuListTreeRef.value.getHalfCheckedKeys())
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.$message({
+              ctx.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false
-                  this.$emit('')
+                  visible.value = false
+                  emit('refresh-data-list')
                 }
               })
             } else {
-              this.$message.error(data.msg)
+              ctx.$message.error(data.msg)
             }
           })
         }
       })
+    }
+
+    const closeDialogHandle = () => {
+      visible.value = false
+      dataFormRef.value.resetFields()
+    }
+
+    return {
+      tempKey,
+      visible,
+      menuList,
+      dataForm,
+      dataRule,
+      dataFormRef,
+      expandedKeys,
+
+      init,
+      dataFormSubmit,
+      closeDialogHandle
     }
   }
 }

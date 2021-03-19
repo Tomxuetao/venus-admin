@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import AddOrUpdate from './menu-add-or-update'
+import AddOrUpdate from './menu-add-or-update.vue'
 import { treeDataTranslate } from '@/utils'
 
 export default {

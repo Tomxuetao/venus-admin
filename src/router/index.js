@@ -3,11 +3,8 @@ import http from '@/utils/http'
 import { isURL } from '@/utils'
 
 const commonModules = import.meta.glob('../views/common/*.vue')
-console.log(commonModules)
 const layoutModules = import.meta.glob('../views/layout/*.vue')
-console.log(layoutModules)
 const dynamicModules = import.meta.glob('../views/modules/*/*.vue')
-console.log(dynamicModules)
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
@@ -29,7 +26,7 @@ const globalRoutes = [
 const mainRoutes = {
   path: '/',
   component: layoutModules['../views/layout/main.vue'],
-  name: 'main',
+  name: 'main-dynamic',
   redirect: { name: 'home' },
   meta: { title: '主入口整体布局' },
   children: [
@@ -86,7 +83,9 @@ router.beforeEach((to, from, next) => {
       }
     }).catch((e) => {
       console.log(`%c${e} 请求菜单列表和权限失败，跳转至登录页！！`, 'color:blue')
-      router.push({ name: 'login' })
+      router.push({ name: 'login' }).catch(error => {
+        console.log(error)
+      })
     })
   }
 })
@@ -140,7 +139,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
         route.meta.iframeUrl = menuList[i].url
       } else {
         try {
-          route.component = dynamicModules[`../views/modules/${menuList[i].url}`] || null
+          route.component = dynamicModules[`../views/modules/${menuList[i].url}.vue`] || null
         } catch (e) {
         }
       }
@@ -152,9 +151,8 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   } else {
     mainRoutes.name = 'main-dynamic'
     mainRoutes.children = routes
-    console.log(routes)
     routes.forEach(item => {
-      router.addRoute('main', item)
+      router.addRoute('main-dynamic', item)
     })
     sessionStorage.setItem('dynamicMenuRoutes', JSON.stringify(mainRoutes.children || '[]'))
     console.log('\n')

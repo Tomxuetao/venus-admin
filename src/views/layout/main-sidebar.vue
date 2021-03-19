@@ -101,7 +101,6 @@ export default {
             query: route.query
           }
           mainTabs.value = mainTabs.value.concat(tab)
-          console.log(mainTabs.value)
         }
         menuActiveName.value = tab.menuId + ''
         mainTabsActiveName.value = tab.name
