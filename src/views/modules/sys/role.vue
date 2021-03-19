@@ -101,9 +101,9 @@ export default {
     })
 
     let total = ref(0)
-    let dataList = reactive([])
+    let dataList = ref([])
     let dataListLoading = ref(false)
-    const dataListSelections = reactive([])
+    const dataListSelections = ref([])
     let addOrUpdateVisible = ref(false)
 
     const getDataList = () => {
@@ -116,23 +116,26 @@ export default {
         if (code === 0) {
           dataListLoading.value = false
           total = page.totalPage
-          dataList = page.list
+          dataList.value = page.list
         }
       })
     }
 
     getDataList()
 
-    const sizeChangeHandle = () => {
-
+    const sizeChangeHandle = (value) => {
+      searchForm.page = 1
+      searchForm.limit = value
+      getDataList()
     }
 
-    const currentChangeHandle = () => {
-
+    const currentChangeHandle = (value) => {
+      searchForm.page = value
+      getDataList()
     }
 
-    const selectionChangeHandle = () => {
-
+    const selectionChangeHandle = (value) => {
+      dataListSelections.value = value
     }
 
     const addOrUpdateHandle = () => {}
