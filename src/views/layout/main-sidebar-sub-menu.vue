@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import SubMenu from './main-sidebar-sub-menu.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -36,9 +35,6 @@ export default {
       type: Array,
       required: true
     }
-  },
-  components: {
-    SubMenu
   },
 
   setup (props) {
