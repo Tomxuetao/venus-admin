@@ -5,11 +5,9 @@
         <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
       </el-form-item>
     </el-form>
-
     <el-table :data="dataList" row-key="menuId" border style="width: 100%; ">
       <el-table-column prop="name" header-align="center" min-width="150" label="名称"></el-table-column>
-      <el-table-column prop="parentName" header-align="center" align="center" width="120"
-                       label="上级菜单"></el-table-column>
+      <el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单"></el-table-column>
       <el-table-column header-align="center" align="center" label="图标">
         <template v-slot="scope">
           <icon-svg :name="scope.row.icon || ''"></icon-svg>
