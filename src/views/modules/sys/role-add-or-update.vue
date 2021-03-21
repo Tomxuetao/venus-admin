@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { reactive, ref, nextTick, getCurrentInstance, onMounted } from 'vue'
 import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
 
@@ -37,7 +37,7 @@ export default {
     const http = useHttp()
     const { ctx } = getCurrentInstance()
 
-    let visible = ref(null)
+    let visible = ref(false)
     let menuList = ref([])
     let expandedKeys = ref([1])
     let dataForm = reactive({
@@ -48,6 +48,11 @@ export default {
 
     const dataFormRef = ref(null)
     const menuListTreeRef = ref(null)
+
+    onMounted(() => {
+      console.log(menuListTreeRef.value)
+    })
+
     const dataRule = ref({
       roleName: [{
         required: true,
@@ -64,7 +69,6 @@ export default {
         method: 'get'
       }).then(data => {
         menuList.value = treeDataTranslate(data, 'menuId')
-        console.log(menuList.value)
       }).then(() => {
         visible.value = true
         nextTick(() => {
@@ -95,10 +99,6 @@ export default {
     }
 
     const dataFormSubmit = () => {
-      nextTick(() => {
-
-      })
-      debugger
       dataFormRef.value.validate((valid) => {
         if (valid) {
           http({
@@ -110,8 +110,8 @@ export default {
               remark: dataForm.remark,
               menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey], menuListTreeRef.value.getHalfCheckedKeys())
             })
-          }).then(({ data }) => {
-            if (data && data.code === 0) {
+          }).then(({ code, msg }) => {
+            if (code === 200) {
               ctx.$message({
                 message: '操作成功',
                 type: 'success',
@@ -122,7 +122,7 @@ export default {
                 }
               })
             } else {
-              ctx.$message.error(data.msg)
+              ctx.$message.error(msg)
             }
           })
         }
@@ -142,6 +142,7 @@ export default {
       dataRule,
       dataFormRef,
       expandedKeys,
+      menuListTreeRef,
 
       init,
       dataFormSubmit,

@@ -139,7 +139,6 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        debugger
         addOrUpdateRef.value.init(id)
       })
     }
