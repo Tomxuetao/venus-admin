@@ -119,7 +119,7 @@ export default {
           method: 'post',
           data: http.adornData()
         }).then(({ code }) => {
-          if (code === 0) {
+          if (code === 200) {
             clearLoginInfo()
             router.push({ name: 'login' })
           }

@@ -67,8 +67,8 @@ export default {
       http({
         url: http.adornUrl('/sys/menu/list'),
         method: 'get'
-      }).then(data => {
-        menuList.value = treeDataTranslate(data, 'menuId')
+      }).then(({ code, list, msg }) => {
+        menuList.value = treeDataTranslate(list, 'menuId')
       }).then(() => {
         visible.value = true
         nextTick(() => {
@@ -84,7 +84,7 @@ export default {
             method: 'get',
             params: http.adornParams()
           }).then(({ data }) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200) {
               dataForm.roleName = data.role.roleName
               dataForm.remark = data.role.remark
               const idx = data.role.menuIdList.indexOf(tempKey)
@@ -108,7 +108,7 @@ export default {
               roleId: dataForm.id || undefined,
               roleName: dataForm.roleName,
               remark: dataForm.remark,
-              menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey], menuListTreeRef.value.getHalfCheckedKeys())
+              menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey.value], menuListTreeRef.value.getHalfCheckedKeys())
             })
           }).then(({ code, msg }) => {
             if (code === 200) {

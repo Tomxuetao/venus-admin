@@ -101,7 +101,7 @@ export default {
         method: 'get',
         params: this.$http.adornParams()
       }).then(({ data }) => {
-        this.dataForm = data && data.code === 0 ? data.config : []
+        this.dataForm = data && data.code === 200 ? data.config : []
       })
     },
     // 表单提交
@@ -113,7 +113,7 @@ export default {
             method: 'post',
             data: this.$http.adornData(this.dataForm)
           }).then(({ data }) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200) {
               this.$message({
                 message: '操作成功',
                 type: 'success',

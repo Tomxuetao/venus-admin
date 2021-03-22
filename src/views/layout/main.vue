@@ -77,7 +77,7 @@ export default {
         url: http.adornUrl('/sys/user/info'),
         method: 'get'
       }).then(({ code, user }) => {
-        if (code === 0) {
+        if (code === 200) {
           loading.value = false
           userId.value = user.userId
           userName.value = user.username

@@ -7,7 +7,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/proxyApi': {
-				target: 'http://demo.open.renren.io/renren-fast-server',
+				target: 'http://localhost:9080/venus-fast/',
 				changeOrigin: true,
 				secure: false,
 				rewrite: (path) => path.replace(/^\/proxyApi/, '')

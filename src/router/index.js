@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) => {
       method: 'get',
       params: http.adornParams()
     }).then(({ code, menuList, permissions }) => {
-      if (code === 0) {
+      if (code === 200) {
         fnAddDynamicMenuRoutes(menuList)
         router.options.isAddDynamicMenuRoutes = true
         sessionStorage.setItem('menuList', JSON.stringify(menuList || '[]'))

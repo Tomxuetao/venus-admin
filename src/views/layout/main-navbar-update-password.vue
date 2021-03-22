@@ -90,7 +90,7 @@ export default {
               newPassword: dataForm.newPassword
             })
           }).then(({ code, msg }) => {
-            if (code === 0) {
+            if (code === 200) {
               ctx.$message({
                 message: '操作成功',
                 type: 'success',

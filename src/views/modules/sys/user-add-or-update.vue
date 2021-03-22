@@ -84,7 +84,7 @@ export default {
 
     const visible = ref(false)
 
-    let roleList = reactive([])
+    let roleList = ref([])
 
     const dataForm = reactive({
       id: 0,
@@ -115,7 +115,7 @@ export default {
         method: 'get',
         params: http.adornParams()
       }).then(({ code, list }) => {
-        roleList = code === 0 ? list : []
+        roleList.value = code === 200 ? list : []
       }).then(() => {
         visible.value = true
       }).then(() => {
@@ -125,7 +125,7 @@ export default {
             method: 'get',
             params: http.adornParams()
           }).then(({ code, user }) => {
-            if (code === 0) {
+            if (code === 200) {
               dataForm.userName = user.username
               dataForm.salt = user.salt
               dataForm.email = user.email
@@ -143,7 +143,7 @@ export default {
       dataFormRef.value.validate((valid) => {
         if (valid) {
           http({
-            url: http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`),
+            url: http.adornUrl(`/sys/user/${!dataForm.id ? 'save' : 'update'}`),
             method: 'post',
             data: http.adornData({
               userId: dataForm.id || undefined,
@@ -156,13 +156,13 @@ export default {
               roleIdList: dataForm.roleIdList
             })
           }).then(({ code, msg }) => {
-            if (code === 0) {
+            if (code === 200) {
+              visible.value = false
               ctx.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  visible.value = false
                   emit('refresh-data-list')
                 }
               })

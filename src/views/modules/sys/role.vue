@@ -111,7 +111,7 @@ export default {
         method: 'get',
         params: http.adornParams(searchForm)
       }).then(({ code, page}) => {
-        if (code === 0) {
+        if (code === 200) {
           dataListLoading.value = false
           total = page.totalPage
           dataList.value = page.list
@@ -157,7 +157,7 @@ export default {
           method: 'post',
           data: http.adornData(ids, false)
         }).then(({ data }) => {
-          if (data && data.code === 0) {
+          if (data && data.code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -223,7 +223,7 @@ export default {
   //         roleName: this.dataForm.roleName
   //       })
   //     }).then(({ data }) => {
-  //       if (data && data.code === 0) {
+  //       if (data && data.code === 200) {
   //         this.dataList = data.page.list
   //         this.totalPage = data.page.totalCount
   //       } else {
@@ -270,7 +270,7 @@ export default {
   //         method: 'post',
   //         data: this.$http.adornData(ids, false)
   //       }).then(({ data }) => {
-  //         if (data && data.code === 0) {
+  //         if (data && data.code === 200) {
   //           this.$message({
   //             message: '操作成功',
   //             type: 'success',

@@ -67,9 +67,13 @@ export default {
         url: http.adornUrl('/sys/menu/list'),
         method: 'get',
         params: http.adornParams()
-      }).then(data => {
-        dataList.value = treeDataTranslate(data, 'menuId')
-        dataListLoading.value = false
+      }).then(({ code, msg, list}) => {
+        if (code === 200) {
+          dataList.value = treeDataTranslate(list, 'menuId')
+          dataListLoading.value = false
+        } else {
+          ctx.$message.error(msg)
+        }
       }).catch(() => {
         dataListLoading.value = false
       })
@@ -88,7 +92,7 @@ export default {
           method: 'post',
           data: http.adornData()
         }).then(({ data }) => {
-          if (data && data.code === 0) {
+          if (data && data.code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -98,7 +102,7 @@ export default {
               }
             })
           } else {
-            ctx.$message.error(data.msg)
+            ctx.$message.error(data)
           }
         })
       }).catch(() => {

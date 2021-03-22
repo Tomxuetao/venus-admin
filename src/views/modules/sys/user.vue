@@ -136,7 +136,7 @@ export default {
         method: 'get',
         params: http.adornParams(searchForm)
       }).then(({ code, page }) => {
-        if (code === 0) {
+        if (code === 200) {
           dataList.value = page.list
           total.value = page.totalCount
         } else {
@@ -187,7 +187,7 @@ export default {
           method: 'post',
           data: http.adornData(userIds, false)
         }).then(({ code, msg }) => {
-          if (code === 0) {
+          if (code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',

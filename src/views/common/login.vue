@@ -86,7 +86,7 @@ export default {
             method: 'post',
             data: http.adornData(dataForm)
           }).then(({ code, token, msg }) => {
-            if (code === 0) {
+            if (code === 200) {
               sessionStorage.setItem('token', token)
               router.replace({ name: 'home' })
             } else {
