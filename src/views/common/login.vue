@@ -1,4 +1,4 @@
-<template xmlns="">
+<template>
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
       <div class="site-content">
@@ -8,7 +8,7 @@
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" status-icon>
+          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" status-icon @keyup.enter="dataFormSubmit()">
             <el-form-item prop="username">
               <el-input v-model="dataForm.username" placeholder="帐号"></el-input>
             </el-form-item>

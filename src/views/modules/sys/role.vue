@@ -143,11 +143,11 @@ export default {
       })
     }
 
-    const deleteHandle = () => {
+    const deleteHandle = (id) => {
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.roleId
       })
-      this.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -156,8 +156,8 @@ export default {
           url: http.adornUrl('/sys/role/delete'),
           method: 'post',
           data: http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({code, msg }) => {
+          if (code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -167,7 +167,7 @@ export default {
               }
             })
           } else {
-            ctx.$message.error(data.msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {

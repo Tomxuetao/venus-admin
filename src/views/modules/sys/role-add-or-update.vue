@@ -20,7 +20,7 @@
     </el-form>
     <span class="dialog-footer">
       <el-button @click="closeDialogHandle">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" :loading="btnLoading">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -37,6 +37,7 @@ export default {
     const http = useHttp()
     const { ctx } = getCurrentInstance()
 
+    let btnLoading = ref(false)
     let visible = ref(false)
     let menuList = ref([])
     let expandedKeys = ref([1])
@@ -63,6 +64,7 @@ export default {
     const tempKey = ref(-666666)
 
     const init = (id) => {
+      btnLoading.value = false
       dataForm.id = id || 0
       http({
         url: http.adornUrl('/sys/menu/list'),
@@ -100,6 +102,7 @@ export default {
 
     const dataFormSubmit = () => {
       dataFormRef.value.validate((valid) => {
+        btnLoading.value = true
         if (valid) {
           http({
             url: http.adornUrl(`/sys/role/${ !dataForm.id ? 'save' : 'update' }`),
@@ -125,6 +128,8 @@ export default {
               ctx.$message.error(msg)
             }
           })
+        } else {
+          btnLoading.value = false
         }
       })
     }
@@ -140,6 +145,7 @@ export default {
       menuList,
       dataForm,
       dataRule,
+      btnLoading,
       dataFormRef,
       expandedKeys,
       menuListTreeRef,
