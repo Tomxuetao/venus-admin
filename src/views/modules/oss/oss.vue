@@ -104,7 +104,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+          this.totalPage = data.page.total
         } else {
           this.dataList = []
           this.totalPage = 0

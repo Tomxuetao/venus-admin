@@ -9,129 +9,139 @@
       </el-form-item>
     </el-form>
     <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      style="width: 100%">
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        style="width: 100%">
       <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        width="80"
-        label="ID">
+          prop="id"
+          header-align="center"
+          align="center"
+          width="80"
+          label="ID">
       </el-table-column>
       <el-table-column
-        prop="username"
-        header-align="center"
-        align="center"
-        label="用户名">
+          prop="username"
+          header-align="center"
+          align="center"
+          label="用户名">
       </el-table-column>
       <el-table-column
-        prop="operation"
-        header-align="center"
-        align="center"
-        label="用户操作">
+          prop="operation"
+          header-align="center"
+          align="center"
+          label="用户操作">
       </el-table-column>
       <el-table-column
-        prop="method"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="请求方法">
+          prop="method"
+          header-align="center"
+          align="center"
+          width="150"
+          :show-overflow-tooltip="true"
+          label="请求方法">
       </el-table-column>
       <el-table-column
-        prop="params"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="请求参数">
+          prop="params"
+          header-align="center"
+          align="center"
+          width="150"
+          :show-overflow-tooltip="true"
+          label="请求参数">
       </el-table-column>
       <el-table-column
-        prop="time"
-        header-align="center"
-        align="center"
-        label="执行时长(毫秒)">
+          prop="time"
+          header-align="center"
+          align="center"
+          label="执行时长(毫秒)">
       </el-table-column>
       <el-table-column
-        prop="ip"
-        header-align="center"
-        align="center"
-        width="150"
-        label="IP地址">
+          prop="ip"
+          header-align="center"
+          align="center"
+          width="150"
+          label="IP地址">
       </el-table-column>
       <el-table-column
-        prop="createDate"
-        header-align="center"
-        align="center"
-        width="180"
-        label="创建时间">
+          prop="createDate"
+          header-align="center"
+          align="center"
+          width="180"
+          label="创建时间">
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+        @size-change="sizeChangeHandle"
+        @current-change="currentChangeHandle"
+        :current-page="dataForm.pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="dataForm.pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
   </div>
 </template>
 
 <script>
+import { reactive, ref } from 'vue'
+import { useHttp } from '@/utils/http'
+
 export default {
-  data () {
-    return {
-      dataForm: {
-        key: ''
-      },
-      dataList: [],
-      pageIndex: 1,
+  setup() {
+    const http = useHttp()
+
+    const dataForm = reactive({
+      key: null,
       pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      selectionDataList: []
-    }
-  },
-  created () {
-    this.getDataList()
-  },
-  methods: {
-    // 获取数据列表
-    getDataList () {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/sys/log/list'),
+      pageNum: 1
+    })
+
+    let total = ref(0)
+    let dataList = ref([])
+    let dataListLoading = ref(false)
+
+    const getDataList = () => {
+      dataListLoading.value = true
+      http({
+        url: http.adornUrl('/sys/log/list'),
         method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
+        params: http.adornParams(dataForm)
+      }).then(({ code, page }) => {
+        debugger
+        if (code === 200) {
+          dataList.value = page.list
+          total.value = page.total
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          dataList.value = []
+          total.value = 0
         }
-        this.dataListLoading = false
+        dataListLoading.value = false
       })
-    },
+    }
+
+    getDataList()
+
     // 每页数
-    sizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataList()
-    },
+    const sizeChangeHandle = (pageSize) => {
+      dataForm.pageNum = 1
+      dataForm.pageSize = pageSize
+      getDataList()
+    }
+
     // 当前页
-    currentChangeHandle (val) {
-      this.pageIndex = val
-      this.getDataList()
+    const currentChangeHandle = (pageNum) => {
+      dataForm.pageNum = pageNum
+      getDataList()
+    }
+
+    return {
+      total,
+      dataList,
+      dataForm,
+      dataListLoading,
+
+      getDataList,
+      sizeChangeHandle,
+      currentChangeHandle
     }
   }
 }

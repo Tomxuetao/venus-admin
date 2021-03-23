@@ -115,8 +115,8 @@ export default {
 
     const searchForm = reactive({
       userName: null,
-      page: 1,
-      limit: 10
+      pageNum: 1,
+      pageSize: 10
     })
 
     let total = ref(0)
@@ -138,7 +138,7 @@ export default {
       }).then(({ code, page }) => {
         if (code === 200) {
           dataList.value = page.list
-          total.value = page.totalCount
+          total.value = page.total
         } else {
           dataList.value = []
           total.value = 0
