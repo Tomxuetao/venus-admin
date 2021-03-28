@@ -23,185 +23,186 @@
       </el-form-item>
     </el-form>
     <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        @selection-change="selectionChangeHandle"
+        style="width: 100%;">
       <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50">
+          type="selection"
+          header-align="center"
+          align="center"
+          width="50">
       </el-table-column>
       <el-table-column
-        prop="jobId"
-        header-align="center"
-        align="center"
-        width="80"
-        label="ID">
+          prop="jobId"
+          header-align="center"
+          align="center"
+          width="80"
+          label="ID">
       </el-table-column>
       <el-table-column
-        prop="beanName"
-        header-align="center"
-        align="center"
-        label="bean名称">
+          prop="beanName"
+          header-align="center"
+          align="center"
+          label="bean名称">
       </el-table-column>
       <el-table-column
-        prop="params"
-        header-align="center"
-        align="center"
-        label="参数">
+          prop="params"
+          header-align="center"
+          align="center"
+          label="参数">
       </el-table-column>
       <el-table-column
-        prop="cronExpression"
-        header-align="center"
-        align="center"
-        label="cron表达式">
+          prop="cronExpression"
+          header-align="center"
+          align="center"
+          label="cron表达式">
       </el-table-column>
       <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
+          prop="remark"
+          header-align="center"
+          align="center"
+          label="备注">
       </el-table-column>
       <el-table-column
-        prop="status"
-        header-align="center"
-        align="center"
-        label="状态">
+          prop="status"
+          header-align="center"
+          align="center"
+          label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small">正常</el-tag>
           <el-tag v-else size="small" type="danger">暂停</el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
+          fixed="right"
+          header-align="center"
+          align="center"
+          width="240"
+          label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:schedule:update')" type="text" size="small"
-                     @click="addOrUpdateHandle(scope.row.jobId)">修改
-          </el-button>
-          <el-button v-if="isAuth('sys:schedule:delete')" type="text" size="small"
-                     @click="deleteHandle(scope.row.jobId)">删除
-          </el-button>
-          <el-button v-if="isAuth('sys:schedule:pause')" type="text" size="small" @click="pauseHandle(scope.row.jobId)">
-            暂停
-          </el-button>
-          <el-button v-if="isAuth('sys:schedule:resume')" type="text" size="small"
-                     @click="resumeHandle(scope.row.jobId)">恢复
-          </el-button>
-          <el-button v-if="isAuth('sys:schedule:run')" type="text" size="small" @click="runHandle(scope.row.jobId)">
-            立即执行
-          </el-button>
+          <el-button v-if="isAuth('sys:schedule:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.jobId)">修改</el-button>
+          <el-button v-if="isAuth('sys:schedule:delete')" type="text" size="small" @click="deleteHandle(scope.row.jobId)" style="color: #f56c6c;">删除</el-button>
+          <el-button v-if="isAuth('sys:schedule:pause')" type="text" size="small" @click="pauseHandle(scope.row.jobId)">暂停</el-button>
+          <el-button v-if="isAuth('sys:schedule:resume')" type="text" size="small" @click="resumeHandle(scope.row.jobId)">恢复</el-button>
+          <el-button v-if="isAuth('sys:schedule:run')" type="text" size="small" @click="runHandle(scope.row.jobId)">立即执行</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+        @size-change="sizeChangeHandle"
+        @current-change="currentChangeHandle"
+        :current-page="dataForm.pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="dataForm.pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
     <!-- 弹窗, 日志列表 -->
-    <log v-if="logVisible" ref="log"></log>
+    <schedule-log v-if="logVisible" ref="logRef"></schedule-log>
   </div>
 </template>
 
 <script>
 import AddOrUpdate from './schedule-add-or-update.vue'
-import Log from './schedule-log.vue'
+import ScheduleLog from './schedule-log.vue'
+
+import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { useHttp } from '@/utils/http'
+import { isAuth } from '@/utils'
 
 export default {
-  data () {
-    return {
-      dataForm: {
-        beanName: ''
-      },
-      dataList: [],
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false,
-      logVisible: false
-    }
-  },
   components: {
     AddOrUpdate,
-    Log
+    ScheduleLog
   },
-  activated () {
-    this.getDataList()
-  },
-  methods: {
+  setup () {
+    const { ctx } = getCurrentInstance()
+
+    const http = useHttp()
+
+    const dataForm = reactive({
+      beanName: null,
+      pageSize: 10,
+      pageNum: 1
+    })
+
+    const dataList = ref([])
+    const total = ref(0)
+    const dataListLoading = ref(false)
+    const logVisible = ref(false)
+    const addOrUpdateVisible = ref(false)
+    const dataListSelections = ref([])
+
+    const logRef = ref(null)
+    const addOrUpdateRef = ref(null)
+    const addOrUpdateVisibleRef = ref(null)
+
     // 获取数据列表
-    getDataList () {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/sys/schedule/list'),
+    const getDataList = () => {
+      dataListLoading.value = true
+      http({
+        url: http.adornUrl('/sys/schedule/list'),
         method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          beanName: this.dataForm.beanName
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.total
+        params: http.adornParams(dataForm)
+      }).then(({ code, msg, page }) => {
+        if (code === 200) {
+          dataList.value = page.list
+          total.value = page.total
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          ctx.$message.error(msg)
+          dataList.value = []
+          total.value = 0
         }
-        this.dataListLoading = false
+        dataListLoading.value = false
       })
-    },
+    }
+
+    getDataList()
+
     // 每页数
-    sizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataList()
-    },
+    const sizeChangeHandle = (pageSize) => {
+      dataForm.pageSize = pageSize
+      dataForm.pageIndex = 1
+      getDataList()
+    }
+
     // 当前页
-    currentChangeHandle (val) {
-      this.pageIndex = val
-      this.getDataList()
-    },
+    const currentChangeHandle = (pageNum) => {
+      dataForm.pageNum = pageNum
+      getDataList()
+    }
+
     // 多选
-    selectionChangeHandle (val) {
-      this.dataListSelections = val
-    },
+    const selectionChangeHandle = (val) => {
+      dataListSelections.value = val
+    }
+
     // 新增 / 修改
-    addOrUpdateHandle (id) {
+    const addOrUpdateHandle = (id) => {
       this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
+      nextTick(() => {
+        addOrUpdateRef.value.init(id)
       })
-    },
+    }
+
     // 删除
-    deleteHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const deleteHandle = (id) => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      ctx.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/schedule/delete'),
+        http({
+          url: http.adornUrl('/sys/schedule/delete'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 200) {
             this.$message({
@@ -218,10 +219,11 @@ export default {
         })
       }).catch(() => {
       })
-    },
+    }
+
     // 暂停
-    pauseHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const pauseHandle = (id) => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
       this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`, '提示', {
@@ -229,44 +231,44 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/schedule/pause'),
+        http({
+          url: http.adornUrl('/sys/schedule/pause'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 200) {
-            this.$message({
+            ctx.message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                getDataList()
               }
             })
           } else {
-            this.$message.error(data.msg)
+            ctx.message.error(data.msg)
           }
         })
       }).catch(() => {
       })
-    },
+    }
     // 恢复
-    resumeHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const resumeHandle = (id) => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/schedule/resume'),
+        http({
+          url: http.adornUrl('/sys/schedule/resume'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 200) {
-            this.$message({
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -275,29 +277,30 @@ export default {
               }
             })
           } else {
-            this.$message.error(data.msg)
+            ctx.$message.error(data.msg)
           }
         })
       }).catch(() => {
       })
-    },
+    }
+
     // 立即执行
-    runHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const runHandle = (id) => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/schedule/run'),
+        http({
+          url: http.adornUrl('/sys/schedule/run'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
+          data: http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 200) {
-            this.$message({
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -306,18 +309,43 @@ export default {
               }
             })
           } else {
-            this.$message.error(data.msg)
+            ctx.$message.error(data.msg)
           }
         })
       }).catch(() => {
       })
-    },
+    }
+
     // 日志列表
-    logHandle () {
-      this.logVisible = true
-      this.$nextTick(() => {
-        this.$refs.log.init()
+    const logHandle = () => {
+      logVisible.value = true
+      nextTick(() => {
+        logRef.value.init()
       })
+    }
+
+    return {
+      total,
+      logRef,
+      dataList,
+      dataForm,
+      logVisible,
+      dataListLoading,
+      addOrUpdateVisible,
+      dataListSelections,
+      addOrUpdateVisibleRef,
+
+      isAuth,
+      logHandle,
+      runHandle,
+      getDataList,
+      pauseHandle,
+      resumeHandle,
+      deleteHandle,
+      sizeChangeHandle,
+      addOrUpdateHandle,
+      currentChangeHandle,
+      selectionChangeHandle
     }
   }
 }

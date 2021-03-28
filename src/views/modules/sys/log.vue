@@ -106,7 +106,6 @@ export default {
         method: 'get',
         params: http.adornParams(dataForm)
       }).then(({ code, page }) => {
-        debugger
         if (code === 200) {
           dataList.value = page.list
           total.value = page.total
