@@ -27,12 +27,8 @@
                        label="授权标识"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:menu:update')" type="text" size="small"
-                     @click="addOrUpdateHandle(scope.row.menuId)">修改
-          </el-button>
-          <el-button v-if="isAuth('sys:menu:delete')" type="text" size="small" @click="deleteHandle(scope.row.menuId)">
-            删除
-          </el-button>
+          <el-button v-if="isAuth('sys:menu:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.menuId)">修改</el-button>
+          <el-button v-if="isAuth('sys:menu:delete')" type="text" size="small" @click="deleteHandle(scope.row.menuId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -45,6 +41,7 @@
 import AddOrUpdate from './menu-add-or-update.vue'
 import { treeDataTranslate, isAuth } from '@/utils'
 import { useHttp } from '@/utils/http'
+
 import { ref, nextTick, getCurrentInstance } from 'vue'
 
 export default {
@@ -59,7 +56,7 @@ export default {
     let dataList = ref([])
     let dataListLoading = ref(false)
     let addOrUpdateVisible = ref(false)
-    const addOrUpdateRef = ref(null)
+    let addOrUpdateRef = ref(null)
 
     const getDataList = () => {
       dataListLoading.value = true
@@ -125,7 +122,6 @@ export default {
       getDataList,
       deleteHandle,
       addOrUpdateHandle
-
     }
   }
 }

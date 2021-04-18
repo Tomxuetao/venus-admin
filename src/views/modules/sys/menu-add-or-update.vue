@@ -3,8 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     v-model:visible="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
-             label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
           <el-radio v-for="(type, index) in dataForm.typeList" :label="index" :key="index">{{ type }}</el-radio>
@@ -66,8 +65,7 @@
           </el-col>
           <el-col :span="2" class="icon-list__tips">
             <el-tooltip placement="top" effect="light">
-              <div>全站推荐使用SVG Sprite, 详细请参考:<a
-                href="//github.com/daxiongYang/renren-fast-vue/blob/master/src/icons/index.js" target="_blank">icons/index.js</a>描述
+              <div>全站推荐使用SVG Sprite, 详细请参考:<a target="_blank"></a>描述
               </div>
               <i class="el-icon-warning"></i>
             </el-tooltip>

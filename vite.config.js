@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { svgBuilder } from './src/utils/svgBuilder'
 
 const { resolve } = require('path')
 
@@ -15,7 +16,8 @@ export default defineConfig({
 		}
 	},
 	plugins: [
-		vue()
+		vue(),
+		svgBuilder('./src/icons/svg/', '')
 	],
 	resolve: {
 		alias: [
