@@ -39,6 +39,7 @@
 
 <script>
 import AddOrUpdate from './menu-add-or-update.vue'
+
 import { treeDataTranslate, isAuth } from '@/utils'
 import { useHttp } from '@/utils/http'
 
@@ -56,7 +57,6 @@ export default {
     let dataList = ref([])
     let dataListLoading = ref(false)
     let addOrUpdateVisible = ref(false)
-    let addOrUpdateRef = ref(null)
 
     const getDataList = () => {
       dataListLoading.value = true
@@ -88,8 +88,8 @@ export default {
           url: http.adornUrl(`/sys/menu/delete/${id}`),
           method: 'post',
           data: http.adornData()
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({ code, msg}) => {
+          if (code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -99,12 +99,14 @@ export default {
               }
             })
           } else {
-            ctx.$message.error(data)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {
       })
     }
+
+    let addOrUpdateRef = ref(null)
 
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
@@ -112,6 +114,7 @@ export default {
         addOrUpdateRef.value.init(id)
       })
     }
+
     return {
       dataList,
       addOrUpdateRef,

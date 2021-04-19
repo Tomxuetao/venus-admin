@@ -179,18 +179,18 @@ export default {
       total,
       dataList,
       searchForm,
+      addOrUpdateRef,
       dataListLoading,
       dataListSelections,
       addOrUpdateVisible,
-      addOrUpdateRef,
 
+      isAuth,
       getDataList,
       deleteHandle,
       sizeChangeHandle,
       addOrUpdateHandle,
       currentChangeHandle,
-      selectionChangeHandle,
-      isAuth
+      selectionChangeHandle
     }
   }
 }

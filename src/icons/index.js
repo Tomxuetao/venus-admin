@@ -2,6 +2,7 @@ const svgFiles = import.meta.glob('./svg/*.svg')
 
 export default {
   getNameList () {
-    return Object.keys(svgFiles).map(item => item.default.id.replace('icon-', ''))
+    console.log(svgFiles)
+    return Object.keys(svgFiles).map(item => item.replace('./svg/', '').replace('icon-', '').replace('.svg', ''))
   }
 }

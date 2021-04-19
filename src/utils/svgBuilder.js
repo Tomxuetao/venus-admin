@@ -8,12 +8,9 @@ const hasViewBox = /(viewBox="[^>+].*?")/g
 const clearReturn = /(\r)|(\n)/g
 
 function findSvgFile(dir) {
-  console.log(dir)
   const svgRes = []
   const directoryList = readdirSync(dir, { withFileTypes: true })
-  console.log(directoryList)
   for (const directory of directoryList) {
-    console.log(directory.isDirectory())
     if (directory.isDirectory()) {
       svgRes.push(...findSvgFile(dir + directory.name + '/'))
     } else {

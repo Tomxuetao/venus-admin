@@ -1,9 +1,6 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    v-model:visible="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
           <el-radio v-for="(type, index) in dataForm.typeList" :label="index" :key="index">{{ type }}</el-radio>
@@ -14,22 +11,22 @@
       </el-form-item>
       <el-form-item label="上级菜单" prop="parentName">
         <el-popover
-          ref="menuListPopover"
-          placement="bottom-start"
-          trigger="click">
+            placement="bottom-start"
+            trigger="click">
           <el-tree
-            :data="menuList"
-            :props="menuListTreeProps"
-            node-key="menuId"
-            ref="menuListTree"
-            @current-change="menuListTreeCurrentChangeHandle"
-            :default-expand-all="true"
-            :highlight-current="true"
-            :expand-on-click-node="false">
+              :data="menuListTree"
+              :props="menuListTreeProps"
+              node-key="menuId"
+              ref="menuListTreeRef"
+              @current-change="menuListTreeCurrentChangeHandle"
+              :default-expand-all="true"
+              :highlight-current="true"
+              :expand-on-click-node="false">
           </el-tree>
+          <template #reference>
+            <el-input v-model="dataForm.parentName" placeholder="点击选择上级菜单" class="menu-list__input"></el-input>
+          </template>
         </el-popover>
-        <el-input v-model="dataForm.parentName" v-popover:menuListPopover :readonly="true" placeholder="点击选择上级菜单"
-                  class="menu-list__input"></el-input>
       </el-form-item>
       <el-form-item v-if="dataForm.type === 1" label="菜单路由" prop="url">
         <el-input v-model="dataForm.url" placeholder="菜单路由"></el-input>
@@ -44,29 +41,30 @@
         <el-row>
           <el-col :span="22">
             <el-popover
-              ref="iconListPopover"
-              placement="bottom-start"
-              trigger="click"
-              popper-class="mod-menu__icon-popover">
+                placement="bottom-start"
+                trigger="click"
+                popper-class="mod-menu__icon-popover">
               <div class="mod-menu__icon-inner">
                 <div class="mod-menu__icon-list">
                   <el-button
-                    v-for="(item, index) in iconList"
-                    :key="index"
-                    @click="iconActiveHandle(item)"
-                    :class="{ 'is-active': item === dataForm.icon }">
+                      v-for="(item, index) in iconList"
+                      :key="index"
+                      @click="iconActiveHandle(item)"
+                      :class="{ 'is-active': item === dataForm.icon }">
                     <icon-svg :name="item"></icon-svg>
                   </el-button>
                 </div>
               </div>
+              <template #reference>
+                <el-input v-model="dataForm.icon" placeholder="菜单图标名称" class="icon-list__input"></el-input>
+              </template>
             </el-popover>
-            <el-input v-model="dataForm.icon" v-popover:iconListPopover :readonly="true" placeholder="菜单图标名称"
-                      class="icon-list__input"></el-input>
           </el-col>
           <el-col :span="2" class="icon-list__tips">
             <el-tooltip placement="top" effect="light">
-              <div>全站推荐使用SVG Sprite, 详细请参考:<a target="_blank"></a>描述
-              </div>
+              <template #content>
+                <div>全站推荐使用SVG Sprite, 详细请参考:<a target="_blank"></a>描述</div>
+              </template>
               <i class="el-icon-warning"></i>
             </el-tooltip>
           </el-col>
@@ -83,149 +81,184 @@
 <script>
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/icons'
+import { useHttp } from '@/utils/http'
+import { getCurrentInstance, ref, reactive, nextTick } from 'vue'
 
 export default {
-  data () {
+  emits: ['refresh-data-list'],
+
+  setup() {
+    const http = useHttp()
+    const { ctx } = getCurrentInstance()
+
+    let dataForm = reactive({
+      id: 0,
+      type: 1,
+      typeList: ['目录', '菜单', '按钮'],
+      name: '',
+      parentId: 0,
+      parentName: '',
+      url: '',
+      perms: '',
+      orderNum: 0,
+      icon: '',
+      iconList: []
+    })
+
     const validateUrl = (rule, value, callback) => {
-      if (this.dataForm.type === 1 && !/\S/.test(value)) {
+      if (dataForm.type === 1 && !/\S/.test(value)) {
         callback(new Error('菜单URL不能为空'))
       } else {
         callback()
       }
     }
-    return {
-      visible: false,
-      dataForm: {
-        id: 0,
-        type: 1,
-        typeList: ['目录', '菜单', '按钮'],
-        name: '',
-        parentId: 0,
-        parentName: '',
-        url: '',
-        perms: '',
-        orderNum: 0,
-        icon: '',
-        iconList: []
-      },
-      dataRule: {
-        name: [
-          {
-            required: true,
-            message: '菜单名称不能为空',
-            trigger: 'blur'
-          }
-        ],
-        parentName: [
-          {
-            required: true,
-            message: '上级菜单不能为空',
-            trigger: 'change'
-          }
-        ],
-        url: [
-          {
-            validator: validateUrl,
-            trigger: 'blur'
-          }
-        ]
-      },
-      menuList: [],
-      menuListTreeProps: {
-        label: 'name',
-        children: 'children'
-      }
-    }
-  },
-  created () {
-    this.iconList = Icon.getNameList()
-  },
-  methods: {
-    init (id) {
-      this.dataForm.id = id || 0
-      this.$http({
-        url: this.$http.adornUrl('/sys/menu/select'),
+
+    let dataRule = reactive({
+      name: [
+        {
+          required: true,
+          message: '菜单名称不能为空',
+          trigger: 'blur'
+        }
+      ],
+      parentName: [
+        {
+          required: true,
+          message: '上级菜单不能为空',
+          trigger: 'change'
+        }
+      ],
+      url: [
+        {
+          validator: validateUrl,
+          trigger: 'blur'
+        }
+      ]
+    })
+
+    const iconList = Icon.getNameList()
+
+    let menuListTree = ref([])
+
+    let menuListTreeProps = reactive({
+      label: 'name',
+      children: 'children'
+    })
+
+    let visible = ref(false)
+
+    let dataFormRef = ref(null)
+
+    const init = (id) => {
+      dataForm.id = id || 0
+      http({
+        url: http.adornUrl('/sys/menu/select'),
         method: 'get',
-        params: this.$http.adornParams()
-      }).then(({ data }) => {
-        this.menuList = treeDataTranslate(data.menuList, 'menuId')
+        params: http.adornParams()
+      }).then(({ menuList }) => {
+        menuListTree.value = treeDataTranslate(menuList, 'menuId')
       }).then(() => {
-        this.visible = true
-        this.$nextTick(() => {
-          this.$refs.dataForm.resetFields()
+        visible.value = true
+        nextTick(() => {
+          if (dataFormRef.value) {
+            dataFormRef.value.resetFields()
+          }
         })
       }).then(() => {
-        if (!this.dataForm.id) {
+        if (!dataForm.id) {
           // 新增
-          this.menuListTreeSetCurrentNode()
+          menuListTreeSetCurrentNode()
         } else {
           // 修改
-          this.$http({
-            url: this.$http.adornUrl(`/sys/menu/info/${this.dataForm.id}`),
+          http({
+            url: http.adornUrl(`/sys/menu/info/${ dataForm.id }`),
             method: 'get',
-            params: this.$http.adornParams()
-          }).then(({ data }) => {
-            this.dataForm.id = data.menu.menuId
-            this.dataForm.type = data.menu.type
-            this.dataForm.name = data.menu.name
-            this.dataForm.parentId = data.menu.parentId
-            this.dataForm.url = data.menu.url
-            this.dataForm.perms = data.menu.perms
-            this.dataForm.orderNum = data.menu.orderNum
-            this.dataForm.icon = data.menu.icon
-            this.menuListTreeSetCurrentNode()
+            params: http.adornParams()
+          }).then(({ menu }) => {
+            dataForm.id = menu.menuId
+            dataForm.type = menu.type
+            dataForm.name = menu.name
+            dataForm.parentId = menu.parentId
+            dataForm.url = menu.url
+            dataForm.perms = menu.perms
+            dataForm.orderNum = menu.orderNum
+            dataForm.icon = menu.icon
+            menuListTreeSetCurrentNode()
           })
         }
       })
-    },
+    }
+
     // 菜单树选中
-    menuListTreeCurrentChangeHandle (data, node) {
-      this.dataForm.parentId = data.menuId
-      this.dataForm.parentName = data.name
-    },
+    const menuListTreeCurrentChangeHandle = (data, node) => {
+      dataForm.parentId = data.menuId
+      dataForm.parentName = data.name
+    }
+
     // 菜单树设置当前选中节点
-    menuListTreeSetCurrentNode () {
-      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
-      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {}).name
-    },
+    let menuListTreeRef = ref(null)
+    const menuListTreeSetCurrentNode =() => {
+      if (menuListTreeRef.value) {
+        menuListTreeRef.value.setCurrentKey(dataForm.parentId)
+      }
+      dataForm.parentName = (menuListTreeRef.value.getCurrentNode() || {}).name
+    }
+
     // 图标选中
-    iconActiveHandle (iconName) {
-      this.dataForm.icon = iconName
-    },
+    const iconActiveHandle = (iconName) => {
+      dataForm.icon = iconName
+    }
+
     // 表单提交
-    dataFormSubmit () {
-      this.$refs.dataForm.validate((valid) => {
+    const dataFormSubmit = () => {
+      dataFormRef.validate((valid) => {
         if (valid) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/menu/${!this.dataForm.id ? 'save' : 'update'}`),
+          http({
+            url: http.adornUrl(`/sys/menu/${ !dataForm.id ? 'save' : 'update' }`),
             method: 'post',
-            data: this.$http.adornData({
-              menuId: this.dataForm.id || undefined,
-              type: this.dataForm.type,
-              name: this.dataForm.name,
-              parentId: this.dataForm.parentId,
-              url: this.dataForm.url,
-              perms: this.dataForm.perms,
-              orderNum: this.dataForm.orderNum,
-              icon: this.dataForm.icon
+            data: http.adornData({
+              menuId: dataForm.id || undefined,
+              type: dataForm.type,
+              name: dataForm.name,
+              parentId: dataForm.parentId,
+              url: dataForm.url,
+              perms: dataForm.perms,
+              orderNum: dataForm.orderNum,
+              icon: dataForm.icon
             })
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
+          }).then(({ code, msg}) => {
+            if (code === 200) {
+              ctx.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false
-                  this.$emit('')
+                  visible.value = false
                 }
               })
             } else {
-              this.$message.error(data.msg)
+              ctx.$message.error(msg)
             }
           })
         }
       })
+    }
+
+
+    return {
+      visible,
+      dataForm,
+      dataRule,
+      iconList,
+      dataFormRef,
+      menuListTree,
+      menuListTreeRef,
+      menuListTreeProps,
+
+      init,
+      dataFormSubmit,
+      iconActiveHandle,
+      menuListTreeCurrentChangeHandle
     }
   }
 }
@@ -241,7 +274,7 @@ export default {
   }
 
   &__icon-popover {
-    width: 458px;
+    width: 458px !important;
     overflow: hidden;
   }
 
