@@ -1,9 +1,8 @@
 <template>
   <el-dialog
     :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    v-model:visible="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="100px">
+    v-model="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="100px">
       <el-form-item label="bean名称" prop="beanName">
         <el-input v-model="dataForm.beanName" placeholder="spring bean名称, 如: testTask"></el-input>
       </el-form-item>
@@ -27,83 +26,93 @@
 </template>
 
 <script>
+import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { useHttp } from '@/utils/http'
+
 export default {
-  data () {
-    return {
-      visible: false,
-      dataForm: {
-        id: 0,
-        beanName: '',
-        params: '',
-        cronExpression: '',
-        remark: '',
-        status: 0
-      },
-      dataRule: {
-        beanName: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
-        ],
-        cronExpression: [
-          { required: true, message: 'cron表达式不能为空', trigger: 'blur' }
-        ]
-      }
-    }
-  },
-  methods: {
-    init (id) {
-      this.dataForm.id = id || 0
-      this.visible = true
-      this.$nextTick(() => {
-        this.$refs.dataForm.resetFields()
-        if (this.dataForm.id) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/schedule/info/${this.dataForm.id}`),
+  emits: ['refresh-data-list'],
+
+  setup(props, {emit}) {
+    const http = useHttp()
+
+    const { ctx } = getCurrentInstance()
+
+    let dataForm = reactive({
+      id: undefined,
+      beanName: '',
+      params: '',
+      cronExpression: '',
+      remark: '',
+      status: 0
+    })
+
+    const dataRule = reactive({
+      beanName: [
+        { required: true, message: '用户名不能为空', trigger: 'blur' }
+      ],
+      cronExpression: [
+        { required: true, message: 'cron表达式不能为空', trigger: 'blur' }
+      ]
+    })
+
+    let visible = ref(false)
+    let dataFormRef = ref(null)
+    const init = (id) => {
+      dataForm.id = id
+      visible.value = true
+      nextTick(() => {
+        if (dataFormRef.value) {
+          dataFormRef.value.resetFields()
+        }
+        if (dataForm.id) {
+          http({
+            url: http.adornUrl(`/sys/schedule/info/${dataForm.id}`),
             method: 'get',
-            params: this.$http.adornParams()
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.dataForm.beanName = data.schedule.beanName
-              this.dataForm.params = data.schedule.params
-              this.dataForm.cronExpression = data.schedule.cronExpression
-              this.dataForm.remark = data.schedule.remark
-              this.dataForm.status = data.schedule.status
+            params: http.adornParams()
+          }).then(({ code, data }) => {
+            if (code === 200) {
+              dataForm = Object.assign(dataForm, data)
             }
           })
         }
       })
-    },
+    }
+
     // 表单提交
-    dataFormSubmit () {
-      this.$refs.dataForm.validate((valid) => {
+    const dataFormSubmit = () => {
+      dataFormRef.value.validate((valid) => {
         if (valid) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/schedule/${!this.dataForm.id ? 'save' : 'update'}`),
+          http({
+            url: http.adornUrl(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`),
             method: 'post',
-            data: this.$http.adornData({
-              jobId: this.dataForm.id || undefined,
-              beanName: this.dataForm.beanName,
-              params: this.dataForm.params,
-              cronExpression: this.dataForm.cronExpression,
-              remark: this.dataForm.remark,
-              status: !this.dataForm.id ? undefined : this.dataForm.status
-            })
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
+            data: http.adornData(dataForm)
+          }).then(({ code, msg }) => {
+            if (code === 200) {
+              ctx.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false
-                  this.$emit('')
+                  visible.value = false
+                  emit('refresh-data-list')
                 }
               })
             } else {
-              this.$message.error(data.msg)
+              ctx.$message.error(msg)
             }
           })
         }
       })
+    }
+
+    return {
+      visible,
+      dataRule,
+      dataForm,
+      dataFormRef,
+
+      init,
+      dataFormSubmit
     }
   }
 }

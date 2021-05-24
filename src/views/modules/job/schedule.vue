@@ -138,8 +138,6 @@ export default {
     const dataListSelections = ref([])
 
     const logRef = ref(null)
-    const addOrUpdateRef = ref(null)
-    const addOrUpdateVisibleRef = ref(null)
 
     // 获取数据列表
     const getDataList = () => {
@@ -182,8 +180,9 @@ export default {
     }
 
     // 新增 / 修改
+    let addOrUpdateRef = ref(null)
     const addOrUpdateHandle = (id) => {
-      this.addOrUpdateVisible = true
+      addOrUpdateVisible.value = true
       nextTick(() => {
         addOrUpdateRef.value.init(id)
       })
@@ -205,16 +204,16 @@ export default {
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            this.$message({
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                getDataList()
               }
             })
           } else {
-            this.$message.error(msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {
@@ -226,7 +225,7 @@ export default {
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -237,7 +236,7 @@ export default {
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.message({
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -246,7 +245,7 @@ export default {
               }
             })
           } else {
-            ctx.message.error(msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {
@@ -273,7 +272,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                getDataList()
               }
             })
           } else {
@@ -305,7 +304,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                getDataList()
               }
             })
           } else {
@@ -330,10 +329,10 @@ export default {
       dataList,
       dataForm,
       logVisible,
+      addOrUpdateRef,
       dataListLoading,
       addOrUpdateVisible,
       dataListSelections,
-      addOrUpdateVisibleRef,
 
       isAuth,
       logHandle,

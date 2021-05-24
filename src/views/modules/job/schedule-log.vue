@@ -113,7 +113,7 @@ export default {
         url: http.adornUrl('/sys/scheduleLog/list'),
         method: 'get',
         params: http.adornParams(dataForm)
-      }).then((code, page, msg) => {
+      }).then((code, page) => {
         if (code === 200) {
           dataList.value = page.list
           total.value = page.total
@@ -131,11 +131,11 @@ export default {
         url: http.adornUrl(`/sys/scheduleLog/info/${id}`),
         method: 'get',
         params: http.adornParams()
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.$alert(data.log.error)
+      }).then(({code, data }) => {
+        if (code === 200) {
+          cxt.$alert(data.log.error)
         } else {
-          this.$message.error(data.msg)
+          cxt.$message.error(msg)
         }
       })
     }
