@@ -4,7 +4,7 @@
       <div class="site-content">
         <div class="brand-info">
           <h2 class="brand-info__text">VenusAdmin</h2>
-          <p class="brand-info__intro">VenusAdmin基于Vue3、Element Plus构建开发，实现RenrenFast后台管理前端功能，提供一套更优的前端解决方案。</p>
+          <p class="brand-info__intro">VenusAdmin基于Vue3、Element Plus构建开发，实现VenusFast后台管理前端功能，提供一套更优的前端解决方案。</p>
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
