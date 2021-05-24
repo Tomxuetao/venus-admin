@@ -64,9 +64,9 @@ export default {
         url: http.adornUrl('/sys/menu/list'),
         method: 'get',
         params: http.adornParams()
-      }).then(({ code, msg, list}) => {
+      }).then(({ code, msg, data}) => {
         if (code === 200) {
-          dataList.value = treeDataTranslate(list, 'menuId')
+          dataList.value = treeDataTranslate(data, 'menuId')
           dataListLoading.value = false
         } else {
           ctx.$message.error(msg)

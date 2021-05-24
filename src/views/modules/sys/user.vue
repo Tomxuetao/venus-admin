@@ -85,7 +85,7 @@
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
-      :current-page="searchForm.pageIndex"
+      :current-page="searchForm.pageNum"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="searchForm.pageSize"
       :total="total"
@@ -129,16 +129,18 @@ export default {
     const addOrUpdateVisible = ref(false)
 
     // 获取数据列表
+    let isSizeChange = false
     const getDataList = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/user/list'),
         method: 'get',
         params: http.adornParams(searchForm)
-      }).then(({ code, page }) => {
+      }).then(({ code, data }) => {
+        isSizeChange = false
         if (code === 200) {
-          dataList.value = page.list
-          total.value = page.total
+          dataList.value = data.list
+          total.value = data.total
         } else {
           dataList.value = []
           total.value = 0
@@ -149,17 +151,6 @@ export default {
 
     getDataList()
 
-    // 每页数
-    const sizeChangeHandle = (value) => {
-      searchForm.pageSize = value
-      searchForm.pageIndex = 1
-      getDataList()
-    }
-    // 当前页
-    const currentChangeHandle = (value) => {
-      searchForm.pageIndex = value
-      getDataList()
-    }
     // 多选
     const selectionChangeHandle = (value) => {
       dataListSelections.value = value
@@ -201,6 +192,22 @@ export default {
           }
         })
       })
+    }
+
+    // 每页数
+    const sizeChangeHandle = (pageSize) => {
+      isSizeChange = true
+      dataForm.pageNum = 1
+      dataForm.pageSize = pageSize
+      getDataList()
+    }
+
+    // 当前页
+    const currentChangeHandle = (pageNum) => {
+      if (!isSizeChange) {
+        dataForm.pageNum = pageNum
+        getDataList()
+      }
     }
 
     return {

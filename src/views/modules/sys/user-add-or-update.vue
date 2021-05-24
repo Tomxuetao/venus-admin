@@ -1,8 +1,8 @@
 <template>
   <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="dataForm.username" placeholder="登录帐号"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
@@ -86,9 +86,9 @@ export default {
 
     let roleList = ref([])
 
-    const dataForm = reactive({
-      id: 0,
-      userName: '',
+    let dataForm = reactive({
+      id: undefined,
+      username: '',
       password: '',
       confirmPassword: '',
       salt: '',
@@ -114,8 +114,8 @@ export default {
         url: http.adornUrl('/sys/role/select'),
         method: 'get',
         params: http.adornParams()
-      }).then(({ code, list }) => {
-        roleList.value = code === 200 ? list : []
+      }).then(({ code, data }) => {
+        roleList.value = code === 200 ? data : []
       }).then(() => {
         visible.value = true
       }).then(() => {
@@ -124,14 +124,9 @@ export default {
             url: http.adornUrl(`/sys/user/info/${dataForm.id}`),
             method: 'get',
             params: http.adornParams()
-          }).then(({ code, user }) => {
+          }).then(({ code, data }) => {
             if (code === 200) {
-              dataForm.userName = user.username
-              dataForm.salt = user.salt
-              dataForm.email = user.email
-              dataForm.mobile = user.mobile
-              dataForm.roleIdList = user.roleIdList
-              dataForm.status = user.status
+              dataForm = Object.assign(dataForm, data)
             }
           })
         }
@@ -145,16 +140,7 @@ export default {
           http({
             url: http.adornUrl(`/sys/user/${!dataForm.id ? 'save' : 'update'}`),
             method: 'post',
-            data: http.adornData({
-              userId: dataForm.id || undefined,
-              username: dataForm.userName,
-              password: dataForm.password,
-              salt: dataForm.salt,
-              email: dataForm.email,
-              mobile: dataForm.mobile,
-              status: dataForm.status,
-              roleIdList: dataForm.roleIdList
-            })
+            data: http.adornData(dataForm)
           }).then(({ code, msg }) => {
             if (code === 200) {
               visible.value = false

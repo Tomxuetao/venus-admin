@@ -148,10 +148,10 @@ export default {
         url: http.adornUrl('/sys/schedule/list'),
         method: 'get',
         params: http.adornParams(dataForm)
-      }).then(({ code, msg, page }) => {
+      }).then(({ code, msg, data }) => {
         if (code === 200) {
-          dataList.value = page.list
-          total.value = page.total
+          dataList.value = data.list
+          total.value = data.total
         } else {
           ctx.$message.error(msg)
           dataList.value = []
@@ -166,7 +166,7 @@ export default {
     // 每页数
     const sizeChangeHandle = (pageSize) => {
       dataForm.pageSize = pageSize
-      dataForm.pageIndex = 1
+      dataForm.pageNum = 1
       getDataList()
     }
 
@@ -203,8 +203,8 @@ export default {
           url: http.adornUrl('/sys/schedule/delete'),
           method: 'post',
           data: http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({ code, msg }) => {
+          if (code === 200) {
             this.$message({
               message: '操作成功',
               type: 'success',
@@ -214,7 +214,7 @@ export default {
               }
             })
           } else {
-            this.$message.error(data.msg)
+            this.$message.error(msg)
           }
         })
       }).catch(() => {
@@ -235,8 +235,8 @@ export default {
           url: http.adornUrl('/sys/schedule/pause'),
           method: 'post',
           data: http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({ code, msg }) => {
+          if (code === 200) {
             ctx.message({
               message: '操作成功',
               type: 'success',
@@ -246,7 +246,7 @@ export default {
               }
             })
           } else {
-            ctx.message.error(data.msg)
+            ctx.message.error(msg)
           }
         })
       }).catch(() => {
@@ -266,8 +266,8 @@ export default {
           url: http.adornUrl('/sys/schedule/resume'),
           method: 'post',
           data: http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({ code, msg }) => {
+          if (code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -277,7 +277,7 @@ export default {
               }
             })
           } else {
-            ctx.$message.error(data.msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {
@@ -298,8 +298,8 @@ export default {
           url: http.adornUrl('/sys/schedule/run'),
           method: 'post',
           data: http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
+        }).then(({ code, msg }) => {
+          if (code === 200) {
             ctx.$message({
               message: '操作成功',
               type: 'success',
@@ -309,7 +309,7 @@ export default {
               }
             })
           } else {
-            ctx.$message.error(data.msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {

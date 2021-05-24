@@ -85,8 +85,9 @@ export default {
             url: http.adornUrl('/sys/login'),
             method: 'post',
             data: http.adornData(dataForm)
-          }).then(({ code, token, msg }) => {
+          }).then(({ code, data, msg }) => {
             if (code === 200) {
+              const { token } = data
               sessionStorage.setItem('token', token)
               router.replace({ name: 'home' })
             } else {
@@ -114,7 +115,7 @@ export default {
 }
 </script>
 
-<style lang="scss" s>
+<style lang="scss" scoped>
 .site-wrapper.site-page--login {
   position: absolute;
   top: 0;

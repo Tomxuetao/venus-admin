@@ -1,13 +1,13 @@
 <template>
-  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+  <el-dialog :title="!dataForm.menuId ? '新增' : '修改'" v-model="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
-          <el-radio v-for="(type, index) in dataForm.typeList" :label="index" :key="index">{{ type }}</el-radio>
+          <el-radio v-for="(key, index) in menuTypeMap.keys()" :label="index" :key="index">{{ menuTypeMap.get(key) }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item :label="dataForm.typeList[dataForm.type] + '名称'" prop="name">
-        <el-input v-model="dataForm.name" :placeholder="dataForm.typeList[dataForm.type] + '名称'"></el-input>
+      <el-form-item :label="menuTypeMap.get(dataForm.type) + '名称'" prop="name">
+        <el-input v-model="dataForm.name" :placeholder="menuTypeMap.get(dataForm.type) + '名称'"></el-input>
       </el-form-item>
       <el-form-item label="上级菜单" prop="parentName">
         <el-popover
@@ -91,18 +91,18 @@ export default {
     const http = useHttp()
     const { ctx } = getCurrentInstance()
 
+    const menuTypeMap = new Map([[0, '目录'], [1, '菜单'], [2, '按钮']])
+
     let dataForm = reactive({
-      id: 0,
+      menuId: undefined,
       type: 1,
-      typeList: ['目录', '菜单', '按钮'],
       name: '',
       parentId: 0,
       parentName: '',
       url: '',
       perms: '',
       orderNum: 0,
-      icon: '',
-      iconList: []
+      icon: ''
     })
 
     const validateUrl = (rule, value, callback) => {
@@ -150,13 +150,13 @@ export default {
     let dataFormRef = ref(null)
 
     const init = (id) => {
-      dataForm.id = id || 0
+      dataForm.menuId = id
       http({
         url: http.adornUrl('/sys/menu/select'),
         method: 'get',
         params: http.adornParams()
-      }).then(({ menuList }) => {
-        menuListTree.value = treeDataTranslate(menuList, 'menuId')
+      }).then(({ data }) => {
+        menuListTree.value = treeDataTranslate(data, 'menuId')
       }).then(() => {
         visible.value = true
         nextTick(() => {
@@ -165,24 +165,17 @@ export default {
           }
         })
       }).then(() => {
-        if (!dataForm.id) {
+        if (!dataForm.menuId) {
           // 新增
           menuListTreeSetCurrentNode()
         } else {
           // 修改
           http({
-            url: http.adornUrl(`/sys/menu/info/${ dataForm.id }`),
+            url: http.adornUrl(`/sys/menu/info/${ dataForm.menuId }`),
             method: 'get',
             params: http.adornParams()
-          }).then(({ menu }) => {
-            dataForm.id = menu.menuId
-            dataForm.type = menu.type
-            dataForm.name = menu.name
-            dataForm.parentId = menu.parentId
-            dataForm.url = menu.url
-            dataForm.perms = menu.perms
-            dataForm.orderNum = menu.orderNum
-            dataForm.icon = menu.icon
+          }).then(({ data }) => {
+            dataForm = Object.assign(dataForm, data)
             menuListTreeSetCurrentNode()
           })
         }
@@ -190,7 +183,7 @@ export default {
     }
 
     // 菜单树选中
-    const menuListTreeCurrentChangeHandle = (data, node) => {
+    const menuListTreeCurrentChangeHandle = (data) => {
       dataForm.parentId = data.menuId
       dataForm.parentName = data.name
     }
@@ -214,18 +207,9 @@ export default {
       dataFormRef.validate((valid) => {
         if (valid) {
           http({
-            url: http.adornUrl(`/sys/menu/${ !dataForm.id ? 'save' : 'update' }`),
+            url: http.adornUrl(`/sys/menu/${ !dataForm.menuId ? 'save' : 'update' }`),
             method: 'post',
-            data: http.adornData({
-              menuId: dataForm.id || undefined,
-              type: dataForm.type,
-              name: dataForm.name,
-              parentId: dataForm.parentId,
-              url: dataForm.url,
-              perms: dataForm.perms,
-              orderNum: dataForm.orderNum,
-              icon: dataForm.icon
-            })
+            data: http.adornData(dataForm)
           }).then(({ code, msg}) => {
             if (code === 200) {
               ctx.$message({
@@ -250,6 +234,7 @@ export default {
       dataForm,
       dataRule,
       iconList,
+      menuTypeMap,
       dataFormRef,
       menuListTree,
       menuListTreeRef,

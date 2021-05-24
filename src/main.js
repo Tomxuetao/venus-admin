@@ -10,4 +10,5 @@ import http from '@/utils/http'
 
 import IconSvg from '@/components/index'
 
-createApp(App).use(store).use(router).use(ElementUI).use(IconSvg).use(http).mount('#app')
+const app = createApp(App)
+app.use(store).use(router).use(ElementUI).use(IconSvg).use(http).mount('#app')

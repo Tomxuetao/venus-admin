@@ -110,11 +110,11 @@ export default {
         url: http.adornUrl('/sys/role/list'),
         method: 'get',
         params: http.adornParams(searchForm)
-      }).then(({ code, page}) => {
+      }).then(({ code, data}) => {
         if (code === 200) {
           dataListLoading.value = false
-          total.value = page.total
-          dataList.value = page.list
+          total.value = data.total
+          dataList.value = data.list
         }
       })
     }

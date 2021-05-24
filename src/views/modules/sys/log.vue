@@ -73,8 +73,8 @@
         @size-change="sizeChangeHandle"
         @current-change="currentChangeHandle"
         :current-page="dataForm.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
         :page-size="dataForm.pageSize"
+        :page-sizes="[10, 20, 50, 100]"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
@@ -99,16 +99,19 @@ export default {
     let dataList = ref([])
     let dataListLoading = ref(false)
 
+    let isSizeChange = false
+
     const getDataList = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/log/list'),
         method: 'get',
         params: http.adornParams(dataForm)
-      }).then(({ code, page }) => {
+      }).then(({ code, data }) => {
+        isSizeChange = false
         if (code === 200) {
-          dataList.value = page.list
-          total.value = page.total
+          dataList.value = data.list
+          total.value = data.total
         } else {
           dataList.value = []
           total.value = 0
@@ -121,6 +124,7 @@ export default {
 
     // 每页数
     const sizeChangeHandle = (pageSize) => {
+      isSizeChange = true
       dataForm.pageNum = 1
       dataForm.pageSize = pageSize
       getDataList()
@@ -128,8 +132,10 @@ export default {
 
     // 当前页
     const currentChangeHandle = (pageNum) => {
-      dataForm.pageNum = pageNum
-      getDataList()
+      if (!isSizeChange) {
+        dataForm.pageNum = pageNum
+        getDataList()
+      }
     }
 
     return {

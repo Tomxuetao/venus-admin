@@ -76,11 +76,11 @@ export default {
       http({
         url: http.adornUrl('/sys/user/info'),
         method: 'get'
-      }).then(({ code, user }) => {
+      }).then(({ code, data }) => {
         if (code === 200) {
           loading.value = false
-          userId.value = user.userId
-          userName.value = user.username
+          userId.value = data.userId
+          userName.value = data.username
         }
       })
     }

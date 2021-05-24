@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { reactive, ref, nextTick, getCurrentInstance, onMounted } from 'vue'
+import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
 
@@ -42,17 +42,13 @@ export default {
     let menuList = ref([])
     let expandedKeys = ref([1])
     let dataForm = reactive({
-      id: 0,
+      roleId: undefined,
       roleName: '',
       remark: ''
     })
 
     const dataFormRef = ref(null)
     const menuListTreeRef = ref(null)
-
-    onMounted(() => {
-      console.log(menuListTreeRef.value)
-    })
 
     const dataRule = ref({
       roleName: [{
@@ -65,12 +61,12 @@ export default {
 
     const init = (id) => {
       btnLoading.value = false
-      dataForm.id = id || 0
+      dataForm.roleId = id || undefined
       http({
         url: http.adornUrl('/sys/menu/list'),
         method: 'get'
-      }).then(({ code, list, msg }) => {
-        menuList.value = treeDataTranslate(list, 'menuId')
+      }).then(({ data }) => {
+        menuList.value = treeDataTranslate(data, 'menuId')
       }).then(() => {
         visible.value = true
         nextTick(() => {
@@ -80,20 +76,20 @@ export default {
           }
         })
       }).then(() => {
-        if (dataForm.id) {
+        if (dataForm.roleId) {
           http({
-            url: http.adornUrl(`/sys/role/info/${ dataForm.id }`),
+            url: http.adornUrl(`/sys/role/info/${ dataForm.roleId }`),
             method: 'get',
             params: http.adornParams()
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              dataForm.roleName = data.role.roleName
-              dataForm.remark = data.role.remark
-              const idx = data.role.menuIdList.indexOf(tempKey)
+          }).then(({ code, data }) => {
+            if (code === 200) {
+              dataForm.roleName = data.roleName
+              dataForm.remark = data.remark
+              const idx = data.menuIdList.indexOf(tempKey)
               if (idx !== -1) {
-                data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
+                data.menuIdList.splice(idx, data.menuIdList.length - idx)
               }
-              menuListTreeRef.value.setCheckedKeys(data.role.menuIdList)
+              menuListTreeRef.value.setCheckedKeys(data.menuIdList)
             }
           })
         }
@@ -105,14 +101,9 @@ export default {
         btnLoading.value = true
         if (valid) {
           http({
-            url: http.adornUrl(`/sys/role/${ !dataForm.id ? 'save' : 'update' }`),
+            url: http.adornUrl(`/sys/role/${ !dataForm.roleId ? 'save' : 'update' }`),
             method: 'post',
-            data: http.adornData({
-              roleId: dataForm.id || undefined,
-              roleName: dataForm.roleName,
-              remark: dataForm.remark,
-              menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey.value], menuListTreeRef.value.getHalfCheckedKeys())
-            })
+            data: http.adornData({ ...dataForm, menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey.value], menuListTreeRef.value.getHalfCheckedKeys()) })
           }).then(({ code, msg }) => {
             if (code === 200) {
               ctx.$message({

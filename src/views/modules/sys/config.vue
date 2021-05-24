@@ -1,17 +1,16 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm">
+    <el-form :inline="true" :model="searchForm">
       <el-form-item>
-        <el-input v-model="dataForm.paramKey" placeholder="参数名" clearable></el-input>
+        <el-input v-model="searchForm.paramKey" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataListHandle()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
-              style="width: 100%;">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" width="80" label="ID"></el-table-column>
       <el-table-column prop="paramKey" header-align="center" align="center" label="参数名"></el-table-column>
@@ -25,118 +24,140 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="sizeChangeHandle"
-        @current-change="currentChangeHandle"
-        :current-page="pageIndex"
+        @size-change="pageSizeChangeHandle"
+        @current-change="pageNumChangeHandle"
+        :current-page="searchForm.pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="pageSize"
-        :total="totalPage"
+        :page-size="searchForm.pageSize"
+        :total="total"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
   </div>
 </template>
 
 <script>
 import AddOrUpdate from './config-add-or-update.vue'
 
+import { useHttp } from '@/utils/http'
+import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
+
 export default {
-  data() {
-    return {
-      dataForm: {
-        paramKey: ''
-      },
-      dataList: [],
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false
-    }
-  },
   components: {
     AddOrUpdate
   },
-  activated() {
-    this.getDataList()
-  },
-  methods: {
+
+  setup() {
+    const http = useHttp()
+    const { ctx } = getCurrentInstance()
+
+    const searchForm = reactive({
+      paramKey: '',
+      pageSize: 10,
+      pageNum: 1
+    })
+
     // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/sys/config/list'),
+    let dataListLoading = ref(false)
+    let dataList = reactive([])
+    let total = ref(0)
+
+    const getDataListHandle = () => {
+      dataListLoading.value = true
+      http({
+        url: http.adornUrl('/sys/config/list'),
         method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          paramKey: this.dataForm.paramKey
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.total
+        params: http.adornParams(searchForm)
+      }).then(({ code, data }) => {
+        if (code === 200) {
+          dataList = data.list
+          total.value = data.total
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          dataList = []
+          total.value = 0
         }
-        this.dataListLoading = false
+        dataListLoading.value = false
       })
-    },
+    }
+
+    getDataListHandle()
+
     // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataList()
-    },
+    const pageSizeChangeHandle = (pageSize) => {
+      searchForm.pageNum = 1
+      searchForm.pageSize = pageSize
+      getDataListHandle()
+    }
+
     // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val
-      this.getDataList()
-    },
+    const pageNumChangeHandle = (pageNum) =>{
+      searchForm.pageNum = pageNum
+      getDataListHandle()
+    }
+
     // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val
-    },
+    let dataListSelections = reactive([])
+    const selectionChangeHandle = (list) => {
+      dataListSelections = list
+    }
+
     // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
+    let addOrUpdateVisible = ref(false)
+    let addOrUpdateRef = ref(null)
+    const addOrUpdateHandle = (id) => {
+      addOrUpdateVisible.value = true
+      nextTick(() => {
+        addOrUpdateRef.init(id)
       })
-    },
+    }
+
     // 删除
-    deleteHandle(id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const deleteHandle = (id) => {
+      const ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
+      ctx.confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/config/delete'),
+        http({
+          url: http.adornUrl('/sys/config/delete'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
-            this.$message({
+          data: http.adornData(ids, false)
+        }).then(({ code, msg }) => {
+          if (code === 200) {
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                getDataListHandle()
               }
             })
           } else {
-            this.$message.error(data.msg)
+            ctx.$message.error(msg)
           }
         })
-      }).catch(() => {
       })
+    }
+
+    return {
+      total,
+      dataList,
+      searchForm,
+      addOrUpdateRef,
+      dataListLoading,
+      addOrUpdateVisible,
+      dataListSelections,
+
+      deleteHandle,
+      getDataListHandle,
+      addOrUpdateHandle,
+      pageNumChangeHandle,
+      pageSizeChangeHandle,
+      selectionChangeHandle,
     }
   }
 }
