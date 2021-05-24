@@ -1,10 +1,6 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    v-model:visible="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
-             label-width="80px">
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
       <el-form-item label="参数名" prop="paramKey">
         <el-input v-model="dataForm.paramKey" placeholder="参数名"></el-input>
       </el-form-item>
@@ -23,85 +19,99 @@
 </template>
 
 <script>
+import { useHttp } from '@/utils/http'
+import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
+
 export default {
-  data () {
-    return {
-      visible: false,
-      dataForm: {
-        id: 0,
-        paramKey: '',
-        paramValue: '',
-        remark: ''
-      },
-      dataRule: {
-        paramKey: [
-          {
-            required: true,
-            message: '参数名不能为空',
-            trigger: 'blur'
-          }
-        ],
-        paramValue: [
-          {
-            required: true,
-            message: '参数值不能为空',
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
-  },
-  methods: {
-    init (id) {
-      this.dataForm.id = id || 0
-      this.visible = true
-      this.$nextTick(() => {
-        this.$refs.dataForm.resetFields()
-        if (this.dataForm.id) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/config/info/${this.dataForm.id}`),
-            method: 'get',
-            params: this.$http.adornParams()
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.dataForm.paramKey = data.config.paramKey
-              this.dataForm.paramValue = data.config.paramValue
-              this.dataForm.remark = data.config.remark
-            }
-          })
+  emits: ['refresh-data-list'],
+
+  setup(props, { emit }) {
+    const http = useHttp()
+
+    const { ctx } = getCurrentInstance()
+
+    let dataForm = reactive({
+      id: undefined,
+      paramKey: '',
+      paramValue: '',
+      remark: ''
+    })
+
+    const dataRule = reactive({
+      paramKey: [
+        {
+          required: true,
+          message: '参数名不能为空',
+          trigger: 'blur'
+        }
+      ],
+      paramValue: [
+        {
+          required: true,
+          message: '参数值不能为空',
+          trigger: 'blur'
+        }
+      ]
+    })
+
+    let visible = ref(false)
+    let dataFormRef = ref(null)
+
+    const init = (id) => {
+      visible.value = true
+      nextTick(() => {
+        if (dataFormRef.value) {
+          dataFormRef.value.resetFields()
         }
       })
-    },
-    // 表单提交
-    dataFormSubmit () {
-      this.$refs.dataForm.validate((valid) => {
+      dataForm.id = id
+      if (dataForm.id) {
+        http({
+          url: http.adornUrl(`/sys/config/info/${dataForm.id}`),
+          method: 'get',
+          params: http.adornParams()
+        }).then(({ data, code }) => {
+          if (code === 200) {
+            dataForm = Object.assign(dataForm, data)
+          }
+        })
+      }
+    }
+
+    const dataFormSubmit = () => {
+      dataFormRef.value.validate((valid) => {
         if (valid) {
-          this.$http({
-            url: this.$http.adornUrl(`/sys/config/${!this.dataForm.id ? 'save' : 'update'}`),
+          http({
+            url: http.adornUrl(`/sys/config/${!dataForm.id ? 'save' : 'update'}`),
             method: 'post',
-            data: this.$http.adornData({
-              id: this.dataForm.id || undefined,
-              paramKey: this.dataForm.paramKey,
-              paramValue: this.dataForm.paramValue,
-              remark: this.dataForm.remark
-            })
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
+            data: http.adornData(dataForm)
+          }).then(({ code, msg }) => {
+            if (code === 200) {
+              ctx.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false
-                  this.$emit('refresh-data-list')
+                  visible.value = false
+                  emit('refresh-data-list')
                 }
               })
             } else {
-              this.$message.error(data.msg)
+              ctx.$message.error(msg)
             }
           })
         }
       })
+    }
+
+    return {
+      visible,
+      dataRule,
+      dataForm,
+      dataFormRef,
+
+      init,
+      dataFormSubmit
     }
   }
 }

@@ -87,7 +87,7 @@ import { getCurrentInstance, ref, reactive, nextTick } from 'vue'
 export default {
   emits: ['refresh-data-list'],
 
-  setup() {
+  setup(props, { emit }) {
     const http = useHttp()
     const { ctx } = getCurrentInstance()
 
@@ -204,7 +204,7 @@ export default {
 
     // 表单提交
     const dataFormSubmit = () => {
-      dataFormRef.validate((valid) => {
+      dataFormRef.value.validate((valid) => {
         if (valid) {
           http({
             url: http.adornUrl(`/sys/menu/${ !dataForm.menuId ? 'save' : 'update' }`),
@@ -218,6 +218,7 @@ export default {
                 duration: 1500,
                 onClose: () => {
                   visible.value = false
+                  emit('refresh-data-list')
                 }
               })
             } else {

@@ -60,7 +60,7 @@ export default {
 
     // 获取数据列表
     let dataListLoading = ref(false)
-    let dataList = reactive([])
+    let dataList = ref([])
     let total = ref(0)
 
     const getDataListHandle = () => {
@@ -71,10 +71,10 @@ export default {
         params: http.adornParams(searchForm)
       }).then(({ code, data }) => {
         if (code === 200) {
-          dataList = data.list
+          dataList.value = [...data.list]
           total.value = data.total
         } else {
-          dataList = []
+          dataList.value = []
           total.value = 0
         }
         dataListLoading.value = false
@@ -108,7 +108,7 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        addOrUpdateRef.init(id)
+        addOrUpdateRef.value.init(id)
       })
     }
 
@@ -157,7 +157,7 @@ export default {
       addOrUpdateHandle,
       pageNumChangeHandle,
       pageSizeChangeHandle,
-      selectionChangeHandle,
+      selectionChangeHandle
     }
   }
 }
