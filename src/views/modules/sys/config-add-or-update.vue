@@ -97,6 +97,8 @@ export default {
                 }
               })
             } else {
+              visible.value = false
+              emit('refresh-data-list')
               ctx.$message.error(msg)
             }
           })
