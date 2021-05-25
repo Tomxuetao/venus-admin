@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.key" placeholder="用户名／用户操作" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataListHandle()">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -70,8 +70,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="sizeChangeHandle"
-        @current-change="currentChangeHandle"
+        @size-change="pageSizeChangeHandle"
+        @current-change="pageNumChangeHandle"
         :current-page="dataForm.pageNum"
         :page-size="dataForm.pageSize"
         :page-sizes="[10, 20, 50, 100]"
@@ -101,7 +101,7 @@ export default {
 
     let isSizeChange = false
 
-    const getDataList = () => {
+    const getDataListHandle = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/log/list'),
@@ -120,21 +120,21 @@ export default {
       })
     }
 
-    getDataList()
+    getDataListHandle()
 
     // 每页数
-    const sizeChangeHandle = (pageSize) => {
+    const pageSizeChangeHandle = (pageSize) => {
       isSizeChange = true
       dataForm.pageNum = 1
       dataForm.pageSize = pageSize
-      getDataList()
+      getDataListHandle()
     }
 
     // 当前页
-    const currentChangeHandle = (pageNum) => {
+    const pageNumChangeHandle = (pageNum) => {
       if (!isSizeChange) {
         dataForm.pageNum = pageNum
-        getDataList()
+        getDataListHandle()
       }
     }
 
@@ -144,9 +144,9 @@ export default {
       dataForm,
       dataListLoading,
 
-      getDataList,
-      sizeChangeHandle,
-      currentChangeHandle
+      getDataListHandle,
+      pageSizeChangeHandle,
+      pageNumChangeHandle
     }
   }
 }

@@ -57,7 +57,7 @@ export default {
     let visible = ref(false)
     let dataFormRef = ref(null)
 
-    const init = (id) => {
+    const initDialogHandle = (id) => {
       visible.value = true
       nextTick(() => {
         if (dataFormRef.value) {
@@ -112,7 +112,7 @@ export default {
       dataForm,
       dataFormRef,
 
-      init,
+      initDialogHandle,
       dataFormSubmit
     }
   }

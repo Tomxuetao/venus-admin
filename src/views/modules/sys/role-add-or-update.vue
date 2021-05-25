@@ -59,7 +59,7 @@ export default {
     })
     const tempKey = ref(-666666)
 
-    const init = (id) => {
+    const initDialogHandle = (id) => {
       btnLoading.value = false
       dataForm.roleId = id || undefined
       http({
@@ -141,7 +141,7 @@ export default {
       expandedKeys,
       menuListTreeRef,
 
-      init,
+      initDialogHandle,
       dataFormSubmit,
       closeDialogHandle
     }

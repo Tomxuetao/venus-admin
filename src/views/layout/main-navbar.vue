@@ -104,7 +104,7 @@ export default {
     const updatePasswordHandle = () => {
       updatePasswordVisible.value = true
       nextTick(() => {
-        updatePasswordRef.value.init()
+        updatePasswordRef.value.initDialogHandle()
       })
     }
 

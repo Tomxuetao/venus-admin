@@ -33,7 +33,7 @@
       </el-table-column>
     </el-table>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
   </div>
 </template>
 
@@ -58,7 +58,7 @@ export default {
     let dataListLoading = ref(false)
     let addOrUpdateVisible = ref(false)
 
-    const getDataList = () => {
+    const getDataListHandle = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/menu/list'),
@@ -76,7 +76,7 @@ export default {
       })
     }
 
-    getDataList()
+    getDataListHandle()
 
     const deleteHandle = (id) => {
       ctx.$confirm(`确定对[id=${id}]进行[删除]操作?`, '提示', {
@@ -95,7 +95,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                this.getDataListHandle()
               }
             })
           } else {
@@ -111,7 +111,7 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        addOrUpdateRef.value.init(id)
+        addOrUpdateRef.value.initDialogHandle(id)
       })
     }
 
@@ -122,7 +122,7 @@ export default {
       addOrUpdateVisible,
 
       isAuth,
-      getDataList,
+      getDataListHandle,
       deleteHandle,
       addOrUpdateHandle
     }

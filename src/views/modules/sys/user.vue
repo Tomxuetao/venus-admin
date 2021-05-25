@@ -5,7 +5,7 @@
         <el-input v-model="searchForm.userName" placeholder="用户名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataListHandle()">查询</el-button>
         <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
@@ -83,8 +83,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
       :current-page="searchForm.pageNum"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="searchForm.pageSize"
@@ -92,7 +92,7 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
   </div>
 </template>
 
@@ -130,7 +130,7 @@ export default {
 
     // 获取数据列表
     let isSizeChange = false
-    const getDataList = () => {
+    const getDataListHandle = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/user/list'),
@@ -149,7 +149,7 @@ export default {
       })
     }
 
-    getDataList()
+    getDataListHandle()
 
     // 多选
     const selectionChangeHandle = (value) => {
@@ -159,7 +159,7 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        addOrUpdateRef.value.init(id)
+        addOrUpdateRef.value.initDialogHandle(id)
       })
     }
 
@@ -184,7 +184,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                getDataList()
+                getDataListHandle()
               }
             })
           } else {
@@ -195,18 +195,18 @@ export default {
     }
 
     // 每页数
-    const sizeChangeHandle = (pageSize) => {
+    const pageSizeChangeHandle = (pageSize) => {
       isSizeChange = true
       dataForm.pageNum = 1
       dataForm.pageSize = pageSize
-      getDataList()
+      getDataListHandle()
     }
 
     // 当前页
-    const currentChangeHandle = (pageNum) => {
+    const pageNumChangeHandle = (pageNum) => {
       if (!isSizeChange) {
         dataForm.pageNum = pageNum
-        getDataList()
+        getDataListHandle()
       }
     }
 
@@ -220,9 +220,9 @@ export default {
       addOrUpdateVisible,
 
       isAuth,
-      getDataList,
-      sizeChangeHandle,
-      currentChangeHandle,
+      getDataListHandle,
+      pageSizeChangeHandle,
+      pageNumChangeHandle,
       selectionChangeHandle,
       addOrUpdateHandle,
       deleteHandle

@@ -72,7 +72,7 @@ export default {
       set: value => { store.commit('common/updateMainTabs', value) }
     })
 
-    const init = () => {
+    const initDialogHandle = () => {
       visible.value = true
       nextTick(() => {
         dataFormRef.value.resetFields()
@@ -122,7 +122,7 @@ export default {
       dataRule,
       userName,
 
-      init,
+      initDialogHandle,
       dataFormSubmit
     }
   }

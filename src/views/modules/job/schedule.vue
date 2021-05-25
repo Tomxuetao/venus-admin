@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.beanName" placeholder="bean名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataListHandle()">查询</el-button>
         <el-button v-if="isAuth('sys:schedule:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('sys:schedule:delete')" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
@@ -91,8 +91,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="sizeChangeHandle"
-        @current-change="currentChangeHandle"
+        @size-change="pageSizeChangeHandle"
+        @current-change="pageNumChangeHandle"
         :current-page="dataForm.pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="dataForm.pageSize"
@@ -100,7 +100,7 @@
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
     <!-- 弹窗, 日志列表 -->
     <schedule-log v-if="logVisible" ref="logRef"></schedule-log>
   </div>
@@ -137,16 +137,16 @@ export default {
     const addOrUpdateVisible = ref(false)
     const dataListSelections = ref([])
 
-    const logRef = ref(null)
-
     // 获取数据列表
-    const getDataList = () => {
+    let isSizeChange = false
+    const getDataListHandle = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/schedule/list'),
         method: 'get',
         params: http.adornParams(dataForm)
       }).then(({ code, msg, data }) => {
+        isSizeChange = true
         if (code === 200) {
           dataList.value = data.list
           total.value = data.total
@@ -159,20 +159,24 @@ export default {
       })
     }
 
-    getDataList()
+    getDataListHandle()
 
     // 每页数
-    const sizeChangeHandle = (pageSize) => {
-      dataForm.pageSize = pageSize
+    const pageSizeChangeHandle = (pageSize) => {
+      isSizeChange = true
       dataForm.pageNum = 1
-      getDataList()
+      dataForm.pageSize = pageSize
+      getDataListHandle()
     }
 
     // 当前页
-    const currentChangeHandle = (pageNum) => {
-      dataForm.pageNum = pageNum
-      getDataList()
+    const pageNumChangeHandle = (pageNum) => {
+      if (!isSizeChange) {
+        dataForm.pageNum = pageNum
+        getDataListHandle()
+      }
     }
+
 
     // 多选
     const selectionChangeHandle = (val) => {
@@ -184,7 +188,7 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        addOrUpdateRef.value.init(id)
+        addOrUpdateRef.value.initDialogHandle(id)
       })
     }
 
@@ -209,7 +213,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                getDataList()
+                getDataListHandle()
               }
             })
           } else {
@@ -241,7 +245,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                getDataList()
+                getDataListHandle()
               }
             })
           } else {
@@ -251,6 +255,7 @@ export default {
       }).catch(() => {
       })
     }
+
     // 恢复
     const resumeHandle = (id) => {
       const ids = id ? [id] : dataListSelections.value.map(item => {
@@ -272,14 +277,13 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                getDataList()
+                getDataListHandle()
               }
             })
           } else {
             ctx.$message.error(msg)
           }
         })
-      }).catch(() => {
       })
     }
 
@@ -304,7 +308,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                getDataList()
+                getDataListHandle()
               }
             })
           } else {
@@ -316,10 +320,11 @@ export default {
     }
 
     // 日志列表
+    let logRef = ref(null)
     const logHandle = () => {
       logVisible.value = true
       nextTick(() => {
-        logRef.value.init()
+        logRef.value.initDialogHandle()
       })
     }
 
@@ -337,13 +342,13 @@ export default {
       isAuth,
       logHandle,
       runHandle,
-      getDataList,
       pauseHandle,
       resumeHandle,
       deleteHandle,
-      sizeChangeHandle,
+      getDataListHandle,
       addOrUpdateHandle,
-      currentChangeHandle,
+      pageNumChangeHandle,
+      pageSizeChangeHandle,
       selectionChangeHandle
     }
   }

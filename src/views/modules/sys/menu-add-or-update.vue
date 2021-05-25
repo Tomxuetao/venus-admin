@@ -18,7 +18,7 @@
               :props="menuListTreeProps"
               node-key="menuId"
               ref="menuListTreeRef"
-              @current-change="menuListTreeCurrentChangeHandle"
+              @current-change="menuListTreepageNumChangeHandle"
               :default-expand-all="true"
               :highlight-current="true"
               :expand-on-click-node="false">
@@ -149,7 +149,7 @@ export default {
 
     let dataFormRef = ref(null)
 
-    const init = (id) => {
+    const initDialogHandle = (id) => {
       dataForm.menuId = id
       http({
         url: http.adornUrl('/sys/menu/select'),
@@ -183,7 +183,7 @@ export default {
     }
 
     // 菜单树选中
-    const menuListTreeCurrentChangeHandle = (data) => {
+    const menuListTreepageNumChangeHandle = (data) => {
       dataForm.parentId = data.menuId
       dataForm.parentName = data.name
     }
@@ -241,10 +241,10 @@ export default {
       menuListTreeRef,
       menuListTreeProps,
 
-      init,
+      initDialogHandle,
       dataFormSubmit,
       iconActiveHandle,
-      menuListTreeCurrentChangeHandle
+      menuListTreepageNumChangeHandle
     }
   }
 }

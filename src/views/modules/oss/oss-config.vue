@@ -94,7 +94,7 @@ export default {
     }
   },
   methods: {
-    init (id) {
+    initDialogHandle (id) {
       this.visible = true
       this.$http({
         url: this.$http.adornUrl('/sys/oss/config'),

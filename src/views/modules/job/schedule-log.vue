@@ -2,14 +2,14 @@
   <el-dialog
       title="日志列表"
       :close-on-click-modal="false"
-      v-model:visible="visible"
+      v-model="visible"
       width="75%">
-    <el-form :inline="true" :model="dataForm">
+    <el-form :inline="true" :model="searchForm">
       <el-form-item>
-        <el-input v-model="dataForm.id" placeholder="任务ID" clearable></el-input>
+        <el-input v-model="searchForm.jobId" placeholder="任务ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataListHandle()">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -51,7 +51,7 @@
           label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small">成功</el-tag>
-          <el-tag v-else @click="showErrorInfo(scope.row.logId)" size="small" type="danger" style="cursor: pointer;">
+          <el-tag v-else @click="showErrorHandle(scope.row.logId)" size="small" type="danger" style="cursor: pointer;">
             失败
           </el-tag>
         </template>
@@ -71,8 +71,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="sizeChangeHandle"
-        @current-change="currentChangeHandle"
+        @size-change="pageSizeChangeHandle"
+        @current-change="pageNumChangeHandle"
         :current-page="dataForm.pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="dataForm.pageSize"
@@ -93,7 +93,7 @@ export default {
     const total = ref(0)
     const visible = ref()
     const dataList = ref([])
-    const dataForm = reactive({
+    const searchForm = reactive({
       jobId: null,
       pageNum: 1,
       pageSize: 10
@@ -101,22 +101,24 @@ export default {
 
     const dataListLoading = ref(false)
 
-    const init = () => {
+    const initDialogHandle = () => {
       visible.value = true
-      getDataList()
+      getDataListHandle()
     }
 
     // 获取数据列表
-    const getDataList = () => {
+    let isSizeChange = false
+    const getDataListHandle = () => {
       dataListLoading.value = true
       http({
         url: http.adornUrl('/sys/scheduleLog/list'),
         method: 'get',
-        params: http.adornParams(dataForm)
-      }).then((code, page) => {
+        params: http.adornParams(searchForm)
+      }).then(({ code, data }) => {
+        isSizeChange = false
         if (code === 200) {
-          dataList.value = page.list
-          total.value = page.total
+          dataList.value = data.list
+          total.value = data.total
         } else {
           dataList.value = []
           total.value = 0
@@ -126,12 +128,12 @@ export default {
     }
 
     // 失败信息
-    const showErrorInfo = (id) => {
+    const showErrorHandle = (id) => {
       http({
         url: http.adornUrl(`/sys/scheduleLog/info/${id}`),
         method: 'get',
         params: http.adornParams()
-      }).then(({code, data }) => {
+      }).then(({ code, data, msg }) => {
         if (code === 200) {
           cxt.$alert(data.log.error)
         } else {
@@ -141,31 +143,33 @@ export default {
     }
 
     // 每页数
-    const sizeChangeHandle = (val) => {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataList()
+    const pageSizeChangeHandle = (pageSize) => {
+      isSizeChange = true
+      searchForm.pageNum = 1
+      searchForm.pageSize = pageSize
+      getDataListHandle()
     }
 
     // 当前页
-    const currentChangeHandle = (val) => {
-      this.pageIndex = val
-      this.getDataList()
+    const pageNumChangeHandle = (pageNum) => {
+      if (!isSizeChange) {
+        searchForm.pageNum = pageNum
+        getDataListHandle()
+      }
     }
 
     return {
       total,
       visible,
       dataList,
-      dataForm,
+      searchForm,
       dataListLoading,
 
-      init,
-      getDataList,
-      showErrorInfo,
-      sizeChangeHandle,
-      currentChangeHandle,
-
+      showErrorHandle,
+      initDialogHandle,
+      getDataListHandle,
+      pageNumChangeHandle,
+      pageSizeChangeHandle
     }
   }
 }

@@ -51,8 +51,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
       :current-page="pageIndex"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
@@ -62,7 +62,7 @@
     <!-- 弹窗, 云存储配置 -->
     <config v-if="configVisible" ref="config"></config>
     <!-- 弹窗, 上传文件 -->
-    <upload v-if="uploadVisible" ref="upload" @refreshDataList="getDataList"></upload>
+    <upload v-if="uploadVisible" ref="upload" @refreshDataList="getDataListHandle"></upload>
   </div>
 </template>
 
@@ -88,11 +88,11 @@ export default {
     Upload
   },
   activated () {
-    this.getDataList()
+    this.getDataListHandle()
   },
   methods: {
     // 获取数据列表
-    getDataList () {
+    getDataListHandle () {
       this.dataListLoading = true
       this.$http({
         url: this.$http.adornUrl('/sys/oss/list'),
@@ -113,15 +113,15 @@ export default {
       })
     },
     // 每页数
-    sizeChangeHandle (val) {
+    pageSizeChangeHandle (val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getDataListHandle()
     },
     // 当前页
-    currentChangeHandle (val) {
+    pageNumChangeHandle (val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getDataListHandle()
     },
     // 多选
     selectionChangeHandle (val) {
@@ -131,14 +131,14 @@ export default {
     configHandle () {
       this.configVisible = true
       this.$nextTick(() => {
-        this.$refs.config.init()
+        this.$refs.config.initDialogHandle()
       })
     },
     // 上传文件
     uploadHandle () {
       this.uploadVisible = true
       this.$nextTick(() => {
-        this.$refs.upload.init()
+        this.$refs.upload.initDialogHandle()
       })
     },
     // 删除
@@ -162,7 +162,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataList()
+                this.getDataListHandle()
               }
             })
           } else {

@@ -31,7 +31,7 @@ export default {
     }
   },
   methods: {
-    init (id) {
+    initDialogHandle (id) {
       this.url = this.$http.adornUrl(`/sys/oss/upload?token=${this.$cookie.get('token')}`)
       this.visible = true
     },

@@ -63,6 +63,7 @@ export default {
     let dataList = ref([])
     let total = ref(0)
 
+    let isSizeChange = false
     const getDataListHandle = () => {
       dataListLoading.value = true
       http({
@@ -70,6 +71,7 @@ export default {
         method: 'get',
         params: http.adornParams(searchForm)
       }).then(({ code, data }) => {
+        isSizeChange = false
         if (code === 200) {
           dataList.value = [...data.list]
           total.value = data.total
@@ -85,15 +87,18 @@ export default {
 
     // 每页数
     const pageSizeChangeHandle = (pageSize) => {
-      searchForm.pageNum = 1
-      searchForm.pageSize = pageSize
+      isSizeChange = true
+      dataForm.pageNum = 1
+      dataForm.pageSize = pageSize
       getDataListHandle()
     }
 
     // 当前页
-    const pageNumChangeHandle = (pageNum) =>{
-      searchForm.pageNum = pageNum
-      getDataListHandle()
+    const pageNumChangeHandle = (pageNum) => {
+      if (!isSizeChange) {
+        dataForm.pageNum = pageNum
+        getDataListHandle()
+      }
     }
 
     // 多选
@@ -108,7 +113,7 @@ export default {
     const addOrUpdateHandle = (id) => {
       addOrUpdateVisible.value = true
       nextTick(() => {
-        addOrUpdateRef.value.init(id)
+        addOrUpdateRef.value.initDialogHandle(id)
       })
     }
 

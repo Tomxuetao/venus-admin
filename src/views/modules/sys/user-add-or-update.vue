@@ -108,7 +108,7 @@ export default {
       mobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }, { validator: validateMobile, trigger: 'blur' }]
     })
 
-    const init = (id) => {
+    const initDialogHandle = (id) => {
       dataForm.id = id || 0
       http({
         url: http.adornUrl('/sys/role/select'),
@@ -167,7 +167,7 @@ export default {
       dataRule,
       dataFormRef,
 
-      init,
+      initDialogHandle,
       dataFormSubmit
     }
   }
