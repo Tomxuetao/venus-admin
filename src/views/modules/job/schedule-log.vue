@@ -73,9 +73,9 @@
     <el-pagination
         @size-change="pageSizeChangeHandle"
         @current-change="pageNumChangeHandle"
-        :current-page="dataForm.pageNum"
+        :current-page="searchForm.pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="dataForm.pageSize"
+        :page-size="searchForm.pageSize"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
