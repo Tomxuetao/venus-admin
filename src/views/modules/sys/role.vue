@@ -58,7 +58,7 @@
         label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
-          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
+          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -181,7 +181,6 @@ export default {
       }).catch(() => {
       })
     }
-
 
     return {
       total,

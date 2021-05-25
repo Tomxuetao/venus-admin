@@ -5,7 +5,7 @@
         <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" row-key="menuId" border style="width: 100%; ">
+    <el-table :data="dataList" row-key="menuId" default-expand-all border style="width: 100%;">
       <el-table-column prop="name" header-align="center" min-width="150" label="名称"></el-table-column>
       <el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单"></el-table-column>
       <el-table-column header-align="center" align="center" label="图标">
@@ -28,7 +28,7 @@
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:menu:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.menuId)">修改</el-button>
-          <el-button v-if="isAuth('sys:menu:delete')" type="text" size="small" @click="deleteHandle(scope.row.menuId)">删除</el-button>
+          <el-button v-if="isAuth('sys:menu:delete')" type="text" size="small" @click="deleteHandle(scope.row.menuId)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,6 +67,7 @@ export default {
       }).then(({ code, msg, data}) => {
         if (code === 200) {
           dataList.value = treeDataTranslate(data, 'menuId')
+          console.log(dataList.value)
           dataListLoading.value = false
         } else {
           ctx.$message.error(msg)

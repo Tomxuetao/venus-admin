@@ -76,9 +76,7 @@
           <el-button v-if="isAuth('sys:user:update')" type="text" size="small"
                      @click="addOrUpdateHandle(scope.row.userId)">修改
           </el-button>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)">
-            删除
-          </el-button>
+          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -19,7 +19,7 @@
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template v-slot="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,7 +122,7 @@ export default {
       const ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })
-      ctx.confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

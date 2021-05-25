@@ -46,7 +46,7 @@
         width="150"
         label="操作">
         <template v-slot="scope">
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
