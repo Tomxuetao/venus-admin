@@ -1,8 +1,5 @@
 <template>
-  <div class="site-wrapper"
-      :class="{ 'site-sidebar--fold': sidebarFold }"
-      v-loading.fullscreen.lock="loading"
-      element-loading-text="拼命加载中">
+  <div class="site-wrapper" :class="{ 'site-sidebar--fold': sidebarFold }">
     <template v-if="!loading">
       <main-navbar></main-navbar>
       <main-sidebar></main-sidebar>
@@ -64,7 +61,6 @@ export default {
       }
     })
 
-    // methods
     const resetDocumentClientHeight = () => {
       documentClientHeight.value = document.documentElement.clientHeight
       window.onresize = () => {
@@ -86,7 +82,6 @@ export default {
     }
     getUserInfo()
 
-    // provide
     provide('refreshHandle', () => {
       store.commit('common/updateContentIsNeedRefresh', true)
       nextTick(() => {
@@ -94,17 +89,16 @@ export default {
       })
     })
 
-    // lifecycle
     onMounted(() => {
       resetDocumentClientHeight()
     })
 
     return {
-      loading,
-      documentClientHeight,
-      sidebarFold,
       userId,
-      userName
+      loading,
+      userName,
+      sidebarFold,
+      documentClientHeight
     }
   }
 }

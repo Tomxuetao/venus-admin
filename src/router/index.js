@@ -39,7 +39,13 @@ const mainRoutes = {
       component: commonModules['../views/common/home.vue'],
       name: 'home',
       meta: { title: '首页' }
-    }
+    },
+	  {
+		  path: '/theme',
+		  component: commonModules['../views/common/theme.vue'],
+		  name: 'theme',
+		  meta: { title: '样式设置' }
+	  },
   ],
   beforeEnter (to, from, next) {
     const token = sessionStorage.getItem('token')
