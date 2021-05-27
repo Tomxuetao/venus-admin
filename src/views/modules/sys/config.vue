@@ -102,9 +102,9 @@ export default {
     }
 
     // 多选
-    let dataListSelections = reactive([])
+    let dataListSelections = ref([])
     const selectionChangeHandle = (list) => {
-      dataListSelections = list
+      dataListSelections.value = list
     }
 
     // 新增 / 修改
@@ -119,7 +119,7 @@ export default {
 
     // 删除
     const deleteHandle = (id) => {
-      const ids = id ? [id] : this.dataListSelections.map(item => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.id
       })
       ctx.$confirm(`确定对[id=${ ids.join(',') }]进行[${ id ? '删除' : '批量删除' }]操作?`, '提示', {
