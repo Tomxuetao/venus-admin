@@ -26,5 +26,9 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		include: ['lodash']
+	},
+	build: {
+		target: 'chrome80',
+		polyfillDynamicImport: true
 	}
 })
