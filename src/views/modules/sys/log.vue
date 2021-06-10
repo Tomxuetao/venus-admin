@@ -15,56 +15,56 @@
         style="width: 100%">
       <el-table-column
           prop="id"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="80"
           label="ID">
       </el-table-column>
       <el-table-column
           prop="username"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="用户名">
       </el-table-column>
       <el-table-column
           prop="operation"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="用户操作">
       </el-table-column>
       <el-table-column
           prop="method"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="150"
           :show-overflow-tooltip="true"
           label="请求方法">
       </el-table-column>
       <el-table-column
           prop="params"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="150"
           :show-overflow-tooltip="true"
           label="请求参数">
       </el-table-column>
       <el-table-column
           prop="time"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="执行时长(毫秒)">
       </el-table-column>
       <el-table-column
           prop="ip"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="150"
           label="IP地址">
       </el-table-column>
       <el-table-column
           prop="createDate"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="180"
           label="创建时间">
       </el-table-column>

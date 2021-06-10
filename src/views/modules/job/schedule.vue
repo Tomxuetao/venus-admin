@@ -30,45 +30,45 @@
         style="width: 100%;">
       <el-table-column
           type="selection"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="50">
       </el-table-column>
       <el-table-column
           prop="jobId"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="80"
           label="ID">
       </el-table-column>
       <el-table-column
           prop="beanName"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="bean名称">
       </el-table-column>
       <el-table-column
           prop="params"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="参数">
       </el-table-column>
       <el-table-column
           prop="cronExpression"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="cron表达式">
       </el-table-column>
       <el-table-column
           prop="remark"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="备注">
       </el-table-column>
       <el-table-column
           prop="status"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small">正常</el-tag>
@@ -77,8 +77,8 @@
       </el-table-column>
       <el-table-column
           fixed="right"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="240"
           label="操作">
         <template v-slot="scope">

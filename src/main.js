@@ -11,4 +11,4 @@ import http from '@/utils/http'
 import IconSvg from '@/components/index'
 
 const app = createApp(App)
-app.use(store).use(router).use(ElementUI, { size: 'medium', zIndex: 3000 }).use(IconSvg).use(http).mount('#app')
+app.use(store).use(router).use(ElementUI, { zIndex: 3000 }).use(IconSvg).use(http).mount('#app')

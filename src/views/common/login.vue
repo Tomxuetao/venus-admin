@@ -88,7 +88,7 @@ export default {
           }).then(({ code, data, msg }) => {
             if (code === 200) {
               const { token } = data
-              sessionStorage.setItem('token', token)
+              localStorage.setItem('token', token)
               router.replace({ name: 'home' })
             } else {
               ctx.$message({

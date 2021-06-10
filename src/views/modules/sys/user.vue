@@ -20,39 +20,39 @@
       style="width: 100%;">
       <el-table-column
         type="selection"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="50">
       </el-table-column>
       <el-table-column
         prop="userId"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
         prop="username"
-        header-align="center"
-        align="center"
+
+       align="center"
         label="用户名">
       </el-table-column>
       <el-table-column
         prop="email"
-        header-align="center"
-        align="center"
+
+       align="center"
         label="邮箱">
       </el-table-column>
       <el-table-column
         prop="mobile"
-        header-align="center"
-        align="center"
+
+       align="center"
         label="手机号">
       </el-table-column>
       <el-table-column
         prop="status"
-        header-align="center"
-        align="center"
+
+       align="center"
         label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
@@ -61,15 +61,15 @@
       </el-table-column>
       <el-table-column
         prop="createTime"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="180"
         label="创建时间">
       </el-table-column>
       <el-table-column
         fixed="right"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="150"
         label="操作">
         <template v-slot="scope">

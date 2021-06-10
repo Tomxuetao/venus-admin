@@ -24,6 +24,7 @@ export function isAuth (key) {
 }
 
 export function clearLoginInfo () {
+	localStorage.clear()
 }
 
 export function validate () {

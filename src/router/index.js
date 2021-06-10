@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import http from '@/utils/http'
 import { isURL } from '@/utils'
 
@@ -48,7 +48,7 @@ const mainRoutes = {
 	  },
   ],
   beforeEnter (to, from, next) {
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem('token')
     if (!token || !/\S/.test(token)) {
       next({ name: 'login' })
     }
@@ -57,7 +57,7 @@ const mainRoutes = {
 }
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: globalRoutes.concat(mainRoutes)
 })
 
@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
   // 添加动态(菜单)路由
   // 1. 已经添加 or 全局路由, 直接访问
   // 2. 获取菜单列表, 添加并保存本地存储
-  if (router.options.isAddDynamicMenuRoutes || fnCurrentRouteType(to, globalRoutes) === 'global') {
+  if (router.options.isDynamicMenuRoutes || getCurrentRouteType(to, globalRoutes) === 'global') {
     next()
   } else {
     http({
@@ -75,8 +75,8 @@ router.beforeEach((to, from, next) => {
     }).then(({ code, data }) => {
       if (code === 200) {
       	const { menuList, permissions } = data
-        fnAddDynamicMenuRoutes(menuList)
-        router.options.isAddDynamicMenuRoutes = true
+        addDynamicMenuRoutes(menuList)
+        router.options.isDynamicMenuRoutes = true
         sessionStorage.setItem('menuList', JSON.stringify(menuList || '[]'))
         sessionStorage.setItem('permissions', JSON.stringify(permissions || '[]'))
         next({ ...to, replace: true })
@@ -100,7 +100,7 @@ router.beforeEach((to, from, next) => {
  * @param globalRoutes
  * @returns {string|string}
  */
-function fnCurrentRouteType (route, globalRoutes = []) {
+function getCurrentRouteType (route, globalRoutes = []) {
   let temp = []
   for (let i = 0; i < globalRoutes.length; i++) {
     if (route.path === globalRoutes[i].path) {
@@ -109,7 +109,7 @@ function fnCurrentRouteType (route, globalRoutes = []) {
       temp = temp.concat(globalRoutes[i].children)
     }
   }
-  return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'main'
+  return temp.length >= 1 ? getCurrentRouteType(route, temp) : 'main'
 }
 
 /**
@@ -117,7 +117,7 @@ function fnCurrentRouteType (route, globalRoutes = []) {
  * @param {*} menuList 菜单列表
  * @param {*} routes 递归创建的动态(菜单)路由
  */
-function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
+function addDynamicMenuRoutes (menuList = [], routes = []) {
   let temp = []
   for (let i = 0; i < menuList.length; i++) {
     if (menuList[i].list && menuList[i].list.length >= 1) {
@@ -151,7 +151,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
     }
   }
   if (temp.length >= 1) {
-    fnAddDynamicMenuRoutes(temp, routes)
+	  addDynamicMenuRoutes(temp, routes)
   } else {
     mainRoutes.name = 'main-dynamic'
     mainRoutes.children = routes

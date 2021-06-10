@@ -15,34 +15,34 @@
       style="width: 100%;">
       <el-table-column
         type="selection"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="50">
       </el-table-column>
       <el-table-column
         prop="id"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
         prop="url"
-        header-align="center"
-        align="center"
+
+       align="center"
         label="URL地址">
       </el-table-column>
       <el-table-column
         prop="createDate"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="180"
         label="创建时间">
       </el-table-column>
       <el-table-column
         fixed="right"
-        header-align="center"
-        align="center"
+
+       align="center"
         width="150"
         label="操作">
         <template v-slot="scope">

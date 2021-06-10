@@ -17,7 +17,8 @@ export function createHttp () {
    * 请求拦截
    */
   http.interceptors.request.use(config => {
-    config.headers.token = sessionStorage.getItem('token') // 请求头带上token
+    config.headers.token = localStorage.getItem('token') // 请求头带上token
+	  console.log(config)
     return config
   }, error => {
     return Promise.reject(error)

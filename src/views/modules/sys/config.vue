@@ -11,12 +11,12 @@
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" width="80" label="ID"></el-table-column>
-      <el-table-column prop="paramKey" header-align="center" align="center" label="参数名"></el-table-column>
-      <el-table-column prop="paramValue" header-align="center" align="center" label="参数值"></el-table-column>
-      <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
-      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="id" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="paramKey" align="center" label="参数名"></el-table-column>
+      <el-table-column prop="paramValue" align="center" label="参数值"></el-table-column>
+      <el-table-column prop="remark" align="center" label="备注"></el-table-column>
+      <el-table-column fixed="right" align="center" width="150" label="操作">
         <template v-slot="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)" style="color: #f56c6c;">删除</el-button>

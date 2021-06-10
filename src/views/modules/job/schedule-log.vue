@@ -20,34 +20,34 @@
         style="width: 100%;">
       <el-table-column
           prop="logId"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="80"
           label="日志ID">
       </el-table-column>
       <el-table-column
           prop="jobId"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="80"
           label="任务ID">
       </el-table-column>
       <el-table-column
           prop="beanName"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="bean名称">
       </el-table-column>
       <el-table-column
           prop="params"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="参数">
       </el-table-column>
       <el-table-column
           prop="status"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small">成功</el-tag>
@@ -58,14 +58,14 @@
       </el-table-column>
       <el-table-column
           prop="times"
-          header-align="center"
-          align="center"
+
+         align="center"
           label="耗时(单位: 毫秒)">
       </el-table-column>
       <el-table-column
           prop="createTime"
-          header-align="center"
-          align="center"
+
+         align="center"
           width="180"
           label="执行时间">
       </el-table-column>
