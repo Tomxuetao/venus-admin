@@ -18,7 +18,6 @@ export function createHttp () {
    */
   http.interceptors.request.use(config => {
     config.headers.token = localStorage.getItem('token') // 请求头带上token
-	  console.log(config)
     return config
   }, error => {
     return Promise.reject(error)

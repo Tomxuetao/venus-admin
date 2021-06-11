@@ -27,6 +27,24 @@ export default {
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
+    const validateName = (rule, value, callback) => {
+      if (!dataForm.roleName && !/\S/.test(value)) {
+        callback(new Error('角色名称不能为空'))
+      } else {
+        http({
+          url: http.adornUrl('/sys/role/validName'),
+          method: 'get',
+          params: http.adornParams({roleName: value})
+        }).then(({data}) => {
+          if (dataForm.roleId) {
+            data > 1 ? callback(new Error('角色名称不能重复')) : callback()
+          } else {
+            data ? callback(new Error('角色名称不能重复')) : callback()
+          }
+        })
+      }
+    }
+
     const http = useHttp()
     const { ctx } = getCurrentInstance()
 
@@ -46,10 +64,11 @@ export default {
     const dataRule = ref({
       roleName: [{
         required: true,
-        message: '角色名称不能为空',
-        trigger: 'blur'
+        trigger: 'blur',
+        asyncValidator: validateName
       }]
     })
+
     const tempKey = ref(-666666)
 
     const initDialogHandle = (id) => {

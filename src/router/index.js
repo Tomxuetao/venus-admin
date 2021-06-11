@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import http from '@/utils/http'
 import { isURL } from '@/utils'
 
@@ -57,7 +57,7 @@ const mainRoutes = {
 }
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: globalRoutes.concat(mainRoutes)
 })
 

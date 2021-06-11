@@ -65,7 +65,6 @@ export default {
       }).then(({ code, msg, data}) => {
         if (code === 200) {
           dataList.value = treeDataTranslate(data, 'menuId')
-          console.log(dataList.value)
           dataListLoading.value = false
         } else {
           ctx.$message.error(msg)

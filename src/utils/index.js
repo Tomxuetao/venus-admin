@@ -27,9 +27,6 @@ export function clearLoginInfo () {
 	localStorage.clear()
 }
 
-export function validate () {
-}
-
 /**
  * 树形数据转换
  * @param {*} data

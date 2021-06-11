@@ -82,6 +82,24 @@ export default {
       }
     }
 
+    const validateName = (rule, value, callback) => {
+      if (!dataForm.roleName && !/\S/.test(value)) {
+        callback(new Error('用户名称不能为空'))
+      } else {
+        http({
+          url: http.adornUrl('/sys/user/validName'),
+          method: 'get',
+          params: http.adornParams({userName: value})
+        }).then(({data}) => {
+          if (dataForm.roleId) {
+            data > 1 ? callback(new Error('用户名称不可用')) : callback()
+          } else {
+            data ? callback(new Error('用户名称不可用')) : callback()
+          }
+        })
+      }
+    }
+
     const visible = ref(false)
 
     let roleList = ref([])
@@ -101,7 +119,7 @@ export default {
     const dataFormRef = ref(null)
 
     const dataRule = reactive({
-      userName: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+      username: [{ required: true, asyncValidator: validateName, trigger: 'blur' }],
       password: [{ validator: validatePassword, trigger: 'blur' }],
       confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
       email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }, { validator: validateEmail, trigger: 'blur' }],
