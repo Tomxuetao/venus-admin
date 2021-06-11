@@ -13,38 +13,11 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <el-table-column
-        type="selection"
-
-       align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        prop="id"
-
-       align="center"
-        width="80"
-        label="ID">
-      </el-table-column>
-      <el-table-column
-        prop="url"
-
-       align="center"
-        label="URL地址">
-      </el-table-column>
-      <el-table-column
-        prop="createDate"
-
-       align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-
-       align="center"
-        width="150"
-        label="操作">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="id" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="url" align="center" label="URL地址"></el-table-column>
+      <el-table-column prop="createDate" align="center" width="180" label="创建时间"></el-table-column>
+      <el-table-column fixed="right" align="center" width="150" label="操作">
         <template v-slot="scope">
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)" style="color: #f56c6c;">删除</el-button>
         </template>

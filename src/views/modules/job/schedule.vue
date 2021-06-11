@@ -7,80 +7,27 @@
       <el-form-item>
         <el-button @click="getDataListHandle()">查询</el-button>
         <el-button v-if="isAuth('sys:schedule:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:schedule:delete')" type="danger" @click="deleteHandle()"
-                   :disabled="dataListSelections.length <= 0">批量删除
-        </el-button>
-        <el-button v-if="isAuth('sys:schedule:pause')" type="danger" @click="pauseHandle()"
-                   :disabled="dataListSelections.length <= 0">批量暂停
-        </el-button>
-        <el-button v-if="isAuth('sys:schedule:resume')" type="danger" @click="resumeHandle()"
-                   :disabled="dataListSelections.length <= 0">批量恢复
-        </el-button>
-        <el-button v-if="isAuth('sys:schedule:run')" type="danger" @click="runHandle()"
-                   :disabled="dataListSelections.length <= 0">批量立即执行
-        </el-button>
+        <el-button v-if="isAuth('sys:schedule:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('sys:schedule:pause')" type="danger" @click="pauseHandle()" :disabled="dataListSelections.length <= 0">批量暂停</el-button>
+        <el-button v-if="isAuth('sys:schedule:resume')" type="danger" @click="resumeHandle()" :disabled="dataListSelections.length <= 0">批量恢复</el-button>
+        <el-button v-if="isAuth('sys:schedule:run')" type="danger" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
         <el-button v-if="isAuth('sys:schedule:log')" type="success" @click="logHandle()">日志列表</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-        :data="dataList"
-        border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
-        style="width: 100%;">
-      <el-table-column
-          type="selection"
-
-         align="center"
-          width="50">
-      </el-table-column>
-      <el-table-column
-          prop="jobId"
-
-         align="center"
-          width="80"
-          label="ID">
-      </el-table-column>
-      <el-table-column
-          prop="beanName"
-
-         align="center"
-          label="bean名称">
-      </el-table-column>
-      <el-table-column
-          prop="params"
-
-         align="center"
-          label="参数">
-      </el-table-column>
-      <el-table-column
-          prop="cronExpression"
-
-         align="center"
-          label="cron表达式">
-      </el-table-column>
-      <el-table-column
-          prop="remark"
-
-         align="center"
-          label="备注">
-      </el-table-column>
-      <el-table-column
-          prop="status"
-
-         align="center"
-          label="状态">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="jobId" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="beanName" align="center" label="bean名称"></el-table-column>
+      <el-table-column prop="params" align="center" label="参数"></el-table-column>
+      <el-table-column prop="cronExpression" align="center" label="cron表达式"></el-table-column>
+      <el-table-column prop="remark" align="center" label="备注"></el-table-column>
+      <el-table-column prop="status" align="center" label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small">正常</el-tag>
           <el-tag v-else size="small" type="danger">暂停</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-          fixed="right"
-
-         align="center"
-          width="240"
-          label="操作">
+      <el-table-column fixed="right" align="center" width="240" label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:schedule:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.jobId)">修改</el-button>
           <el-button v-if="isAuth('sys:schedule:delete')" type="text" size="small" @click="deleteHandle(scope.row.jobId)" style="color: #f56c6c;">删除</el-button>

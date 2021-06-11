@@ -1,7 +1,5 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    v-model="visible">
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="100px">
       <el-form-item label="bean名称" prop="beanName">
         <el-input v-model="dataForm.beanName" placeholder="spring bean名称, 如: testTask"></el-input>

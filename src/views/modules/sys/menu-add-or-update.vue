@@ -18,7 +18,7 @@
               :props="menuListTreeProps"
               node-key="menuId"
               ref="menuListTreeRef"
-              @current-change="menuListTreepageNumChangeHandle"
+              @current-change="menuListTreePageNumChangeHandle"
               :default-expand-all="true"
               :highlight-current="true"
               :expand-on-click-node="false">
@@ -183,7 +183,7 @@ export default {
     }
 
     // 菜单树选中
-    const menuListTreepageNumChangeHandle = (data) => {
+    const menuListTreePageNumChangeHandle = (data) => {
       dataForm.parentId = data.menuId
       dataForm.parentName = data.name
     }
@@ -244,7 +244,7 @@ export default {
       initDialogHandle,
       dataFormSubmit,
       iconActiveHandle,
-      menuListTreepageNumChangeHandle
+      menuListTreePageNumChangeHandle
     }
   }
 }

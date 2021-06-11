@@ -18,54 +18,18 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <el-table-column
-        type="selection"
-
-       align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        prop="userId"
-
-       align="center"
-        width="80"
-        label="ID">
-      </el-table-column>
-      <el-table-column
-        prop="username"
-
-       align="center"
-        label="用户名">
-      </el-table-column>
-      <el-table-column
-        prop="email"
-
-       align="center"
-        label="邮箱">
-      </el-table-column>
-      <el-table-column
-        prop="mobile"
-
-       align="center"
-        label="手机号">
-      </el-table-column>
-      <el-table-column
-        prop="status"
-
-       align="center"
-        label="状态">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="userId" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="username" align="center" label="用户名"></el-table-column>
+      <el-table-column prop="email" align="center" label="邮箱"></el-table-column>
+      <el-table-column prop="mobile" align="center" label="手机号"></el-table-column>
+      <el-table-column prop="status" align="center" label="状态">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
           <el-tag v-else size="small">正常</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="createTime"
-
-       align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
+      <el-table-column prop="createTime" align="center" width="180" label="创建时间"></el-table-column>
       <el-table-column
         fixed="right"
 
@@ -73,9 +37,7 @@
         width="150"
         label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:user:update')" type="text" size="small"
-                     @click="addOrUpdateHandle(scope.row.userId)">修改
-          </el-button>
+          <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
           <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)" style="color: #f56c6c;">删除</el-button>
         </template>
       </el-table-column>

@@ -18,44 +18,12 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <el-table-column
-        type="selection"
-
-       align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        prop="roleId"
-
-       align="center"
-        width="80"
-        label="ID">
-      </el-table-column>
-      <el-table-column
-        prop="roleName"
-
-       align="center"
-        label="角色名称">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-
-       align="center"
-        label="备注">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-
-       align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-
-       align="center"
-        width="150"
-        label="操作">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="roleId" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="roleName" align="center" label="角色名称"></el-table-column>
+      <el-table-column prop="remark" align="center" label="备注"></el-table-column>
+      <el-table-column prop="createTime" align="center" width="180" label="创建时间"></el-table-column>
+      <el-table-column fixed="right" align="center" width="150" label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
           <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)" style="color: #f56c6c;">删除</el-button>

@@ -8,66 +8,15 @@
         <el-button @click="getDataListHandle()">查询</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-        :data="dataList"
-        border
-        v-loading="dataListLoading"
-        style="width: 100%">
-      <el-table-column
-          prop="id"
-
-         align="center"
-          width="80"
-          label="ID">
-      </el-table-column>
-      <el-table-column
-          prop="username"
-
-         align="center"
-          label="用户名">
-      </el-table-column>
-      <el-table-column
-          prop="operation"
-
-         align="center"
-          label="用户操作">
-      </el-table-column>
-      <el-table-column
-          prop="method"
-
-         align="center"
-          width="150"
-          :show-overflow-tooltip="true"
-          label="请求方法">
-      </el-table-column>
-      <el-table-column
-          prop="params"
-
-         align="center"
-          width="150"
-          :show-overflow-tooltip="true"
-          label="请求参数">
-      </el-table-column>
-      <el-table-column
-          prop="time"
-
-         align="center"
-          label="执行时长(毫秒)">
-      </el-table-column>
-      <el-table-column
-          prop="ip"
-
-         align="center"
-          width="150"
-          label="IP地址">
-      </el-table-column>
-      <el-table-column
-          prop="createDate"
-
-         align="center"
-          width="180"
-          label="创建时间">
-      </el-table-column>
+    <el-table :data="dataList" border v-loading="dataListLoading" style="width: 100%">
+      <el-table-column prop="id" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="username" align="center" label="用户名"></el-table-column>
+      <el-table-column prop="operation" align="center" label="用户操作"></el-table-column>
+      <el-table-column prop="method" align="center" width="150" :show-overflow-tooltip="true" label="请求方法"></el-table-column>
+      <el-table-column prop="params" align="center" width="150" :show-overflow-tooltip="true" label="请求参数"></el-table-column>
+      <el-table-column prop="time" align="center" label="执行时长(毫秒)"></el-table-column>
+      <el-table-column prop="ip" align="center" width="150" label="IP地址"></el-table-column>
+      <el-table-column prop="createDate" align="center" width="180" label="创建时间"></el-table-column>
     </el-table>
     <el-pagination
         @size-change="pageSizeChangeHandle"
