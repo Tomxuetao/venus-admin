@@ -38,11 +38,11 @@
 
 <script>
 import { isURL } from '@/utils'
-import { computed, inject, nextTick } from 'vue'
+import { defineComponent, computed, inject, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
-export default {
+export default defineComponent({
   name: 'main-content',
   setup () {
     const router = useRouter()
@@ -143,8 +143,8 @@ export default {
     }
 
     const tabsRefreshCurrentHandle = () => {
-      const tab = this.$route
-      this.removeTabHandle(tab.name)
+      const tab = route
+      removeTabHandle(tab.name)
       nextTick(() => {
         router.push({
           name: tab.name,
@@ -160,13 +160,13 @@ export default {
       mainTabs,
       refreshHandle,
 
-      selectedTabHandle,
       removeTabHandle,
-      tabsCloseCurrentHandle,
-      tabsCloseOtherHandle,
+      selectedTabHandle,
       tabsCloseAllHandle,
+      tabsCloseOtherHandle,
+      tabsCloseCurrentHandle,
       tabsRefreshCurrentHandle
     }
   }
-}
+})
 </script>

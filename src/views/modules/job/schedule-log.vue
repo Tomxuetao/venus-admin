@@ -37,10 +37,10 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
 import { useHttp } from '@/utils/http'
 
-export default {
+export default defineComponent({
   setup(props, cxt) {
     const http = useHttp()
 
@@ -126,5 +126,5 @@ export default {
       pageSizeChangeHandle
     }
   }
-}
+})
 </script>

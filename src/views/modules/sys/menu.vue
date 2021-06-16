@@ -41,9 +41,9 @@ import AddOrUpdate from './menu-add-or-update.vue'
 import { treeDataTranslate, isAuth } from '@/utils'
 import { useHttp } from '@/utils/http'
 
-import { ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, nextTick, getCurrentInstance } from 'vue'
 
-export default {
+export default defineComponent({
   components: {
     AddOrUpdate
   },
@@ -93,7 +93,7 @@ export default {
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataListHandle()
+                getDataListHandle()
               }
             })
           } else {
@@ -125,5 +125,5 @@ export default {
       addOrUpdateHandle
     }
   }
-}
+})
 </script>

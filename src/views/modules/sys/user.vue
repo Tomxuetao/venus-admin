@@ -59,10 +59,10 @@
 <script>
 import AddOrUpdate from './user-add-or-update.vue'
 import { useHttp } from '@/utils/http'
-import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, nextTick, getCurrentInstance } from 'vue'
 import { isAuth } from '@/utils'
 
-export default {
+export default defineComponent({
   components: {
     AddOrUpdate
   },
@@ -188,5 +188,5 @@ export default {
       deleteHandle
     }
   }
-}
+})
 </script>

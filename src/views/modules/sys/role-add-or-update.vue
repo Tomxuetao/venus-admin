@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
 
-export default {
+export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
@@ -158,5 +158,5 @@ export default {
       closeDialogHandle
     }
   }
-}
+})
 </script>

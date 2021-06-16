@@ -57,11 +57,11 @@
 import AddOrUpdate from './schedule-add-or-update.vue'
 import ScheduleLog from './schedule-log.vue'
 
-import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
-export default {
+export default defineComponent({
   components: {
     AddOrUpdate,
     ScheduleLog
@@ -299,5 +299,5 @@ export default {
       selectionChangeHandle
     }
   }
-}
+})
 </script>

@@ -17,16 +17,34 @@
 </template>
 
 <script>
-export default {
-  computed: {
-    navbarLayoutType: {
-      get () { return this.$store.state.common.navbarLayoutType },
-      set (val) { this.$store.commit('common/updateNavbarLayoutType', val) }
-    },
-    sidebarLayoutSkin: {
-      get () { return this.$store.state.common.sidebarLayoutSkin },
-      set (val) { this.$store.commit('common/updateSidebarLayoutSkin', val) }
+import { defineComponent, computed} from 'vue'
+import { useStore } from 'vuex'
+
+export default defineComponent({
+  setup() {
+    const store = useStore()
+    const navbarLayoutType = computed({
+      get: () => {
+        return store.state.common.navbarLayoutType
+      },
+      set: (value) => {
+        store.commit('common/updateNavbarLayoutType', value)
+      }
+    })
+
+    const sidebarLayoutSkin = computed({
+      get: () => {
+        return store.state.common.sidebarLayoutSkin
+      },
+      set: (value) => {
+        store.commit('common/updateSidebarLayoutSkin', value)
+      }
+    })
+
+    return {
+      navbarLayoutType,
+      sidebarLayoutSkin
     }
   }
-}
+})
 </script>

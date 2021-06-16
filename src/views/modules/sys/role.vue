@@ -46,11 +46,11 @@
 
 <script>
 import AddOrUpdate from './role-add-or-update.vue'
-import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
-export default {
+export default defineComponent({
   components: {
     AddOrUpdate
   },
@@ -168,5 +168,5 @@ export default {
       selectionChangeHandle
     }
   }
-}
+})
 </script>

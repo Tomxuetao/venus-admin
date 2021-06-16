@@ -41,10 +41,10 @@
 
 <script>
 import { isEmail, isMobile } from '@/utils/validate'
-import { ref, reactive, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 
-export default {
+export default defineComponent({
   emits: ['refresh-data-list'],
   setup (props, { emit }) {
     const http = useHttp()
@@ -91,7 +91,7 @@ export default {
           method: 'get',
           params: http.adornParams({userName: value})
         }).then(({data}) => {
-          if (dataForm.roleId) {
+          if (dataForm.id) {
             data > 1 ? callback(new Error('用户名称不可用')) : callback()
           } else {
             data ? callback(new Error('用户名称不可用')) : callback()
@@ -189,5 +189,5 @@ export default {
       dataFormSubmit
     }
   }
-}
+})
 </script>

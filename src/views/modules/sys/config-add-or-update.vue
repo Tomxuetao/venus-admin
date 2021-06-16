@@ -20,9 +20,9 @@
 
 <script>
 import { useHttp } from '@/utils/http'
-import { ref, reactive, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, nextTick, getCurrentInstance } from 'vue'
 
-export default {
+export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
@@ -112,9 +112,9 @@ export default {
       dataForm,
       dataFormRef,
 
-      initDialogHandle,
-      dataFormSubmit
+      dataFormSubmit,
+      initDialogHandle
     }
   }
-}
+})
 </script>

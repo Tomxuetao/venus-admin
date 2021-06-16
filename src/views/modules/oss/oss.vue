@@ -7,12 +7,7 @@
         <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="id" align="center" width="80" label="ID"></el-table-column>
       <el-table-column prop="url" align="center" label="URL地址"></el-table-column>
@@ -26,124 +21,154 @@
     <el-pagination
       @size-change="pageSizeChangeHandle"
       @current-change="pageNumChangeHandle"
-      :current-page="pageIndex"
+      :current-page="dataForm.pageNum"
       :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
+      :page-size="dataForm.pageSize"
+      :total="total"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 云存储配置 -->
-    <config v-if="configVisible" ref="config"></config>
+    <config v-if="configVisible" ref="configRef"></config>
     <!-- 弹窗, 上传文件 -->
-    <upload v-if="uploadVisible" ref="upload" @refreshDataList="getDataListHandle"></upload>
+    <upload v-if="uploadVisible" ref="uploadRef" @refreshDataList="getDataListHandle"></upload>
   </div>
 </template>
 
 <script>
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
-export default {
-  data () {
-    return {
-      dataForm: {},
-      dataList: [],
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
-      configVisible: false,
-      uploadVisible: false
-    }
-  },
+import { defineComponent, getCurrentInstance, reactive, ref, nextTick } from 'vue'
+import { useHttp } from '@/utils/http'
+
+export default defineComponent({
   components: {
     Config,
     Upload
   },
-  activated () {
-    this.getDataListHandle()
-  },
-  methods: {
-    // 获取数据列表
-    getDataListHandle () {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/sys/oss/list'),
+
+  setup() {
+    const http = useHttp()
+    const { ctx } = getCurrentInstance()
+
+    let isSizeChange = false
+    let dataForm = reactive({
+      pageSize: 10,
+      pageNum: 1
+    })
+    let dataList = ref([])
+    let dataListLoading = ref(false)
+    let total = ref(0)
+
+    const getDataListHandle = () => {
+      dataListLoading.value = true
+      http({
+        url: http.adornUrl('/sys/oss/list'),
         method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.total
+        params: http.adornParams(dataForm)
+      }).then(({ code, data }) => {
+        isSizeChange = true
+        if (code === 200) {
+          dataList.value = data.list
+          total.value = data.total
         } else {
-          this.dataList = []
-          this.totalPage = 0
+          dataList.value = []
+          total.value = 0
         }
-        this.dataListLoading = false
+        dataListLoading.value = false
       })
-    },
-    // 每页数
-    pageSizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataListHandle()
-    },
-    // 当前页
-    pageNumChangeHandle (val) {
-      this.pageIndex = val
-      this.getDataListHandle()
-    },
-    // 多选
-    selectionChangeHandle (val) {
-      this.dataListSelections = val
-    },
-    // 云存储配置
-    configHandle () {
-      this.configVisible = true
-      this.$nextTick(() => {
-        this.$refs.config.initDialogHandle()
+    }
+    getDataListHandle()
+
+    let configVisible = ref(false)
+    let configRef = ref(null)
+    const configHandle = () => {
+      configVisible.value = true
+      nextTick(() => {
+        configRef.value.initDialogHandle()
       })
-    },
+    }
+
     // 上传文件
-    uploadHandle () {
-      this.uploadVisible = true
-      this.$nextTick(() => {
-        this.$refs.upload.initDialogHandle()
+    let uploadVisible = ref(false)
+    let uploadRef = ref(null)
+    const uploadHandle = () => {
+      uploadVisible.value = true
+      nextTick(() => {
+        uploadRef.value.initDialogHandle()
       })
-    },
+    }
+
     // 删除
-    deleteHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
+    const deleteHandle = (id) => {
+      const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.id
       })
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/oss/delete'),
+        http({
+          url: http.adornUrl('/sys/oss/delete'),
           method: 'post',
-          data: this.$http.adornData(ids, false)
-        }).then(({ data }) => {
-          if (data && data.code === 200) {
-            this.$message({
+          data: http.adornData(ids, false)
+        }).then(({ code, msg }) => {
+          if (code === 200) {
+            ctx.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
-                this.getDataListHandle()
+                getDataListHandle()
               }
             })
           } else {
-            this.$message.error(data.msg)
+            ctx.$message.error(msg)
           }
         })
       }).catch(() => {})
     }
+
+    let dataListSelections = ref([])
+    const selectionChangeHandle = (value) => {
+      dataListSelections.value = value
+    }
+
+    // 每页数
+    const pageSizeChangeHandle = (pageSize) => {
+      isSizeChange = true
+      dataForm.pageNum = 1
+      dataForm.pageSize = pageSize
+      getDataListHandle()
+    }
+
+    // 当前页
+    const pageNumChangeHandle = (pageNum) => {
+      if (!isSizeChange) {
+        dataForm.pageNum = pageNum
+        getDataListHandle()
+      }
+    }
+
+    return {
+      total,
+      dataForm,
+      dataList,
+      configVisible,
+      uploadVisible,
+
+      dataListSelections,
+
+      configRef,
+      uploadRef,
+      configHandle,
+      uploadHandle,
+      deleteHandle,
+      getDataListHandle,
+      pageNumChangeHandle,
+      pageSizeChangeHandle,
+      selectionChangeHandle
+    }
   }
-}
+})
 </script>

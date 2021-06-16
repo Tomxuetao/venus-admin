@@ -28,9 +28,9 @@ import SubMenu from './main-sidebar-sub-menu.vue'
 import { isURL } from '@/utils'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { computed, reactive, watch } from 'vue'
+import { defineComponent, computed, reactive, watch } from 'vue'
 
-export default {
+export default defineComponent({
   components: {
     SubMenu
   },
@@ -123,5 +123,5 @@ export default {
       mainTabsActiveName
     }
   }
-}
+})
 </script>

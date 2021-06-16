@@ -41,9 +41,9 @@ import { getUUID } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 
-import { reactive, ref, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'login',
   setup() {
     const http = useHttp()
@@ -112,7 +112,7 @@ export default {
       dataFormSubmit
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

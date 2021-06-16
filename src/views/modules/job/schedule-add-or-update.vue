@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vue'
 import { useHttp } from '@/utils/http'
 
-export default {
+export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, {emit}) {
@@ -113,5 +113,5 @@ export default {
       dataFormSubmit
     }
   }
-}
+})
 </script>

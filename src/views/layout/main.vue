@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import { computed, ref, provide, nextTick, onMounted } from 'vue'
+import { defineComponent, computed, ref, provide, nextTick, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useHttp } from '@/utils/http'
 import MainNavbar from './main-navbar.vue'
 import MainSidebar from './main-sidebar.vue'
 import MainContent from './main-content.vue'
 
-export default {
+export default defineComponent({
   components: {
     MainNavbar,
     MainSidebar,
@@ -101,5 +101,5 @@ export default {
       documentClientHeight
     }
   }
-}
+})
 </script>

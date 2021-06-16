@@ -82,9 +82,9 @@
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/icons'
 import { useHttp } from '@/utils/http'
-import { getCurrentInstance, ref, reactive, nextTick } from 'vue'
+import { defineComponent, getCurrentInstance, ref, reactive, nextTick } from 'vue'
 
-export default {
+export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
@@ -247,7 +247,7 @@ export default {
       menuListTreePageNumChangeHandle
     }
   }
-}
+})
 </script>
 
 <style lang="scss">

@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useHttp } from '@/utils/http'
 
-export default {
+export default defineComponent({
   setup() {
     const http = useHttp()
 
@@ -98,5 +98,5 @@ export default {
       pageNumChangeHandle
     }
   }
-}
+})
 </script>

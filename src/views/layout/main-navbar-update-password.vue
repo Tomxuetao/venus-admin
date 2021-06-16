@@ -23,11 +23,11 @@
 
 <script>
 import { clearLoginInfo } from '@/utils'
-import { ref, reactive, computed, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, computed, nextTick, getCurrentInstance } from 'vue'
 import { useStore } from 'vuex'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
-export default {
+export default defineComponent({
   setup () {
     const store = useStore()
     const http = useHttp()
@@ -126,5 +126,5 @@ export default {
       dataFormSubmit
     }
   }
-}
+})
 </script>

@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-export default {
+export default defineComponent({
   name: 'sub-menu',
   props: {
     menu: {
@@ -57,5 +57,5 @@ export default {
       gotoRouteHandle
     }
   }
-}
+})
 </script>
