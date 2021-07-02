@@ -1,8 +1,7 @@
 <template>
   <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
-    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle"
-             @tab-remove="removeTabHandle">
+    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle" @tab-remove="removeTabHandle">
       <el-dropdown class="site-tabs__tools" :show-timeout="0" :tabindex="0" placement="bottom-end">
         <el-icon name="arrow-down" class="el-icon--right"></el-icon>
         <template v-slot:dropdown>
@@ -20,12 +19,8 @@
           :label="item.title"
           :name="item.name">
         <el-card :body-style="siteContentViewHeight">
-          <iframe
-              v-if="item.type === 'iframe'"
-              :src="item.iframeUrl"
-              width="100%" height="100%" frameborder="0" scrolling="yes">
-          </iframe>
-          <router-view v-if="item.name === mainTabsActiveName"/>
+          <iframe v-if="item.type === 'iframe'" :src="item.iframeUrl" width="100%" height="100%" frameborder="0" scrolling="yes"></iframe>
+          <router-view v-if="item.name === mainTabsActiveName"></router-view>
         </el-card>
       </el-tab-pane>
     </el-tabs>
