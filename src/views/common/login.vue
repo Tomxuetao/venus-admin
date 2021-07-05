@@ -41,14 +41,14 @@ import { getUUID } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 
-import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'login',
   setup() {
     const http = useHttp()
     const router = useRouter()
-    const { ctx } = getCurrentInstance()
 
     const dataForm = reactive({
       username: '',

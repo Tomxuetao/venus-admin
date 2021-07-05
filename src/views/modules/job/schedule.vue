@@ -14,7 +14,7 @@
         <el-button v-if="isAuth('sys:schedule:log')" type="success" @click="logHandle()">日志列表</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" empty-text="暂无数据" style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="jobId" align="center" width="80" label="ID"></el-table-column>
       <el-table-column prop="beanName" align="center" label="bean名称"></el-table-column>
@@ -57,7 +57,7 @@
 import AddOrUpdate from './schedule-add-or-update.vue'
 import ScheduleLog from './schedule-log.vue'
 
-import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, nextTick } from 'vue'
 import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
@@ -69,8 +69,6 @@ export default defineComponent({
     ScheduleLog
   },
   setup () {
-    const { ctx } = getCurrentInstance()
-
     const http = useHttp()
 
     const dataForm = reactive({

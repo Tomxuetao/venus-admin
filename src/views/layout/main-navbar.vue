@@ -46,12 +46,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import UpdatePassword from './main-navbar-update-password.vue'
 import { clearLoginInfo } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
+import { ElMessageBox } from 'element-plus'
+
 export default defineComponent({
   components: {
     UpdatePassword
@@ -62,7 +64,6 @@ export default defineComponent({
     const router = useRouter()
     const updatePasswordVisible = ref(false)
     const updatePasswordRef = ref(null)
-    const { ctx } = getCurrentInstance()
 
     const navbarLayoutType = computed(() => {
       return store.state.common.navbarLayoutType

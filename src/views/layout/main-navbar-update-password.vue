@@ -23,16 +23,16 @@
 
 <script>
 import { clearLoginInfo } from '@/utils'
-import { defineComponent, ref, reactive, computed, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 export default defineComponent({
   setup () {
     const store = useStore()
     const http = useHttp()
     const router = useRouter()
-    const { ctx } = getCurrentInstance()
 
     const visible = ref(false)
 
