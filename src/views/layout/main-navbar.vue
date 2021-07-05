@@ -98,7 +98,7 @@ export default defineComponent({
     }
 
     const logoutHandle = () => {
-      ctx.$confirm('确定进行[退出]操作?', '提示', {
+      ElMessageBox.confirm('确定进行[退出]操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

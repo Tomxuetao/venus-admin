@@ -19,9 +19,11 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, reactive, ref, nextTick } from 'vue'
 import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
+
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   emits: ['refresh-data-list'],
@@ -46,7 +48,6 @@ export default defineComponent({
     }
 
     const http = useHttp()
-    const { ctx } = getCurrentInstance()
 
     let btnLoading = ref(false)
     let visible = ref(false)
@@ -118,7 +119,7 @@ export default defineComponent({
             data: http.adornData({ ...dataForm, menuIdList: [].concat(menuListTreeRef.value.getCheckedKeys(), [tempKey.value], menuListTreeRef.value.getHalfCheckedKeys()) })
           }).then(({ code, msg }) => {
             if (code === 200) {
-              ctx.$message({
+              ElMessage({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
@@ -128,7 +129,7 @@ export default defineComponent({
                 }
               })
             } else {
-              ctx.$message.error(msg)
+              ElMessage.error(msg)
             }
           })
         } else {

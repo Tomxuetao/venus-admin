@@ -41,7 +41,9 @@ import AddOrUpdate from './menu-add-or-update.vue'
 import { treeDataTranslate, isAuth } from '@/utils'
 import { useHttp } from '@/utils/http'
 
-import { defineComponent, ref, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, nextTick } from 'vue'
+
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 export default defineComponent({
   components: {
@@ -50,7 +52,6 @@ export default defineComponent({
 
   setup () {
     const http = useHttp()
-    const { ctx } = getCurrentInstance()
 
     let dataList = ref([])
     let dataListLoading = ref(false)
@@ -67,7 +68,7 @@ export default defineComponent({
           dataList.value = treeDataTranslate(data, 'menuId')
           dataListLoading.value = false
         } else {
-          ctx.$message.error(msg)
+          ElMessage.error(msg)
         }
       }).catch(() => {
         dataListLoading.value = false
@@ -77,7 +78,7 @@ export default defineComponent({
     getDataListHandle()
 
     const deleteHandle = (id) => {
-      ctx.$confirm(`确定对[id=${id}]进行[删除]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${id}]进行[删除]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -88,7 +89,7 @@ export default defineComponent({
           data: http.adornData()
         }).then(({ code, msg}) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -97,7 +98,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       }).catch(() => {

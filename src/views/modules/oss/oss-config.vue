@@ -79,16 +79,16 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useHttp } from '@/utils/http'
+
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
     const http = useHttp()
-
-    const { ctx } = getCurrentInstance()
 
     let dataForm = reactive({
       type: 1,
@@ -125,7 +125,7 @@ export default defineComponent({
         if (code === 200) {
           dataForm = Object.assign(dataForm, data)
         } else {
-          ctx.$message.error(msg)
+          ElMessage.error(msg)
         }
       })
     }
@@ -140,7 +140,7 @@ export default defineComponent({
             data: http.adornData(dataForm)
           }).then(({ code, msg}) => {
             if (code === 200) {
-              ctx.$message({
+              ElMessage({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
@@ -150,7 +150,7 @@ export default defineComponent({
                 }
               })
             } else {
-              ctx.$message.error(msg)
+              ElMessage.error(msg)
             }
           })
         }

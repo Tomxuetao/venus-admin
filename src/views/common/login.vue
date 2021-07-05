@@ -91,7 +91,7 @@ export default defineComponent({
               localStorage.setItem('token', token)
               router.replace({ name: 'home' })
             } else {
-              ctx.$message({
+              ElMessage({
                 message: msg,
                 type: 'error'
               })

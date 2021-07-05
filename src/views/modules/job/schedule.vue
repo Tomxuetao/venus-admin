@@ -61,6 +61,8 @@ import { defineComponent, reactive, ref, nextTick, getCurrentInstance } from 'vu
 import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
+import { ElMessageBox, ElMessage } from 'element-plus'
+
 export default defineComponent({
   components: {
     AddOrUpdate,
@@ -98,7 +100,7 @@ export default defineComponent({
           dataList.value = data.list
           total.value = data.total
         } else {
-          ctx.$message.error(msg)
+          ElMessage.error(msg)
           dataList.value = []
           total.value = 0
         }
@@ -144,7 +146,7 @@ export default defineComponent({
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -155,7 +157,7 @@ export default defineComponent({
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -164,7 +166,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       }).catch(() => {
@@ -176,7 +178,7 @@ export default defineComponent({
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -187,7 +189,7 @@ export default defineComponent({
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -196,7 +198,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       }).catch(() => {
@@ -208,7 +210,7 @@ export default defineComponent({
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -219,7 +221,7 @@ export default defineComponent({
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -228,7 +230,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       })
@@ -239,7 +241,7 @@ export default defineComponent({
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.jobId
       })
-      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -250,7 +252,7 @@ export default defineComponent({
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -259,7 +261,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       }).catch(() => {

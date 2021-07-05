@@ -91,7 +91,7 @@ export default defineComponent({
             })
           }).then(({ code, msg }) => {
             if (code === 200) {
-              ctx.$message({
+              ElMessage({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
@@ -105,7 +105,7 @@ export default defineComponent({
                 }
               })
             } else {
-              ctx.$message({
+              ElMessage({
                 type: 'error',
                 message: msg
               })

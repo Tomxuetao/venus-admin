@@ -13,15 +13,16 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useHttp } from '@/utils/http'
+
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
     const http = useHttp()
-    const { ctx } = getCurrentInstance()
 
     let visible = ref(false)
 
@@ -39,7 +40,7 @@ export default defineComponent({
     const beforeUploadHandle = (file) => {
       const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
       if (!fileTypeArray.includes(file.type)) {
-        ctx.$message.error('只支持jpg、png、gif格式的图片！')
+        ElMessage.error('只支持jpg、png、gif格式的图片！')
         return false
       }
       num.value++
@@ -51,7 +52,7 @@ export default defineComponent({
       successNum.value++
       if (response && response.code === 200) {
         if (num.value === successNum.value) {
-          ctx.$confirm('操作成功, 是否继续操作?', '提示', {
+          ElMessageBox.confirm('操作成功, 是否继续操作?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -60,7 +61,7 @@ export default defineComponent({
           })
         }
       } else {
-        ctx.$message.error(response.msg)
+        ElMessage.error(response.msg)
       }
     }
 

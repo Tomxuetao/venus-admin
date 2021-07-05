@@ -37,8 +37,9 @@
 <script>
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
-import { defineComponent, getCurrentInstance, reactive, ref, nextTick } from 'vue'
+import { defineComponent, reactive, ref, nextTick } from 'vue'
 import { useHttp } from '@/utils/http'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 export default defineComponent({
   components: {
@@ -48,7 +49,6 @@ export default defineComponent({
 
   setup() {
     const http = useHttp()
-    const { ctx } = getCurrentInstance()
 
     let isSizeChange = false
     let dataForm = reactive({
@@ -103,7 +103,7 @@ export default defineComponent({
       const ids = id ? [id] : dataListSelections.value.map(item => {
         return item.id
       })
-      ctx.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -114,7 +114,7 @@ export default defineComponent({
           data: http.adornData(ids, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -123,7 +123,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       }).catch(() => {})

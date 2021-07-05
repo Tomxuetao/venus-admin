@@ -82,14 +82,15 @@
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/icons'
 import { useHttp } from '@/utils/http'
-import { defineComponent, getCurrentInstance, ref, reactive, nextTick } from 'vue'
+import { defineComponent, ref, reactive, nextTick } from 'vue'
+
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   emits: ['refresh-data-list'],
 
   setup(props, { emit }) {
     const http = useHttp()
-    const { ctx } = getCurrentInstance()
 
     const menuTypeMap = new Map([[0, '目录'], [1, '菜单'], [2, '按钮']])
 
@@ -212,7 +213,7 @@ export default defineComponent({
             data: http.adornData(dataForm)
           }).then(({ code, msg}) => {
             if (code === 200) {
-              ctx.$message({
+              ElMessage({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
@@ -222,7 +223,7 @@ export default defineComponent({
                 }
               })
             } else {
-              ctx.$message.error(msg)
+              ElMessage.error(msg)
             }
           })
         }

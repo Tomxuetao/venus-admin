@@ -59,8 +59,9 @@
 <script>
 import AddOrUpdate from './user-add-or-update.vue'
 import { useHttp } from '@/utils/http'
-import { defineComponent, ref, reactive, nextTick, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive, nextTick } from 'vue'
 import { isAuth } from '@/utils'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 export default defineComponent({
   components: {
@@ -68,7 +69,6 @@ export default defineComponent({
   },
 
   setup () {
-    const { ctx } = getCurrentInstance()
     const http = useHttp()
 
     const addOrUpdateRef = ref(null)
@@ -128,7 +128,7 @@ export default defineComponent({
       const userIds = id ? [id] : dataListSelections.value.map(item => {
         return item.userId
       })
-      ctx.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+      ElMessageBox.confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -139,7 +139,7 @@ export default defineComponent({
           data: http.adornData(userIds, false)
         }).then(({ code, msg }) => {
           if (code === 200) {
-            ctx.$message({
+            ElMessage({
               message: '操作成功',
               type: 'success',
               duration: 1500,
@@ -148,7 +148,7 @@ export default defineComponent({
               }
             })
           } else {
-            ctx.$message.error(msg)
+            ElMessage.error(msg)
           }
         })
       })

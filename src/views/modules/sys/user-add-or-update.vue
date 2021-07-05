@@ -41,15 +41,15 @@
 
 <script>
 import { isEmail, isMobile } from '@/utils/validate'
-import { defineComponent, ref, reactive, getCurrentInstance } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
 import { useHttp } from '@/utils/http'
+
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   emits: ['refresh-data-list'],
   setup (props, { emit }) {
     const http = useHttp()
-
-    const { ctx } = getCurrentInstance()
 
     const validatePassword = (rule, value, callback) => {
       if (!dataForm.id && !/\S/.test(value)) {
@@ -162,7 +162,7 @@ export default defineComponent({
           }).then(({ code, msg }) => {
             if (code === 200) {
               visible.value = false
-              ctx.$message({
+              ElMessage({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500,
@@ -171,7 +171,7 @@ export default defineComponent({
                 }
               })
             } else {
-              ctx.$message.error(msg)
+              ElMessage.error(msg)
             }
           })
         }
