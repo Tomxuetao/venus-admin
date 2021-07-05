@@ -124,7 +124,6 @@ export default defineComponent({
       }
     }
 
-
     // 多选
     const selectionChangeHandle = (val) => {
       dataListSelections.value = val

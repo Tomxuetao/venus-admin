@@ -7,16 +7,12 @@
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
-      <el-menu
-        class="site-navbar__menu"
-        mode="horizontal">
+      <el-menu class="site-navbar__menu" mode="horizontal">
         <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold">
           <icon-svg name="zhedie"></icon-svg>
         </el-menu-item>
       </el-menu>
-      <el-menu
-        class="site-navbar__menu site-navbar__menu--right"
-        mode="horizontal">
+      <el-menu class="site-navbar__menu site-navbar__menu--right" mode="horizontal">
         <el-menu-item index="1" @click="$router.push({ name: 'theme' })">
           <template v-slot:title>
             <el-badge value="new">
