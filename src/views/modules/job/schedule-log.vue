@@ -36,95 +36,77 @@
   </el-dialog>
 </template>
 
-<script>
-import { defineComponent, ref, reactive } from 'vue'
+<script setup>
+import { ref, reactive } from 'vue'
 import { useHttp } from '@/utils/http'
 
-export default defineComponent({
-  setup(props, cxt) {
-    const http = useHttp()
+const http = useHttp()
 
-    const total = ref(0)
-    const visible = ref()
-    const dataList = ref([])
-    const searchForm = reactive({
-      jobId: null,
-      pageNum: 1,
-      pageSize: 10
-    })
-
-    const dataListLoading = ref(false)
-
-    const initDialogHandle = () => {
-      visible.value = true
-      getDataListHandle()
-    }
-
-    // 获取数据列表
-    let isSizeChange = false
-    const getDataListHandle = () => {
-      dataListLoading.value = true
-      http({
-        url: http.adornUrl('/sys/scheduleLog/list'),
-        method: 'get',
-        params: http.adornParams(searchForm)
-      }).then(({ code, data }) => {
-        isSizeChange = false
-        if (code === 200) {
-          dataList.value = data.list
-          total.value = data.total
-        } else {
-          dataList.value = []
-          total.value = 0
-        }
-        dataListLoading.value = false
-      })
-    }
-
-    // 失败信息
-    const showErrorHandle = (id) => {
-      http({
-        url: http.adornUrl(`/sys/scheduleLog/info/${id}`),
-        method: 'get',
-        params: http.adornParams()
-      }).then(({ code, data, msg }) => {
-        if (code === 200) {
-          cxt.$alert(data.log.error)
-        } else {
-          cxt.$message.error(msg)
-        }
-      })
-    }
-
-    // 每页数
-    const pageSizeChangeHandle = (pageSize) => {
-      isSizeChange = true
-      searchForm.pageNum = 1
-      searchForm.pageSize = pageSize
-      getDataListHandle()
-    }
-
-    // 当前页
-    const pageNumChangeHandle = (pageNum) => {
-      if (!isSizeChange) {
-        searchForm.pageNum = pageNum
-        getDataListHandle()
-      }
-    }
-
-    return {
-      total,
-      visible,
-      dataList,
-      searchForm,
-      dataListLoading,
-
-      showErrorHandle,
-      initDialogHandle,
-      getDataListHandle,
-      pageNumChangeHandle,
-      pageSizeChangeHandle
-    }
-  }
+const total = ref(0)
+const visible = ref()
+const dataList = ref([])
+const searchForm = reactive({
+  jobId: null,
+  pageNum: 1,
+  pageSize: 10
 })
+
+const dataListLoading = ref(false)
+
+const initDialogHandle = () => {
+  visible.value = true
+  getDataListHandle()
+}
+
+// 获取数据列表
+let isSizeChange = false
+const getDataListHandle = () => {
+  dataListLoading.value = true
+  http({
+    url: http.adornUrl('/sys/scheduleLog/list'),
+    method: 'get',
+    params: http.adornParams(searchForm)
+  }).then(({ code, data }) => {
+    isSizeChange = false
+    if (code === 200) {
+      dataList.value = data.list
+      total.value = data.total
+    } else {
+      dataList.value = []
+      total.value = 0
+    }
+    dataListLoading.value = false
+  })
+}
+
+// 失败信息
+const showErrorHandle = (id) => {
+  http({
+    url: http.adornUrl(`/sys/scheduleLog/info/${id}`),
+    method: 'get',
+    params: http.adornParams()
+  }).then(({ code, data, msg }) => {
+    if (code === 200) {
+      cxt.$alert(data.log.error)
+    } else {
+      cxt.$message.error(msg)
+    }
+  })
+}
+
+// 每页数
+const pageSizeChangeHandle = (pageSize) => {
+  isSizeChange = true
+  searchForm.pageNum = 1
+  searchForm.pageSize = pageSize
+  getDataListHandle()
+}
+
+// 当前页
+const pageNumChangeHandle = (pageNum) => {
+  if (!isSizeChange) {
+    searchForm.pageNum = pageNum
+    getDataListHandle()
+  }
+}
 </script>

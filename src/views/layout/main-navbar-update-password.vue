@@ -21,110 +21,103 @@
   </el-dialog>
 </template>
 
-<script>
+<script setup>
 import { clearLoginInfo } from '@/utils'
-import { defineComponent, ref, reactive, computed, nextTick } from 'vue'
+import { ref, reactive, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-export default defineComponent({
-  setup () {
-    const store = useStore()
-    const http = useHttp()
-    const router = useRouter()
 
-    const visible = ref(false)
 
-    const dataFormRef = ref(null)
+const store = useStore()
+const http = useHttp()
+const router = useRouter()
 
-    const dataForm = reactive({
-      password: '',
-      newPassword: '',
-      confirmPassword: ''
-    })
+const visible = ref(false)
 
-    const validateConfirmPassword = (rule, value, callback) => {
-      if (dataForm.newPassword !== value) {
-        callback(new Error('确认密码与新密码不一致'))
-      } else {
-        callback()
-      }
-    }
+const dataFormRef = ref(null)
 
-    const dataRule = reactive({
-      password: [
-        { required: true, message: '原密码不能为空', trigger: 'blur' }
-      ],
-      newPassword: [
-        { required: true, message: '新密码不能为空', trigger: 'blur' }
-      ],
-      confirmPassword: [
-        { required: true, message: '确认密码不能为空', trigger: 'blur' },
-        { validator: validateConfirmPassword, trigger: 'blur' }
-      ]
-    })
+const dataForm = reactive({
+  password: '',
+  newPassword: '',
+  confirmPassword: ''
+})
 
-    const userName = computed(() => { return store.state.user.name })
+const validateConfirmPassword = (rule, value, callback) => {
+  if (dataForm.newPassword !== value) {
+    callback(new Error('确认密码与新密码不一致'))
+  } else {
+    callback()
+  }
+}
 
-    const mainTabs = computed({
-      get: () => { return store.state.common.mainTabs },
-      set: value => { store.commit('common/updateMainTabs', value) }
-    })
+const dataRule = reactive({
+  password: [
+    { required: true, message: '原密码不能为空', trigger: 'blur' }
+  ],
+  newPassword: [
+    { required: true, message: '新密码不能为空', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, message: '确认密码不能为空', trigger: 'blur' },
+    { validator: validateConfirmPassword, trigger: 'blur' }
+  ]
+})
 
-    const initDialogHandle = () => {
-      visible.value = true
-      nextTick(() => {
-        dataFormRef.value.resetFields()
-      })
-    }
+const userName = computed(() => {
+  return store.state.user.name
+})
 
-    const dataFormSubmit = () => {
-      dataFormRef.value.validate((valid) => {
-        if (valid) {
-          http({
-            url: http.adornUrl('/sys/user/password'),
-            method: 'post',
-            data: http.adornData({
-              password: dataForm.password,
-              newPassword: dataForm.newPassword
-            })
-          }).then(({ code, msg }) => {
-            if (code === 200) {
-              ElMessage({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  visible.value = false
-                  nextTick(() => {
-                    mainTabs.value = []
-                    clearLoginInfo()
-                    router.replace({ name: 'login' })
-                  })
-                }
-              })
-            } else {
-              ElMessage({
-                type: 'error',
-                message: msg
+const mainTabs = computed({
+  get: () => {
+    return store.state.common.mainTabs
+  },
+  set: value => {
+    store.commit('common/updateMainTabs', value)
+  }
+})
+
+const initDialogHandle = () => {
+  visible.value = true
+  nextTick(() => {
+    dataFormRef.value.resetFields()
+  })
+}
+
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      http({
+        url: http.adornUrl('/sys/user/password'),
+        method: 'post',
+        data: http.adornData({
+          password: dataForm.password,
+          newPassword: dataForm.newPassword
+        })
+      }).then(({ code, msg }) => {
+        if (code === 200) {
+          ElMessage({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              visible.value = false
+              nextTick(() => {
+                mainTabs.value = []
+                clearLoginInfo()
+                router.replace({ name: 'login' })
               })
             }
+          })
+        } else {
+          ElMessage({
+            type: 'error',
+            message: msg
           })
         }
       })
     }
-
-    return {
-      visible,
-      dataFormRef,
-      dataForm,
-      dataRule,
-      userName,
-
-      initDialogHandle,
-      dataFormSubmit
-    }
-  }
-})
+  })
+}
 </script>

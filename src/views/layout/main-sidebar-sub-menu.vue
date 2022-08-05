@@ -1,61 +1,54 @@
 <template>
-  <el-submenu
-    v-if="menu.list && menu.list.length >= 1"
-    :index="menu.menuId + ''"
-    :popper-class="'site-sidebar--' + sidebarLayoutSkin + '-popper'">
-    <template v-slot:title>
+  <el-sub-menu
+      v-if="menu.list && menu.list.length >= 1"
+      :index="menu.menuId + ''"
+      :popper-class="'site-sidebar--' + sidebarLayoutSkin + '-popper'">
+    <template #title>
       <icon-svg :name="menu.icon || ''" class="site-sidebar__menu-icon"></icon-svg>
       <span>{{ menu.name }}</span>
     </template>
     <sub-menu
-      v-for="item in menu.list"
-      :key="item.menuId"
-      :menu="item"
-      :dynamicMenuRoutes="dynamicMenuRoutes">
+        v-for="item in menu.list"
+        :key="item.menuId"
+        :menu="item"
+        :dynamicMenuRoutes="dynamicMenuRoutes">
     </sub-menu>
-  </el-submenu>
+  </el-sub-menu>
   <el-menu-item v-else :index="menu.menuId + ''" @click="gotoRouteHandle(menu)">
     <icon-svg :name="menu.icon || ''" class="site-sidebar__menu-icon"></icon-svg>
     <span>{{ menu.name }}</span>
   </el-menu-item>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue'
+<script setup>
+import SubMenu from './main-sidebar-sub-menu.vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-export default defineComponent({
-  name: 'sub-menu',
-  props: {
-    menu: {
-      type: Object,
-      required: true
-    },
-    dynamicMenuRoutes: {
-      type: Array,
-      required: true
-    }
+
+const props = defineProps({
+  menu: {
+    type: Object,
+    required: true
   },
-
-  setup (props) {
-    const store = useStore()
-    const router = useRouter()
-
-    const sidebarLayoutSkin = computed(() => {
-      return store.state.common.sidebarLayoutSkin
-    })
-
-    const gotoRouteHandle = menu => {
-      const route = props.dynamicMenuRoutes.value.find(item => item.meta.menuId === menu.menuId)
-      if (route) {
-        router.push({ name: route.name })
-      }
-    }
-
-    return {
-      sidebarLayoutSkin,
-      gotoRouteHandle
-    }
+  dynamicMenuRoutes: {
+    type: Array,
+    required: true
   }
 })
+
+const store = useStore()
+const router = useRouter()
+
+const sidebarLayoutSkin = computed(() => {
+  return store.state.common.sidebarLayoutSkin
+})
+
+const gotoRouteHandle = menu => {
+  const route = props.dynamicMenuRoutes.value.find(item => item.meta.menuId === menu.menuId)
+  if (route) {
+    router.push({ name: route.name })
+  }
+}
+
 </script>

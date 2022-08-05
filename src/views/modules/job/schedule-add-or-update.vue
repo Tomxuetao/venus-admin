@@ -23,94 +23,80 @@
   </el-dialog>
 </template>
 
-<script>
-import { defineComponent, reactive, ref, nextTick } from 'vue'
+<script setup>
+import { reactive, ref, nextTick } from 'vue'
 import { useHttp } from '@/utils/http'
 import { ElMessage } from 'element-plus'
 
-export default defineComponent({
-  emits: ['refresh-data-list'],
+const emit = defineEmits(['refresh-data-list'])
 
-  setup(props, {emit}) {
-    const http = useHttp()
+const http = useHttp()
 
-    let dataForm = reactive({
-      id: undefined,
-      beanName: '',
-      params: '',
-      cronExpression: '',
-      remark: '',
-      status: 0
-    })
-
-    const dataRule = reactive({
-      beanName: [
-        { required: true, message: '用户名不能为空', trigger: 'blur' }
-      ],
-      cronExpression: [
-        { required: true, message: 'cron表达式不能为空', trigger: 'blur' }
-      ]
-    })
-
-    let visible = ref(false)
-    let dataFormRef = ref(null)
-    const initDialogHandle = (id) => {
-      dataForm.id = id
-      visible.value = true
-      nextTick(() => {
-        if (dataFormRef.value) {
-          dataFormRef.value.resetFields()
-        }
-        if (dataForm.id) {
-          http({
-            url: http.adornUrl(`/sys/schedule/info/${dataForm.id}`),
-            method: 'get',
-            params: http.adornParams()
-          }).then(({ code, data }) => {
-            if (code === 200) {
-              dataForm = Object.assign(dataForm, data)
-            }
-          })
-        }
-      })
-    }
-
-    // 表单提交
-    const dataFormSubmit = () => {
-      dataFormRef.value.validate((valid) => {
-        if (valid) {
-          http({
-            url: http.adornUrl(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`),
-            method: 'post',
-            data: http.adornData(dataForm)
-          }).then(({ code, msg }) => {
-            if (code === 200) {
-              ElMessage({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  visible.value = false
-                  emit('refresh-data-list')
-                }
-              })
-            } else {
-              ElMessage.error(msg)
-            }
-          })
-        }
-      })
-    }
-
-    return {
-      visible,
-      dataRule,
-      dataForm,
-      dataFormRef,
-
-      initDialogHandle,
-      dataFormSubmit
-    }
-  }
+let dataForm = reactive({
+  id: undefined,
+  beanName: '',
+  params: '',
+  cronExpression: '',
+  remark: '',
+  status: 0
 })
+
+const dataRule = reactive({
+  beanName: [
+    { required: true, message: '用户名不能为空', trigger: 'blur' }
+  ],
+  cronExpression: [
+    { required: true, message: 'cron表达式不能为空', trigger: 'blur' }
+  ]
+})
+
+let visible = ref(false)
+let dataFormRef = ref(null)
+const initDialogHandle = (id) => {
+  dataForm.id = id
+  visible.value = true
+  nextTick(() => {
+    if (dataFormRef.value) {
+      dataFormRef.value.resetFields()
+    }
+    if (dataForm.id) {
+      http({
+        url: http.adornUrl(`/sys/schedule/info/${dataForm.id}`),
+        method: 'get',
+        params: http.adornParams()
+      }).then(({ code, data }) => {
+        if (code === 200) {
+          dataForm = Object.assign(dataForm, data)
+        }
+      })
+    }
+  })
+}
+
+// 表单提交
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      http({
+        url: http.adornUrl(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`),
+        method: 'post',
+        data: http.adornData(dataForm)
+      }).then(({ code, msg }) => {
+        if (code === 200) {
+          ElMessage({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              visible.value = false
+              emit('refresh-data-list')
+            }
+          })
+        } else {
+          ElMessage.error(msg)
+        }
+      })
+    }
+  })
+}
 </script>
