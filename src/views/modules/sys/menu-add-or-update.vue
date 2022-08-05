@@ -231,6 +231,10 @@ const dataFormSubmit = () => {
     }
   })
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>
 
 <style lang="scss">

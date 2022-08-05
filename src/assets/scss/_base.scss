@@ -240,6 +240,7 @@ img {
     background-color: #fff;
 
     > .el-menu--horizontal {
+      height: 50px;
       border-bottom: 0 !important;
     }
   }
@@ -389,6 +390,8 @@ img {
 
       > .site-tabs__tools {
         position: fixed;
+        display: flex;
+        align-items: center;
         top: 50px;
         right: 0;
         z-index: 931;

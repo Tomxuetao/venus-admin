@@ -144,4 +144,8 @@ const closeDialogHandle = () => {
   visible.value = false
   dataFormRef.value.resetFields()
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>

@@ -1,11 +1,17 @@
 <template>
   <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
-    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle"
-             @tab-remove="removeTabHandle">
+    <el-tabs
+        v-if="$route.meta.isTab"
+        v-model="mainTabsActiveName"
+        :closable="true"
+        @tab-click="selectedTabHandle"
+        @tab-remove="removeTabHandle">
       <el-dropdown class="site-tabs__tools" :show-timeout="0" :tabindex="0" placement="bottom-end">
-        <el-icon name="arrow-down" class="el-icon--right"></el-icon>
-        <template v-slot:dropdown>
+        <el-icon class="el-icon--right">
+          <ArrowDown></ArrowDown>
+        </el-icon>
+        <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="tabsCloseCurrentHandle">关闭当前标签页</el-dropdown-item>
             <el-dropdown-item @click="tabsCloseOtherHandle">关闭其它标签页</el-dropdown-item>
@@ -20,8 +26,6 @@
           :label="item.title"
           :name="item.name">
         <el-card :body-style="siteContentViewHeight">
-          <iframe v-if="item.type === 'iframe'" :src="item.iframeUrl" width="100%" height="100%" frameborder="0"
-                  scrolling="yes"></iframe>
           <router-view v-if="item.name === mainTabsActiveName"></router-view>
         </el-card>
       </el-tab-pane>
@@ -89,7 +93,6 @@ const siteContentViewHeight = computed({
   }
 })
 
-/** methods **/
 const refreshHandle = inject('refreshHandle')
 
 const selectedTabHandle = (tab) => {
@@ -135,17 +138,5 @@ const tabsCloseAllHandle = () => {
   mainTabs.value = []
   menuActiveName.value = ''
   router.push({ name: 'home' })
-}
-
-const tabsRefreshCurrentHandle = () => {
-  const tab = route
-  removeTabHandle(tab.name)
-  nextTick(() => {
-    router.push({
-      name: tab.name,
-      query: tab.query,
-      params: tab.params
-    })
-  })
 }
 </script>

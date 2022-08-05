@@ -69,4 +69,8 @@ const closeHandle = () => {
   fileList.value = []
   emit('refresh-data-list')
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>

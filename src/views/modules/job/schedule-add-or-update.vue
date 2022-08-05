@@ -99,4 +99,8 @@ const dataFormSubmit = () => {
     }
   })
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>

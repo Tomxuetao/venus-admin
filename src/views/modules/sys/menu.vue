@@ -105,8 +105,7 @@ const deleteHandle = (id) => {
   })
 }
 
-let addOrUpdateRef = ref(null)
-
+const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id) => {
   addOrUpdateVisible.value = true
   nextTick(() => {

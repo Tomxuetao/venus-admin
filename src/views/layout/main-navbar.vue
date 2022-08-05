@@ -7,27 +7,20 @@
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
-      <el-menu class="site-navbar__menu" mode="horizontal">
+      <el-menu class="site-navbar__menu" mode="horizontal" :ellipsis="false">
         <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold">
           <icon-svg name="zhedie"></icon-svg>
         </el-menu-item>
       </el-menu>
-      <el-menu class="site-navbar__menu site-navbar__menu--right" mode="horizontal">
-        <el-menu-item index="1" @click="$router.push({ name: 'theme' })">
-          <template v-slot:title>
-            <el-badge value="new">
-              <icon-svg name="shezhi" class="el-icon-setting"></icon-svg>
-            </el-badge>
-          </template>
-        </el-menu-item>
+      <el-menu class="site-navbar__menu site-navbar__menu--right" mode="horizontal" :ellipsis="false">
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" :tabindex="0" placement="bottom">
             <div class="el-dropdown-link">
               <img src="~@/assets/img/avatar.png" :alt="userName" style="width: 36px; height: 36px">
-              <span>{{ userName }}</span>
             </div>
-            <template v-slot:dropdown>
+            <template #dropdown>
               <el-dropdown-menu>
+                <el-dropdown-item>{{ userName }}</el-dropdown-item>
                 <el-dropdown-item @click="updatePasswordHandle()">修改密码</el-dropdown-item>
                 <el-dropdown-item @click="logoutHandle()">退出</el-dropdown-item>
               </el-dropdown-menu>

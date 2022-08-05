@@ -38,6 +38,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useHttp } from '@/utils/http'
 
 const http = useHttp()
@@ -87,9 +88,9 @@ const showErrorHandle = (id) => {
     params: http.adornParams()
   }).then(({ code, data, msg }) => {
     if (code === 200) {
-      cxt.$alert(data.log.error)
+      ElMessage.error(data)
     } else {
-      cxt.$message.error(msg)
+      ElMessage.error(data.error)
     }
   })
 }
@@ -109,4 +110,8 @@ const pageNumChangeHandle = (pageNum) => {
     getDataListHandle()
   }
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>
