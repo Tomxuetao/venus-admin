@@ -16,35 +16,26 @@
   </el-form>
 </template>
 
-<script>
-import { defineComponent, computed} from 'vue'
+<script setup>
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 
-export default defineComponent({
-  setup() {
-    const store = useStore()
-    const navbarLayoutType = computed({
-      get: () => {
-        return store.state.common.navbarLayoutType
-      },
-      set: (value) => {
-        store.commit('common/updateNavbarLayoutType', value)
-      }
-    })
+const store = useStore()
+const navbarLayoutType = computed({
+  get: () => {
+    return store.state.common.navbarLayoutType
+  },
+  set: (value) => {
+    store.commit('common/updateNavbarLayoutType', value)
+  }
+})
 
-    const sidebarLayoutSkin = computed({
-      get: () => {
-        return store.state.common.sidebarLayoutSkin
-      },
-      set: (value) => {
-        store.commit('common/updateSidebarLayoutSkin', value)
-      }
-    })
-
-    return {
-      navbarLayoutType,
-      sidebarLayoutSkin
-    }
+const sidebarLayoutSkin = computed({
+  get: () => {
+    return store.state.common.sidebarLayoutSkin
+  },
+  set: (value) => {
+    store.commit('common/updateSidebarLayoutSkin', value)
   }
 })
 </script>

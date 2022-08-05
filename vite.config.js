@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { svgBuilder } from './src/utils/svgBuilder'
-import styleImport from 'vite-plugin-style-import'
-
-const { resolve } = require('path')
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { resolve } from 'path'
+import { BuilderSvg } from './src/utils/builder-svg'
 
 export default defineConfig({
 	server: {
@@ -19,21 +20,13 @@ export default defineConfig({
 	},
 	plugins: [
 		vue(),
-		svgBuilder('./src/icons/svg/', ''),
-    styleImport({
-      libs: [{
-        libraryName: 'element-plus',
-        esModule: true,
-        ensureStyleFile: true,
-        resolveStyle: (name) => {
-          name = name.slice(3)
-          return `element-plus/packages/theme-chalk/src/${name}.scss`;
-        },
-        resolveComponent: (name) => {
-          return `element-plus/lib/${name}`;
-        },
-      }]
-    })
+		BuilderSvg('./src/icons/svg/', ''),
+		AutoImport({
+			resolvers: [ElementPlusResolver()]
+		}),
+		Components({
+			resolvers: [ElementPlusResolver()]
+		})
 	],
 	resolve: {
 		alias: [

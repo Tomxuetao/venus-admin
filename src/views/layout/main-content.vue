@@ -1,7 +1,8 @@
 <template>
   <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
-    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle" @tab-remove="removeTabHandle">
+    <el-tabs v-if="$route.meta.isTab" v-model="mainTabsActiveName" :closable="true" @tab-click="selectedTabHandle"
+             @tab-remove="removeTabHandle">
       <el-dropdown class="site-tabs__tools" :show-timeout="0" :tabindex="0" placement="bottom-end">
         <el-icon name="arrow-down" class="el-icon--right"></el-icon>
         <template v-slot:dropdown>
@@ -19,7 +20,8 @@
           :label="item.title"
           :name="item.name">
         <el-card :body-style="siteContentViewHeight">
-          <iframe v-if="item.type === 'iframe'" :src="item.iframeUrl" width="100%" height="100%" frameborder="0" scrolling="yes"></iframe>
+          <iframe v-if="item.type === 'iframe'" :src="item.iframeUrl" width="100%" height="100%" frameborder="0"
+                  scrolling="yes"></iframe>
           <router-view v-if="item.name === mainTabsActiveName"></router-view>
         </el-card>
       </el-tab-pane>
@@ -31,137 +33,119 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import { isURL } from '@/utils'
-import { defineComponent, computed, inject, nextTick } from 'vue'
+import { computed, inject, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
-export default defineComponent({
-  name: 'main-content',
-  setup () {
-    const router = useRouter()
-    const route = useRoute()
-    const store = useStore()
 
-    // computed
-    const documentClientHeight = computed({
-      get: () => {
-        return store.state.common.documentClientHeight
-      }
-    })
+const router = useRouter()
+const route = useRoute()
+const store = useStore()
 
-    const menuActiveName = computed({
-      get: () => {
-        return store.state.common.menuActiveName
-      },
-      set: value => {
-        store.commit('common/updateMenuActiveName', value)
-      }
-    })
-
-    const mainTabs = computed({
-      get: () => {
-        return store.state.common.mainTabs
-      },
-      set: value => {
-        store.commit('common/updateMainTabs', value)
-      }
-    })
-
-    const mainTabsActiveName = computed({
-      get: () => {
-        return store.state.common.mainTabsActiveName
-      },
-      set: value => {
-        store.commit('common/updateMainTabsActiveName', value)
-      }
-    })
-
-    const siteContentViewHeight = computed({
-      get: () => {
-        let height = documentClientHeight.value - 50 - 30 - 2
-        if (route.meta.isTab) {
-          height -= 40
-          return isURL(route.meta.iframeUrl) ? `height: ${height}px ` : `min-height: ${height}px`
-        }
-        return `min-height: ${height}px`
-      }
-    })
-
-    /** methods **/
-    const refreshHandle = inject('refreshHandle')
-
-    const selectedTabHandle = (tab) => {
-      tab = mainTabs.value.filter(item => item.name === tab.name)
-      if (tab.length >= 1) {
-        router.push({
-          name: tab[0].name,
-          query: tab[0].query,
-          params: tab[0].params
-        })
-      }
-    }
-
-    const removeTabHandle = (tabName) => {
-      mainTabs.value = mainTabs.value.filter(item => item.name !== tabName)
-      if (mainTabs.value.length >= 1) {
-        // 当前选中tab被删除
-        if (tabName === mainTabsActiveName.value) {
-          const tab = mainTabs.value[mainTabs.value.length - 1]
-          router.push({
-            name: tab.name,
-            query: tab.query,
-            params: tab.params
-          }).then(() => {
-            mainTabsActiveName.value = route.name
-          })
-        }
-      } else {
-        menuActiveName.value = ''
-        router.push({ name: 'home' })
-      }
-    }
-
-    const tabsCloseCurrentHandle = () => {
-      removeTabHandle(mainTabsActiveName.value)
-    }
-
-    const tabsCloseOtherHandle = () => {
-      mainTabs.value = mainTabs.value.filter(item => item.name === mainTabsActiveName.value)
-    }
-
-    const tabsCloseAllHandle = () => {
-      mainTabs.value = []
-      menuActiveName.value = ''
-      router.push({ name: 'home' })
-    }
-
-    const tabsRefreshCurrentHandle = () => {
-      const tab = route
-      removeTabHandle(tab.name)
-      nextTick(() => {
-        router.push({
-          name: tab.name,
-          query: tab.query,
-          params: tab.params
-        })
-      })
-    }
-
-    return {
-      siteContentViewHeight,
-      mainTabsActiveName,
-      mainTabs,
-      refreshHandle,
-
-      removeTabHandle,
-      selectedTabHandle,
-      tabsCloseAllHandle,
-      tabsCloseOtherHandle,
-      tabsCloseCurrentHandle,
-      tabsRefreshCurrentHandle
-    }
+// computed
+const documentClientHeight = computed({
+  get: () => {
+    return store.state.common.documentClientHeight
   }
 })
+
+const menuActiveName = computed({
+  get: () => {
+    return store.state.common.menuActiveName
+  },
+  set: value => {
+    store.commit('common/updateMenuActiveName', value)
+  }
+})
+
+const mainTabs = computed({
+  get: () => {
+    return store.state.common.mainTabs
+  },
+  set: value => {
+    store.commit('common/updateMainTabs', value)
+  }
+})
+
+const mainTabsActiveName = computed({
+  get: () => {
+    return store.state.common.mainTabsActiveName
+  },
+  set: value => {
+    store.commit('common/updateMainTabsActiveName', value)
+  }
+})
+
+const siteContentViewHeight = computed({
+  get: () => {
+    let height = documentClientHeight.value - 50 - 30 - 2
+    if (route.meta.isTab) {
+      height -= 40
+      return isURL(route.meta.iframeUrl) ? `height: ${height}px ` : `min-height: ${height}px`
+    }
+    return `min-height: ${height}px`
+  }
+})
+
+/** methods **/
+const refreshHandle = inject('refreshHandle')
+
+const selectedTabHandle = (tab) => {
+  tab = mainTabs.value.filter(item => item.name === tab.name)
+  if (tab.length >= 1) {
+    router.push({
+      name: tab[0].name,
+      query: tab[0].query,
+      params: tab[0].params
+    })
+  }
+}
+
+const removeTabHandle = (tabName) => {
+  mainTabs.value = mainTabs.value.filter(item => item.name !== tabName)
+  if (mainTabs.value.length >= 1) {
+    // 当前选中tab被删除
+    if (tabName === mainTabsActiveName.value) {
+      const tab = mainTabs.value[mainTabs.value.length - 1]
+      router.push({
+        name: tab.name,
+        query: tab.query,
+        params: tab.params
+      }).then(() => {
+        mainTabsActiveName.value = route.name
+      })
+    }
+  } else {
+    menuActiveName.value = ''
+    router.push({ name: 'home' })
+  }
+}
+
+const tabsCloseCurrentHandle = () => {
+  removeTabHandle(mainTabsActiveName.value)
+}
+
+const tabsCloseOtherHandle = () => {
+  mainTabs.value = mainTabs.value.filter(item => item.name === mainTabsActiveName.value)
+}
+
+const tabsCloseAllHandle = () => {
+  mainTabs.value = []
+  menuActiveName.value = ''
+  router.push({ name: 'home' })
+}
+
+const tabsRefreshCurrentHandle = () => {
+  const tab = route
+  removeTabHandle(tab.name)
+  nextTick(() => {
+    router.push({
+      name: tab.name,
+      query: tab.query,
+      params: tab.params
+    })
+  })
+}
 </script>

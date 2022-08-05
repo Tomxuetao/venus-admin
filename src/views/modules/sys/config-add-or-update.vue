@@ -18,102 +18,88 @@
   </el-dialog>
 </template>
 
-<script>
+<script setup>
 import { useHttp } from '@/utils/http'
-import { defineComponent, ref, reactive, nextTick } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 
-export default defineComponent({
-  emits: ['refresh-data-list'],
+const emit = defineEmits(['refresh-data-list'])
 
-  setup(props, { emit }) {
-    const http = useHttp()
+const http = useHttp()
 
-    let dataForm = reactive({
-      id: undefined,
-      paramKey: '',
-      paramValue: '',
-      remark: ''
-    })
+let dataForm = reactive({
+  id: undefined,
+  paramKey: '',
+  paramValue: '',
+  remark: ''
+})
 
-    const dataRule = reactive({
-      paramKey: [
-        {
-          required: true,
-          message: '参数名不能为空',
-          trigger: 'blur'
-        }
-      ],
-      paramValue: [
-        {
-          required: true,
-          message: '参数值不能为空',
-          trigger: 'blur'
-        }
-      ]
-    })
-
-    let visible = ref(false)
-    let dataFormRef = ref(null)
-
-    const initDialogHandle = (id) => {
-      visible.value = true
-      nextTick(() => {
-        if (dataFormRef.value) {
-          dataFormRef.value.resetFields()
-        }
-      })
-      dataForm.id = id
-      if (dataForm.id) {
-        http({
-          url: http.adornUrl(`/sys/config/info/${dataForm.id}`),
-          method: 'get',
-          params: http.adornParams()
-        }).then(({ data, code }) => {
-          if (code === 200) {
-            dataForm = Object.assign(dataForm, data)
-          }
-        })
-      }
+const dataRule = reactive({
+  paramKey: [
+    {
+      required: true,
+      message: '参数名不能为空',
+      trigger: 'blur'
     }
+  ],
+  paramValue: [
+    {
+      required: true,
+      message: '参数值不能为空',
+      trigger: 'blur'
+    }
+  ]
+})
 
-    const dataFormSubmit = () => {
-      dataFormRef.value.validate((valid) => {
-        if (valid) {
-          http({
-            url: http.adornUrl(`/sys/config/${!dataForm.id ? 'save' : 'update'}`),
-            method: 'post',
-            data: http.adornData(dataForm)
-          }).then(({ code, msg }) => {
-            if (code === 200) {
-              ElMessage({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  visible.value = false
-                  emit('refresh-data-list')
-                }
-              })
-            } else {
+let visible = ref(false)
+let dataFormRef = ref(null)
+
+const initDialogHandle = (id) => {
+  visible.value = true
+  nextTick(() => {
+    if (dataFormRef.value) {
+      dataFormRef.value.resetFields()
+    }
+  })
+  dataForm.id = id
+  if (dataForm.id) {
+    http({
+      url: http.adornUrl(`/sys/config/info/${dataForm.id}`),
+      method: 'get',
+      params: http.adornParams()
+    }).then(({ data, code }) => {
+      if (code === 200) {
+        dataForm = Object.assign(dataForm, data)
+      }
+    })
+  }
+}
+
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      http({
+        url: http.adornUrl(`/sys/config/${!dataForm.id ? 'save' : 'update'}`),
+        method: 'post',
+        data: http.adornData(dataForm)
+      }).then(({ code, msg }) => {
+        if (code === 200) {
+          ElMessage({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
               visible.value = false
               emit('refresh-data-list')
-              ElMessage.error(msg)
             }
           })
+        } else {
+          visible.value = false
+          emit('refresh-data-list')
+          ElMessage.error(msg)
         }
       })
     }
-
-    return {
-      visible,
-      dataRule,
-      dataForm,
-      dataFormRef,
-
-      dataFormSubmit,
-      initDialogHandle
-    }
-  }
-})
+  })
+}
 </script>

@@ -41,7 +41,7 @@
   </nav>
 </template>
 
-<script>
+<script setup>
 import { defineComponent, ref, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import UpdatePassword from './main-navbar-update-password.vue'
@@ -50,80 +50,61 @@ import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 
-export default defineComponent({
-  components: {
-    UpdatePassword
+const http = useHttp()
+const store = useStore()
+const router = useRouter()
+const updatePasswordVisible = ref(false)
+const updatePasswordRef = ref(null)
+
+const navbarLayoutType = computed(() => {
+  return store.state.common.navbarLayoutType
+})
+
+const sidebarFold = computed({
+  get: () => {
+    return store.state.common.sidebarFold
   },
-  setup () {
-    const http = useHttp()
-    const store = useStore()
-    const router = useRouter()
-    const updatePasswordVisible = ref(false)
-    const updatePasswordRef = ref(null)
-
-    const navbarLayoutType = computed(() => {
-      return store.state.common.navbarLayoutType
-    })
-
-    const sidebarFold = computed({
-      get: () => {
-        return store.state.common.sidebarFold
-      },
-      set: value => {
-        store.commit('common/updateSidebarFold', value)
-      }
-    })
-
-    const mainTabs = computed({
-      get: () => {
-        return store.state.common.mainTabs
-      },
-      set: value => {
-        store.commit('common/updateMainTabs', value)
-      }
-    })
-
-    const userName = computed(() => {
-      return store.state.user.name
-    })
-
-    const updatePasswordHandle = () => {
-      updatePasswordVisible.value = true
-      nextTick(() => {
-        updatePasswordRef.value.initDialogHandle()
-      })
-    }
-
-    const logoutHandle = () => {
-      ElMessageBox.confirm('确定进行[退出]操作?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        http({
-          url: http.adornUrl('/sys/logout'),
-          method: 'post',
-          data: http.adornData()
-        }).then(({ code }) => {
-          if (code === 200) {
-            clearLoginInfo()
-            router.push({ name: 'login' })
-          }
-        })
-      })
-    }
-
-    return {
-      updatePasswordVisible,
-      updatePasswordRef,
-      navbarLayoutType,
-      sidebarFold,
-      mainTabs,
-      userName,
-
-      updatePasswordHandle,
-      logoutHandle
-    }
+  set: value => {
+    store.commit('common/updateSidebarFold', value)
   }
 })
+
+const mainTabs = computed({
+  get: () => {
+    return store.state.common.mainTabs
+  },
+  set: value => {
+    store.commit('common/updateMainTabs', value)
+  }
+})
+
+const userName = computed(() => {
+  return store.state.user.name
+})
+
+const updatePasswordHandle = () => {
+  updatePasswordVisible.value = true
+  nextTick(() => {
+    updatePasswordRef.value.initDialogHandle()
+  })
+}
+
+const logoutHandle = () => {
+  ElMessageBox.confirm('确定进行[退出]操作?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    http({
+      url: http.adornUrl('/sys/logout'),
+      method: 'post',
+      data: http.adornData()
+    }).then(({ code }) => {
+      if (code === 200) {
+        clearLoginInfo()
+        router.push({ name: 'login' })
+      }
+    })
+  })
+}
 </script>

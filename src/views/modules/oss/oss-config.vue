@@ -78,93 +78,81 @@
   </el-dialog>
 </template>
 
-<script>
-import { defineComponent, reactive, ref } from 'vue'
+<script setup>
+import { reactive, ref } from 'vue'
 import { useHttp } from '@/utils/http'
 
 import { ElMessage } from 'element-plus'
 
-export default defineComponent({
-  emits: ['refresh-data-list'],
+const emit = defineEmits(['refresh-data-list'])
 
-  setup(props, { emit }) {
-    const http = useHttp()
+const http = useHttp()
 
-    let dataForm = reactive({
-      type: 1,
-      qiniuDomain: '',
-      qiniuPrefix: '',
-      qiniuAccessKey: '',
-      qiniuSecretKey: '',
-      qiniuBucketName: '',
+let dataForm = reactive({
+  type: 1,
+  qiniuDomain: '',
+  qiniuPrefix: '',
+  qiniuAccessKey: '',
+  qiniuSecretKey: '',
+  qiniuBucketName: '',
 
-      aliyunDomain: '',
-      aliyunPrefix: '',
-      aliyunEndPoint: '',
-      aliyunAccessKeyId: '',
-      aliyunAccessKeySecret: '',
-      aliyunBucketName: '',
+  aliyunDomain: '',
+  aliyunPrefix: '',
+  aliyunEndPoint: '',
+  aliyunAccessKeyId: '',
+  aliyunAccessKeySecret: '',
+  aliyunBucketName: '',
 
-      qcloudDomain: '',
-      qcloudPrefix: '',
-      qcloudAppId: '',
-      qcloudSecretId: '',
-      qcloudSecretKey: '',
-      qcloudBucketName: '',
-      qcloudRegion: ''
-    })
+  qcloudDomain: '',
+  qcloudPrefix: '',
+  qcloudAppId: '',
+  qcloudSecretId: '',
+  qcloudSecretKey: '',
+  qcloudBucketName: '',
+  qcloudRegion: ''
+})
 
-    let visible = ref(false)
-    const initDialogHandle = (id) => {
-      visible.value = true
+let visible = ref(false)
+const initDialogHandle = (id) => {
+  visible.value = true
+  http({
+    url: http.adornUrl('/sys/oss/config'),
+    method: 'get',
+    params: http.adornParams()
+  }).then(({ data, code, msg }) => {
+    if (code === 200) {
+      dataForm = Object.assign(dataForm, data)
+    } else {
+      ElMessage.error(msg)
+    }
+  })
+}
+
+const dataFormRef = ref(null)
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
       http({
-        url: http.adornUrl('/sys/oss/config'),
-        method: 'get',
-        params: http.adornParams()
-      }).then(({ data, code, msg }) => {
+        url: http.adornUrl('/sys/oss/saveConfig'),
+        method: 'post',
+        data: http.adornData(dataForm)
+      }).then(({ code, msg }) => {
         if (code === 200) {
-          dataForm = Object.assign(dataForm, data)
+          ElMessage({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              visible.value = false
+              emit('refresh-data-list')
+            }
+          })
         } else {
           ElMessage.error(msg)
         }
       })
     }
+  })
+}
 
-    const dataFormRef = ref(null)
-    const dataFormSubmit = () => {
-      dataFormRef.value.validate((valid) => {
-        if (valid) {
-          http({
-            url: http.adornUrl('/sys/oss/saveConfig'),
-            method: 'post',
-            data: http.adornData(dataForm)
-          }).then(({ code, msg}) => {
-            if (code === 200) {
-              ElMessage({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  visible.value = false
-                  emit('refresh-data-list')
-                }
-              })
-            } else {
-              ElMessage.error(msg)
-            }
-          })
-        }
-      })
-    }
-
-    return {
-      visible,
-      dataForm,
-      dataFormRef,
-
-      dataFormSubmit,
-      initDialogHandle
-    }
-  }
-})
 </script>

@@ -42,7 +42,7 @@ function findSvgFile(dir) {
   return svgRes
 }
 
-export const svgBuilder = (path) => {
+export const BuilderSvg = (path) => {
   if (path) {
     const svgFileList = findSvgFile(path)
     return {

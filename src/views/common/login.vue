@@ -4,7 +4,8 @@
       <div class="site-content">
         <div class="brand-info">
           <h2 class="brand-info__text">VenusAdmin</h2>
-          <p class="brand-info__intro">VenusAdmin基于Vue3、Element Plus构建开发，实现VenusFast后台管理前端功能，提供一套更优的前端解决方案。</p>
+          <p class="brand-info__intro">VenusAdmin基于Vue3、Element
+            Plus构建开发，实现VenusFast后台管理前端功能，提供一套更优的前端解决方案。</p>
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
@@ -41,78 +42,63 @@ import { getUUID } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 
-import { defineComponent, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
-export default defineComponent({
-  name: 'login',
-  setup() {
-    const http = useHttp()
-    const router = useRouter()
+const http = useHttp()
+const router = useRouter()
 
-    const dataForm = reactive({
-      username: '',
-      password: '',
-      uuid: '',
-      captcha: ''
-    })
-    const dataRule = reactive({
-      username: [
-        { required: true, message: '帐号不能为空', trigger: 'blur' }
-      ],
-      password: [
-        { required: true, message: '密码不能为空', trigger: 'blur' }
-      ],
-      captcha: [
-        { required: true, message: '验证码不能为空', trigger: 'blur' }
-      ]
-    })
+const dataForm = reactive({
+  username: '',
+  password: '',
+  uuid: '',
+  captcha: ''
+})
+const dataRule = reactive({
+  username: [
+    { required: true, message: '帐号不能为空', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '密码不能为空', trigger: 'blur' }
+  ],
+  captcha: [
+    { required: true, message: '验证码不能为空', trigger: 'blur' }
+  ]
+})
 
-    const captchaPath = ref('')
+const captchaPath = ref('')
 
-    const dataFormRef = ref(null)
+const dataFormRef = ref(null)
 
-    const getCaptcha = () => {
-      dataForm.uuid = getUUID()
-      captchaPath.value = http.adornUrl(`/captcha.jpg?uuid=${ dataForm.uuid }`)
-    }
-    getCaptcha()
+const getCaptcha = () => {
+  dataForm.uuid = getUUID()
+  captchaPath.value = http.adornUrl(`/captcha.jpg?uuid=${dataForm.uuid}`)
+}
+getCaptcha()
 
-    const dataFormSubmit = () => {
-      dataFormRef.value.validate((valid) => {
-        if (valid) {
-          http({
-            url: http.adornUrl('/sys/login'),
-            method: 'post',
-            data: http.adornData(dataForm)
-          }).then(({ code, data, msg }) => {
-            if (code === 200) {
-              const { token } = data
-              localStorage.setItem('token', token)
-              router.replace({ name: 'home' })
-            } else {
-              ElMessage({
-                message: msg,
-                type: 'error'
-              })
-              getCaptcha()
-            }
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      http({
+        url: http.adornUrl('/sys/login'),
+        method: 'post',
+        data: http.adornData(dataForm)
+      }).then(({ code, data, msg }) => {
+        if (code === 200) {
+          const { token } = data
+          localStorage.setItem('token', token)
+          router.replace({ name: 'home' })
+        } else {
+          ElMessage({
+            message: msg,
+            type: 'error'
           })
+          getCaptcha()
         }
       })
     }
-
-    return {
-      dataForm,
-      dataRule,
-      captchaPath,
-      dataFormRef,
-
-      getCaptcha,
-      dataFormSubmit
-    }
-  }
-})
+  })
+}
 </script>
 
 <style lang="scss" scoped>
