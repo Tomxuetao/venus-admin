@@ -7,7 +7,7 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
-      <el-form-item size="mini" label="授权">
+      <el-form-item label="授权">
         <el-tree :data="menuList" :props="{ label: 'name',children: 'children' }" :default-expanded-keys="expandedKeys"
                  ref="menuListTreeRef" node-key="menuId" show-checkbox></el-tree>
       </el-form-item>

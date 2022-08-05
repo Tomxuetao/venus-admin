@@ -36,7 +36,7 @@
           <el-tag v-else size="small" type="danger">暂停</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" align="center" width="240" label="操作">
+      <el-table-column fixed="right" align="center" width="320" label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:schedule:update')" link size="small" @click="addOrUpdateHandle(scope.row.jobId)">
             修改

@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { getUUID } from '@/utils'
 import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'

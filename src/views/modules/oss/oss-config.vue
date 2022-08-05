@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="云存储配置" v-model="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="140px">
-      <el-form-item size="mini" label="存储类型">
+      <el-form-item label="存储类型">
         <el-radio-group v-model="dataForm.type">
           <el-radio :label="1">七牛</el-radio>
           <el-radio :label="2">阿里云</el-radio>
