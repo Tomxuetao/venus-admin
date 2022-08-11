@@ -38,15 +38,12 @@
 </template>
 
 <script setup>
+import { loginApi } from '@/api/login-api'
 import { getUUID } from '@/utils'
-import { useHttp } from '@/utils/http'
+import { proxy } from '@/utils/http'
 import { useRouter } from 'vue-router'
 
 import { reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
-
-const http = useHttp()
-const router = useRouter()
 
 const dataForm = reactive({
   username: '',
@@ -68,33 +65,22 @@ const dataRule = reactive({
 
 const captchaPath = ref('')
 
-const dataFormRef = ref(null)
-
 const getCaptcha = () => {
   dataForm.uuid = getUUID()
-  captchaPath.value = http.adornUrl(`/captcha.jpg?uuid=${dataForm.uuid}`)
+  captchaPath.value = `${proxy}/captcha?uuid=${dataForm.uuid}`
 }
 getCaptcha()
 
+const router = useRouter()
+const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      http({
-        url: http.adornUrl('/sys/login'),
-        method: 'post',
-        data: http.adornData(dataForm)
-      }).then(({ code, data, msg }) => {
-        if (code === 200) {
-          const { token } = data
-          localStorage.setItem('token', token)
-          router.replace({ name: 'home' })
-        } else {
-          ElMessage({
-            message: msg,
-            type: 'error'
-          })
-          getCaptcha()
-        }
+      loginApi(dataForm).then(data => {
+        const { token } = data
+        sessionStorage.setItem('token', token)
+
+        router.replace({ name: 'home' })
       })
     }
   })

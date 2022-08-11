@@ -2,6 +2,7 @@
   <aside class="site-sidebar" :class="'site-sidebar--' + sidebarLayoutSkin">
     <div class="site-sidebar__inner">
       <el-menu
+          :unique-opened="true"
           :default-active="menuActiveName || 'home'"
           :collapse="sidebarFold"
           :collapseTransition="false"
@@ -14,7 +15,7 @@
         </el-menu-item>
         <sub-menu
             v-for="menu in menuList"
-            :key="menu.menuId"
+            :key="menu.id"
             :menu="menu"
             :dynamicMenuRoutes="dynamicMenuRoutes">
         </sub-menu>
@@ -25,12 +26,9 @@
 
 <script setup>
 import SubMenu from './main-sidebar-sub-menu.vue'
-import { isURL } from '@/utils'
-import { useRoute } from 'vue-router'
+import { treeDataTranslate } from '@/utils'
 import { useStore } from 'vuex'
-import { computed, reactive, watch } from 'vue'
-
-const route = useRoute()
+import { computed, reactive } from 'vue'
 
 const store = useStore()
 
@@ -53,66 +51,9 @@ const menuList = computed({
   }
 })
 
-const menuActiveName = computed({
-  get: () => {
-    return store.state.common.menuActiveName
-  },
-  set: value => {
-    store.commit('common/updateMenuActiveName', value)
-  }
+const menuActiveName = computed(() => {
+  return store.state.common.menuActiveName
 })
 
-const mainTabs = computed({
-  get: () => {
-    return store.state.common.mainTabs
-  },
-  set: value => {
-    store.commit('common/updateMainTabs', value)
-  }
-})
-
-const mainTabsActiveName = computed({
-  get: () => {
-    return store.state.common.mainTabsActiveName
-  },
-  set: value => {
-    store.commit('common/updateMainTabsActiveName', value)
-  }
-})
-
-menuList.value = JSON.parse(sessionStorage.getItem('menuList') || '[]')
-dynamicMenuRoutes.value = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
-
-const routeHandle = routeName => {
-  if (route.meta.isTab) {
-    // tab选中, 不存在先添加
-    let tab = mainTabs.value.find(item => item.name === routeName)
-    if (!tab) {
-      if (route.meta.isDynamic) {
-        const temp = dynamicMenuRoutes.value.find(item => item.name === routeName)
-        if (!temp) {
-          return console.error('未能找到可用标签页!')
-        }
-      }
-      tab = {
-        menuId: route.meta.menuId || route.name,
-        name: route.name,
-        title: route.meta.title,
-        type: isURL(route.meta.iframeUrl) ? 'iframe' : 'module',
-        iframeUrl: route.meta.iframeUrl || '',
-        params: route.params,
-        query: route.query
-      }
-      mainTabs.value = mainTabs.value.concat(tab)
-    }
-    menuActiveName.value = tab.menuId + ''
-    mainTabsActiveName.value = tab.name
-  }
-}
-
-routeHandle(route.name)
-
-watch(() => route.name, value => {
-  routeHandle(value)
-})
+menuList.value = treeDataTranslate(JSON.parse(sessionStorage.getItem('menuList') || '[]'))
 </script>

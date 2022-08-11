@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataListHandle()">查询</el-button>
-        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()"
+        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle(undefined)">新增</el-button>
+        <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle(undefined)"
                    :disabled="dataListSelections.length <= 0">批量删除
         </el-button>
       </el-form-item>
@@ -37,10 +37,10 @@
           width="150"
           label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:user:update')" link size="small" @click="addOrUpdateHandle(scope.row.userId)">
+          <el-button v-if="isAuth('sys:user:update')" link size="small" @click="addOrUpdateHandle(scope.row.id)">
             修改
           </el-button>
-          <el-button v-if="isAuth('sys:user:delete')" link size="small" @click="deleteHandle(scope.row.userId)"
+          <el-button v-if="isAuth('sys:user:delete')" link size="small" @click="deleteHandle(scope.row.id)"
                      style="color: #f56c6c;">删除
           </el-button>
         </template>
@@ -56,19 +56,16 @@
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
+<!--    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>-->
   </div>
 </template>
 
 <script setup>
-import AddOrUpdate from './user-add-or-update.vue'
-import { useHttp } from '@/utils/http'
+import { sysUserDeleteApi, sysUserListApi } from '@/api/user-api'
+// import AddOrUpdate from './user-add-or-update.vue'
 import { ref, reactive, nextTick } from 'vue'
 import { isAuth } from '@/utils'
 import { ElMessageBox, ElMessage } from 'element-plus'
-
-
-const http = useHttp()
 
 const addOrUpdateRef = ref(null)
 
@@ -85,22 +82,11 @@ const dataListSelections = ref([])
 const addOrUpdateVisible = ref(false)
 
 // 获取数据列表
-let isSizeChange = false
 const getDataListHandle = () => {
   dataListLoading.value = true
-  http({
-    url: http.adornUrl('/sys/user/list'),
-    method: 'get',
-    params: http.adornParams(searchForm)
-  }).then(({ code, data }) => {
-    isSizeChange = false
-    if (code === 200) {
-      dataList.value = data.list
-      total.value = data.total
-    } else {
-      dataList.value = []
-      total.value = 0
-    }
+  sysUserListApi(searchForm).then(({ list, total: count }) => {
+    dataList.value = list
+    total.value = count
     dataListLoading.value = false
   })
 }
@@ -122,47 +108,36 @@ const addOrUpdateHandle = (id) => {
 // 删除
 const deleteHandle = (id) => {
   const userIds = id ? [id] : dataListSelections.value.map(item => {
-    return item.userId
+    return item.id
   })
   ElMessageBox.confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    http({
-      url: http.adornUrl('/sys/user/delete'),
-      method: 'post',
-      data: http.adornData(userIds, false)
-    }).then(({ code, msg }) => {
-      if (code === 200) {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            getDataListHandle()
-          }
-        })
-      } else {
-        ElMessage.error(msg)
-      }
+    sysUserDeleteApi({ ids: userIds }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          getDataListHandle()
+        }
+      })
     })
   })
 }
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
-  dataForm.pageNum = 1
-  dataForm.pageSize = pageSize
+  searchForm.pageNum = 1
+  searchForm.pageSize = pageSize
   getDataListHandle()
 }
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  searchForm.pageNum = pageNum
+  getDataListHandle()
 }
 </script>

@@ -2,10 +2,10 @@
   <div class="mod-menu">
     <el-form :inline="true">
       <el-form-item>
-        <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle(undefined)">新增</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" row-key="menuId" :expand-row-keys="[1]" border style="width: 100%;">
+    <el-table :data="dataList" row-key="id" border style="width: 100%;">
       <el-table-column prop="name" min-width="150" label="名称"></el-table-column>
       <el-table-column prop="parentName" align="center" width="120" label="上级菜单"></el-table-column>
       <el-table-column align="center" label="图标">
@@ -15,23 +15,40 @@
       </el-table-column>
       <el-table-column prop="type" align="center" label="类型">
         <template v-slot="scope">
-          <el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>
-          <el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>
-          <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
+          <el-tag size="small" :type="scope.row.type ? 'success' : ''">{{ menuTypeMap.get(scope.row.type)}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="orderNum" align="center" label="排序号"></el-table-column>
-      <el-table-column prop="url" align="center" width="150" :show-overflow-tooltip="true"
-                       label="菜单URL"></el-table-column>
-      <el-table-column prop="perms" align="center" width="150" :show-overflow-tooltip="true"
-                       label="授权标识"></el-table-column>
+      <el-table-column
+          prop="orderNum"
+          align="center"
+          label="排序号">
+      </el-table-column>
+      <el-table-column
+          prop="url"
+          align="center"
+          width="150"
+          label="菜单URL"
+          :show-overflow-tooltip="true">
+      </el-table-column>
+      <el-table-column
+          prop="permissions"
+          align="center"
+          width="150"
+          label="授权标识"
+          :show-overflow-tooltip="true">
+      </el-table-column>
       <el-table-column fixed="right" align="center" width="150" label="操作">
         <template v-slot="scope">
-          <el-button v-if="isAuth('sys:menu:update')" link size="small" @click="addOrUpdateHandle(scope.row.menuId)">
+          <el-button
+              link size="small"
+              @click="addOrUpdateHandle(scope.row.id)">
             修改
           </el-button>
-          <el-button v-if="isAuth('sys:menu:delete')" link size="small" @click="deleteHandle(scope.row.menuId)"
-                     style="color: #f56c6c;">删除
+          <el-button
+              link size="small"
+              @click="deleteHandle(scope.row.id)"
+              style="color: #f56c6c;">
+            删除
           </el-button>
         </template>
       </el-table-column>
@@ -42,16 +59,19 @@
 </template>
 
 <script setup>
+import { sysMenuDeleteApi, sysMenuListApi } from '@/api/menu-api'
 import AddOrUpdate from './menu-add-or-update.vue'
 
 import { treeDataTranslate, isAuth } from '@/utils'
-import { useHttp } from '@/utils/http'
 
 import { ref, nextTick } from 'vue'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
 
-const http = useHttp()
+const menuTypeMap = new Map([
+  [0, '菜单'],
+  [1, '按钮']
+])
 
 let dataList = ref([])
 let dataListLoading = ref(false)
@@ -59,17 +79,9 @@ let addOrUpdateVisible = ref(false)
 
 const getDataListHandle = () => {
   dataListLoading.value = true
-  http({
-    url: http.adornUrl('/sys/menu/list'),
-    method: 'get',
-    params: http.adornParams()
-  }).then(({ code, msg, data }) => {
-    if (code === 200) {
-      dataList.value = treeDataTranslate(data, 'menuId')
-      dataListLoading.value = false
-    } else {
-      ElMessage.error(msg)
-    }
+  sysMenuListApi().then((data) => {
+    dataList.value = treeDataTranslate(data)
+    dataListLoading.value = false
   }).catch(() => {
     dataListLoading.value = false
   })
@@ -83,25 +95,16 @@ const deleteHandle = (id) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    http({
-      url: http.adornUrl(`/sys/menu/delete/${id}`),
-      method: 'post',
-      data: http.adornData()
-    }).then(({ code, msg }) => {
-      if (code === 200) {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            getDataListHandle()
-          }
-        })
-      } else {
-        ElMessage.error(msg)
-      }
+    sysMenuDeleteApi({ id: id }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          getDataListHandle()
+        }
+      })
     })
-  }).catch(() => {
   })
 }
 

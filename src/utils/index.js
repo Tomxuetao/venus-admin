@@ -25,6 +25,7 @@ export function isAuth (key) {
 
 export function clearLoginInfo () {
 	localStorage.clear()
+  sessionStorage.clear()
 }
 
 /**
@@ -33,7 +34,7 @@ export function clearLoginInfo () {
  * @param {*} id
  * @param {*} pid
  */
-export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
+export function treeDataTranslate (data, id = 'id', pid = 'pid') {
   const res = []
   const temp = {}
   for (let i = 0; i < data.length; i++) {

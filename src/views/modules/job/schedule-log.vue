@@ -60,7 +60,6 @@ const initDialogHandle = () => {
 }
 
 // 获取数据列表
-let isSizeChange = false
 const getDataListHandle = () => {
   dataListLoading.value = true
   http({
@@ -68,7 +67,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(searchForm)
   }).then(({ code, data }) => {
-    isSizeChange = false
     if (code === 200) {
       dataList.value = data.list
       total.value = data.total
@@ -97,7 +95,6 @@ const showErrorHandle = (id) => {
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   searchForm.pageNum = 1
   searchForm.pageSize = pageSize
   getDataListHandle()
@@ -105,10 +102,8 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    searchForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  searchForm.pageNum = pageNum
+  getDataListHandle()
 }
 
 defineExpose({

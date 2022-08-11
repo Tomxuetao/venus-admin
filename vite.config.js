@@ -10,7 +10,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/proxyApi': {
-				target: 'http://localhost:9080/venus-fast/',
+				target: 'http://localhost:8088/venus-admin/',
 				changeOrigin: true,
 				secure: false,
 				rewrite: (path) => path.replace(/^\/proxyApi/, '')

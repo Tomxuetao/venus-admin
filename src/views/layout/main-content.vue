@@ -39,20 +39,16 @@
 
 <script setup>
 import { isURL } from '@/utils'
-import { computed, inject, nextTick } from 'vue'
+import { computed, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-
 
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
 
-// computed
-const documentClientHeight = computed({
-  get: () => {
-    return store.state.common.documentClientHeight
-  }
+const documentClientHeight = computed(() => {
+  return store.state.common.documentClientHeight
 })
 
 const menuActiveName = computed({
@@ -82,15 +78,13 @@ const mainTabsActiveName = computed({
   }
 })
 
-const siteContentViewHeight = computed({
-  get: () => {
-    let height = documentClientHeight.value - 50 - 30 - 2
-    if (route.meta.isTab) {
-      height -= 40
-      return isURL(route.meta.iframeUrl) ? `height: ${height}px ` : `min-height: ${height}px`
-    }
-    return `min-height: ${height}px`
+const siteContentViewHeight = computed(() => {
+  let height = documentClientHeight.value - 50 - 30 - 2
+  if (route.meta.isTab) {
+    height -= 40
+    return isURL(route.meta.iframeUrl) ? `height: ${height}px ` : `min-height: ${height}px`
   }
+  return `min-height: ${height}px`
 })
 
 const refreshHandle = inject('refreshHandle')

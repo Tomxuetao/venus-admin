@@ -96,7 +96,6 @@ const addOrUpdateVisible = ref(false)
 const dataListSelections = ref([])
 
 // 获取数据列表
-let isSizeChange = false
 const getDataListHandle = () => {
   dataListLoading.value = true
   http({
@@ -104,7 +103,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(dataForm)
   }).then(({ code, msg, data }) => {
-    isSizeChange = true
     if (code === 200) {
       dataList.value = data.list
       total.value = data.total
@@ -121,7 +119,6 @@ getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   dataForm.pageNum = 1
   dataForm.pageSize = pageSize
   getDataListHandle()
@@ -129,10 +126,8 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  dataForm.pageNum = pageNum
+  getDataListHandle()
 }
 
 // 多选

@@ -8,9 +8,8 @@ import 'element-plus/dist/index.css'
 import '@/assets/scss/index.scss'
 import 'normalize.css/normalize.css'
 
-import http from '@/utils/http'
 import IconSvg from '@/components/index'
 
 const app = createApp(App)
 
-app.use(store).use(router).use(ElementPlus).use(IconSvg).use(http).mount('#app')
+app.use(store).use(router).use(ElementPlus).use(IconSvg).mount('#app')

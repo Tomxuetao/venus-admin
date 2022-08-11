@@ -22,16 +22,15 @@
 </template>
 
 <script setup>
+import { updatePswApi } from '@/api/user-api'
 import { clearLoginInfo } from '@/utils'
 import { ref, reactive, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
-import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 
 const store = useStore()
-const http = useHttp()
 const router = useRouter()
 
 const visible = ref(false)
@@ -88,34 +87,20 @@ const initDialogHandle = () => {
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      http({
-        url: http.adornUrl('/sys/user/password'),
-        method: 'post',
-        data: http.adornData({
-          password: dataForm.password,
-          newPassword: dataForm.newPassword
+      updatePswApi(dataForm).then(() => {
+        ElMessage({
+          message: '操作成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            visible.value = false
+            nextTick(() => {
+              mainTabs.value = []
+              clearLoginInfo()
+              router.replace({ name: 'login' })
+            })
+          }
         })
-      }).then(({ code, msg }) => {
-        if (code === 200) {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              visible.value = false
-              nextTick(() => {
-                mainTabs.value = []
-                clearLoginInfo()
-                router.replace({ name: 'login' })
-              })
-            }
-          })
-        } else {
-          ElMessage({
-            type: 'error',
-            message: msg
-          })
-        }
       })
     }
   })

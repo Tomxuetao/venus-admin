@@ -71,7 +71,6 @@ let dataListSelections = ref([])
 let addOrUpdateVisible = ref(false)
 let addOrUpdateRef = ref(null)
 
-let isSizeChange = false
 
 const getDataListHandle = () => {
   dataListLoading.value = true
@@ -80,7 +79,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(searchForm)
   }).then(({ code, data }) => {
-    isSizeChange = false
     if (code === 200) {
       dataListLoading.value = false
       total.value = data.total
@@ -93,7 +91,6 @@ getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   dataForm.pageNum = 1
   dataForm.pageSize = pageSize
   getDataListHandle()
@@ -101,10 +98,8 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  dataForm.pageNum = pageNum
+  getDataListHandle()
 }
 
 const selectionChangeHandle = (value) => {

@@ -3,9 +3,8 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="80px">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
-          <el-radio v-for="(key, index) in menuTypeMap.keys()" :label="index" :key="index">{{
-              menuTypeMap.get(key)
-            }}
+          <el-radio v-for="(key, index) in menuTypeMap.keys()" :label="index" :key="index">
+            {{ menuTypeMap.get(key) }}
           </el-radio>
         </el-radio-group>
       </el-form-item>
@@ -13,23 +12,14 @@
         <el-input v-model="dataForm.name" :placeholder="menuTypeMap.get(dataForm.type) + '名称'"></el-input>
       </el-form-item>
       <el-form-item label="上级菜单" prop="parentName">
-        <el-popover
-            placement="bottom-start"
-            trigger="click">
-          <el-tree
-              :data="menuListTree"
-              :props="menuListTreeProps"
-              node-key="menuId"
-              ref="menuListTreeRef"
-              @current-change="menuListTreePageNumChangeHandle"
-              :default-expand-all="true"
-              :highlight-current="true"
-              :expand-on-click-node="false">
-          </el-tree>
-          <template #reference>
-            <el-input v-model="dataForm.parentName" placeholder="点击选择上级菜单" class="menu-list__input"></el-input>
-          </template>
-        </el-popover>
+        <el-tree-select
+            ref="menuListTreeRef"
+            v-model="dataForm.parentName"
+            :data="menuListTree"
+            show-checkbox
+            :render-after-expand="false"
+            :props="{ label: 'name', value: 'name' }">
+        </el-tree-select>
       </el-form-item>
       <el-form-item v-if="dataForm.type === 1" label="菜单路由" prop="url">
         <el-input v-model="dataForm.url" placeholder="菜单路由"></el-input>
@@ -83,21 +73,19 @@
 </template>
 
 <script setup>
+import { sysMenuDetailApi, sysMenuSaveApi, sysMenuSelectApi, sysMenuUpdateApi } from '@/api/menu-api'
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/icons'
-import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick } from 'vue'
 
 import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['refresh-data-list'])
 
-const http = useHttp()
-
 const menuTypeMap = new Map([[0, '目录'], [1, '菜单'], [2, '按钮']])
 
 let dataForm = reactive({
-  menuId: undefined,
+  id: undefined,
   type: 1,
   name: '',
   parentId: 0,
@@ -143,23 +131,14 @@ const iconList = Icon.getNameList()
 
 let menuListTree = ref([])
 
-let menuListTreeProps = reactive({
-  label: 'name',
-  children: 'children'
-})
-
 let visible = ref(false)
 
 let dataFormRef = ref(null)
 
 const initDialogHandle = (id) => {
-  dataForm.menuId = id
-  http({
-    url: http.adornUrl('/sys/menu/select'),
-    method: 'get',
-    params: http.adornParams()
-  }).then(({ data }) => {
-    menuListTree.value = treeDataTranslate(data, 'menuId')
+  dataForm.id = id
+  sysMenuSelectApi({ id: id }).then((data) => {
+    menuListTree.value = treeDataTranslate(data.filter(item => item.type === 0), 'id')
   }).then(() => {
     visible.value = true
     nextTick(() => {
@@ -168,27 +147,17 @@ const initDialogHandle = (id) => {
       }
     })
   }).then(() => {
-    if (!dataForm.menuId) {
+    if (!dataForm.id) {
       // 新增
       menuListTreeSetCurrentNode()
     } else {
       // 修改
-      http({
-        url: http.adornUrl(`/sys/menu/info/${dataForm.menuId}`),
-        method: 'get',
-        params: http.adornParams()
-      }).then(({ data }) => {
+      sysMenuDetailApi(dataForm).then((data) => {
         dataForm = Object.assign(dataForm, data)
         menuListTreeSetCurrentNode()
       })
     }
   })
-}
-
-// 菜单树选中
-const menuListTreePageNumChangeHandle = (data) => {
-  dataForm.parentId = data.menuId
-  dataForm.parentName = data.name
 }
 
 // 菜单树设置当前选中节点
@@ -209,24 +178,17 @@ const iconActiveHandle = (iconName) => {
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      http({
-        url: http.adornUrl(`/sys/menu/${!dataForm.menuId ? 'save' : 'update'}`),
-        method: 'post',
-        data: http.adornData(dataForm)
-      }).then(({ code, msg }) => {
-        if (code === 200) {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              visible.value = false
-              emit('refresh-data-list')
-            }
-          })
-        } else {
-          ElMessage.error(msg)
-        }
+      const tempSysMenuApi = dataForm.menuId ? sysMenuUpdateApi : sysMenuSaveApi
+      tempSysMenuApi(dataForm).then(() => {
+        ElMessage({
+          message: '操作成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            visible.value = false
+            emit('refresh-data-list')
+          }
+        })
       })
     }
   })

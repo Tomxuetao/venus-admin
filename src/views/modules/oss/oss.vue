@@ -44,7 +44,6 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 
 const http = useHttp()
 
-let isSizeChange = false
 let dataForm = reactive({
   pageSize: 10,
   pageNum: 1
@@ -60,7 +59,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(dataForm)
   }).then(({ code, data }) => {
-    isSizeChange = true
     if (code === 200) {
       dataList.value = data.list
       total.value = data.total
@@ -131,7 +129,6 @@ const selectionChangeHandle = (value) => {
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   dataForm.pageNum = 1
   dataForm.pageSize = pageSize
   getDataListHandle()
@@ -139,9 +136,7 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  dataForm.pageNum = pageNum
+  getDataListHandle()
 }
 </script>

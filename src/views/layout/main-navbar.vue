@@ -35,15 +35,14 @@
 </template>
 
 <script setup>
-import { defineComponent, ref, computed, nextTick } from 'vue'
-import { useStore } from 'vuex'
 import UpdatePassword from './main-navbar-update-password.vue'
+import { logoutApi } from '@/api/login-api'
+import { ref, computed, nextTick } from 'vue'
+import { useStore } from 'vuex'
 import { clearLoginInfo } from '@/utils'
-import { useHttp } from '@/utils/http'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 
-const http = useHttp()
 const store = useStore()
 const router = useRouter()
 const updatePasswordVisible = ref(false)
@@ -59,15 +58,6 @@ const sidebarFold = computed({
   },
   set: value => {
     store.commit('common/updateSidebarFold', value)
-  }
-})
-
-const mainTabs = computed({
-  get: () => {
-    return store.state.common.mainTabs
-  },
-  set: value => {
-    store.commit('common/updateMainTabs', value)
   }
 })
 
@@ -88,16 +78,21 @@ const logoutHandle = () => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    http({
-      url: http.adornUrl('/sys/logout'),
-      method: 'post',
-      data: http.adornData()
-    }).then(({ code }) => {
-      if (code === 200) {
-        clearLoginInfo()
-        router.push({ name: 'login' })
-      }
+    logoutApi().then(() => {
+      clearLoginInfo()
+      const dynamicRouteList = router.getRoutes().filter(item => item.meta.isDynamic)
+      dynamicRouteList.forEach(item => {
+        router.removeRoute(item.name)
+      })
+      router.options.isDynamic = false
+      router.push({ name: 'login' })
     })
   })
 }
 </script>
+
+<style lang="scss" scoped>
+.site-navbar {
+  min-width: 1710px;
+}
+</style>
