@@ -6,20 +6,29 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataListHandle()">查询</el-button>
-        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle(undefined)">新增</el-button>
-        <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle(undefined)"
-                   :disabled="dataListSelections.length <= 0">批量删除
+        <el-button
+          v-if="isAuth('sys:user:save')"
+          type="primary"
+          @click="addOrUpdateHandle(0)">
+          新增
+        </el-button>
+        <el-button
+          v-if="isAuth('sys:user:delete')"
+          type="danger"
+          @click="deleteHandle(undefined)"
+          :disabled="dataListSelections.length <= 0"
+        >
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
     <el-table
-        :data="dataList"
-        border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
-        style="width: 100%;">
+      :data="dataList"
+      border
+      v-loading="dataListLoading"
+      @selection-change="selectionChangeHandle"
+    >
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="userId" align="center" width="80" label="ID"></el-table-column>
       <el-table-column prop="username" align="center" label="用户名"></el-table-column>
       <el-table-column prop="email" align="center" label="邮箱"></el-table-column>
       <el-table-column prop="mobile" align="center" label="手机号"></el-table-column>
@@ -29,43 +38,47 @@
           <el-tag v-else size="small">正常</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" align="center" width="180" label="创建时间"></el-table-column>
+      <el-table-column prop="createDate" align="center" width="180" label="创建时间"></el-table-column>
       <el-table-column
-          fixed="right"
-
-          align="center"
-          width="150"
-          label="操作">
+        fixed="right"
+        align="center"
+        width="150"
+        label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:user:update')" link size="small" @click="addOrUpdateHandle(scope.row.id)">
             修改
           </el-button>
-          <el-button v-if="isAuth('sys:user:delete')" link size="small" @click="deleteHandle(scope.row.id)"
-                     style="color: #f56c6c;">删除
+          <el-button
+            v-if="isAuth('sys:user:delete')"
+            link size="small"
+            @click="deleteHandle(scope.row.id)"
+            style="color: #f56c6c;"
+          >
+            删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="pageSizeChangeHandle"
-        @current-change="pageNumChangeHandle"
-        :current-page="searchForm.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="searchForm.pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper">
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
+      :current-page="searchForm.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="searchForm.pageSize"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-<!--    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>-->
+    <!--    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>-->
   </div>
 </template>
 
 <script setup>
-import { sysUserDeleteApi, sysUserListApi } from '@/api/user-api'
 // import AddOrUpdate from './user-add-or-update.vue'
-import { ref, reactive, nextTick } from 'vue'
 import { isAuth } from '@/utils'
+import { ref, reactive, nextTick } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { deleteSysUserApi, sysUserListApi } from '@/api/user-api'
 
 const addOrUpdateRef = ref(null)
 
@@ -115,7 +128,7 @@ const deleteHandle = (id) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    sysUserDeleteApi({ ids: userIds }).then(() => {
+    deleteSysUserApi({ ids: userIds }).then(() => {
       ElMessage({
         message: '操作成功',
         type: 'success',

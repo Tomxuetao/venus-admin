@@ -21,8 +21,8 @@
 
 <script setup>
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
+
 
 import { ElMessage } from 'element-plus'
 
@@ -45,8 +45,6 @@ const validateName = (rule, value, callback) => {
     })
   }
 }
-
-const http = useHttp()
 
 let btnLoading = ref(false)
 let visible = ref(false)

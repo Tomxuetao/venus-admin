@@ -25,12 +25,9 @@
 
 <script setup>
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['refresh-data-list'])
-
-const http = useHttp()
 
 let dataForm = reactive({
   id: undefined,

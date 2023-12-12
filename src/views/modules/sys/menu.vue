@@ -5,7 +5,7 @@
         <el-button type="primary" @click="addOrUpdateHandle(undefined)">新增</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" row-key="id" border style="width: 100%;">
+    <el-table :data="dataList" row-key="id" border>
       <el-table-column prop="name" min-width="150" label="名称"></el-table-column>
       <el-table-column prop="parentName" align="center" width="120" label="上级菜单"></el-table-column>
       <el-table-column align="center" label="图标">
@@ -59,10 +59,10 @@
 </template>
 
 <script setup>
-import { sysMenuDeleteApi, sysMenuListApi } from '@/api/menu-api'
+import { deleteSysMenuApi, sysMenuListApi } from '@/api/menu-api'
 import AddOrUpdate from './menu-add-or-update.vue'
 
-import { treeDataTranslate, isAuth } from '@/utils'
+import { treeDataTranslate } from '@/utils'
 
 import { ref, nextTick } from 'vue'
 
@@ -95,7 +95,7 @@ const deleteHandle = (id) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    sysMenuDeleteApi({ id: id }).then(() => {
+    deleteSysMenuApi({ id: id }).then(() => {
       ElMessage({
         message: '操作成功',
         type: 'success',

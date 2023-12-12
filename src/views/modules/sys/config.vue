@@ -41,12 +41,9 @@
 <script setup>
 import AddOrUpdate from './config-add-or-update.vue'
 
-import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
-
-const http = useHttp()
 
 const searchForm = reactive({
   paramKey: '',
@@ -81,14 +78,14 @@ getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  dataForm.pageNum = 1
-  dataForm.pageSize = pageSize
+  searchForm.pageNum = 1
+  searchForm.pageSize = pageSize
   getDataListHandle()
 }
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  dataForm.pageNum = pageNum
+  searchForm.pageNum = pageNum
   getDataListHandle()
 }
 

@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
-export function createHttp() {
+export const createHttp = () => {
   const http = axios.create({
-    timeout: 1000 * 60,
+    timeout: 1000 * 3,
     withCredentials: true,
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
+      'Content-Type': 'application/json'
     }
   })
 
@@ -22,13 +22,18 @@ export function createHttp() {
    * 响应拦截
    */
   http.interceptors.response.use((response) => {
+    const { request, headers } = response
     const { code, data, msg } = response.data
-    if (code === 0) {
-      return data
-    } else {
-      ElMessage.error(msg)
-      return Promise.reject(msg)
+    if (request.responseType !== 'blob') {
+      if (code === 200) {
+        return data
+      } else {
+        ElMessage.error(msg)
+        return Promise.reject(msg)
+      }
     }
+   
+    return { downloadMethod: headers['content-disposition'], data }
   }, (error) => Promise.reject(error))
 
   return http
@@ -36,4 +41,4 @@ export function createHttp() {
 
 export const http = createHttp()
 
-export const proxy = 'proxyApi'
+export const venusServer = '/venus-api'

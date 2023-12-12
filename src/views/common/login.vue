@@ -9,7 +9,7 @@
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" status-icon @keyup.enter="dataFormSubmit()">
+          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" @keyup.enter="dataFormSubmit()">
             <el-form-item prop="username">
               <el-input v-model="dataForm.username" placeholder="帐号"></el-input>
             </el-form-item>
@@ -38,12 +38,15 @@
 </template>
 
 <script setup>
-import { loginApi } from '@/api/login-api'
-import { getUUID } from '@/utils'
-import { proxy } from '@/utils/http'
 import { useRouter } from 'vue-router'
+import { loginApi } from '@/api/login-api'
+import { useCommonStore } from '@/store'
+import { getUUID } from '@/utils'
+import { venusServer } from '@/utils/http'
+
 
 import { reactive, ref } from 'vue'
+
 
 const dataForm = reactive({
   username: '',
@@ -67,20 +70,25 @@ const captchaPath = ref('')
 
 const getCaptcha = () => {
   dataForm.uuid = getUUID()
-  captchaPath.value = `${proxy}/captcha?uuid=${dataForm.uuid}`
+  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
 }
 getCaptcha()
+
+
+const commonStore = useCommonStore()
 
 const router = useRouter()
 const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      loginApi(dataForm).then(data => {
+      loginApi(dataForm).then(async data => {
         const { token } = data
         sessionStorage.setItem('token', token)
-
-        router.replace({ name: 'home' })
+        await commonStore.initMenuAction()
+        await router.push({
+          path: '/sys/user'
+        })
       })
     }
   })

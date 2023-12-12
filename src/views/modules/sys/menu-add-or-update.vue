@@ -13,23 +13,22 @@
       </el-form-item>
       <el-form-item label="上级菜单" prop="parentName">
         <el-tree-select
-            ref="menuListTreeRef"
             v-model="dataForm.parentName"
             :data="menuListTree"
+            check-strictly
             show-checkbox
-            :render-after-expand="false"
-            :props="{ label: 'name', value: 'name' }">
+            check-on-click-node
+            :render-after-expand="false">
         </el-tree-select>
       </el-form-item>
       <el-form-item v-if="dataForm.type === 1" label="菜单路由" prop="url">
         <el-input v-model="dataForm.url" placeholder="菜单路由"></el-input>
       </el-form-item>
       <el-form-item v-if="dataForm.type !== 0" label="授权标识" prop="perms">
-        <el-input v-model="dataForm.perms" placeholder="多个用逗号分隔, 如: user:list,user:create"></el-input>
+        <el-input v-model="dataForm.permissions" placeholder="多个用逗号分隔, 如: user:list,user:create"></el-input>
       </el-form-item>
       <el-form-item v-if="dataForm.type !== 2" label="排序号" prop="orderNum">
-        <el-input-number v-model="dataForm.orderNum" controls-position="right" :min="0"
-                         label="排序号"></el-input-number>
+        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="排序号"></el-input-number>
       </el-form-item>
       <el-form-item v-if="dataForm.type !== 2" label="菜单图标" prop="icon">
         <el-row>
@@ -73,7 +72,7 @@
 </template>
 
 <script setup>
-import { sysMenuDetailApi, sysMenuSaveApi, sysMenuSelectApi, sysMenuUpdateApi } from '@/api/menu-api'
+import { sysMenuDetailApi, saveSysMenuApi, sysMenuSelectApi, updateSysMenuApi } from '@/api/menu-api'
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/icons'
 import { ref, reactive, nextTick } from 'vue'
@@ -88,11 +87,10 @@ let dataForm = reactive({
   id: undefined,
   type: 1,
   name: '',
-  parentId: 0,
+  pid: 0,
   parentName: '',
   url: '',
-  perms: '',
-  orderNum: 0,
+  sort: 0,
   icon: ''
 })
 
@@ -104,7 +102,7 @@ const validateUrl = (rule, value, callback) => {
   }
 }
 
-let dataRule = reactive({
+const dataRule = {
   name: [
     {
       required: true,
@@ -116,7 +114,7 @@ let dataRule = reactive({
     {
       required: true,
       message: '上级菜单不能为空',
-      trigger: 'change'
+      trigger: 'blur'
     }
   ],
   url: [
@@ -125,7 +123,7 @@ let dataRule = reactive({
       trigger: 'blur'
     }
   ]
-})
+}
 
 const iconList = Icon.getNameList()
 
@@ -138,7 +136,17 @@ let dataFormRef = ref(null)
 const initDialogHandle = (id) => {
   dataForm.id = id
   sysMenuSelectApi({ id: id }).then((data) => {
-    menuListTree.value = treeDataTranslate(data.filter(item => item.type === 0), 'id')
+    const tempMenuList = data || [].filter(item => item.type === 0)
+    const menuList = []
+    tempMenuList.forEach(item => {
+      menuList.push({
+        ...item,
+        label: item.name,
+        value: item.id
+      })
+    })
+    menuListTree.value = treeDataTranslate(menuList)
+    console.log(menuListTree.value)
   }).then(() => {
     visible.value = true
     nextTick(() => {
@@ -149,25 +157,25 @@ const initDialogHandle = (id) => {
   }).then(() => {
     if (!dataForm.id) {
       // 新增
-      menuListTreeSetCurrentNode()
+      // menuListTreeSetCurrentNode()
     } else {
       // 修改
       sysMenuDetailApi(dataForm).then((data) => {
         dataForm = Object.assign(dataForm, data)
-        menuListTreeSetCurrentNode()
+        // menuListTreeSetCurrentNode()
       })
     }
   })
 }
 
 // 菜单树设置当前选中节点
-let menuListTreeRef = ref(null)
-const menuListTreeSetCurrentNode = () => {
-  if (menuListTreeRef.value) {
-    menuListTreeRef.value.setCurrentKey(dataForm.parentId)
-  }
-  dataForm.parentName = (menuListTreeRef.value.getCurrentNode() || {}).name
-}
+// let menuListTreeRef = ref(null)
+// const menuListTreeSetCurrentNode = () => {
+//   if (menuListTreeRef.value) {
+//     menuListTreeRef.value.setCurrentKey(dataForm.parentId)
+//   }
+//   dataForm.parentName = (menuListTreeRef.value.getCurrentNode() || {}).name
+// }
 
 // 图标选中
 const iconActiveHandle = (iconName) => {
@@ -178,7 +186,7 @@ const iconActiveHandle = (iconName) => {
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      const tempSysMenuApi = dataForm.menuId ? sysMenuUpdateApi : sysMenuSaveApi
+      const tempSysMenuApi = dataForm.menuId ? updateSysMenuApi : saveSysMenuApi
       tempSysMenuApi(dataForm).then(() => {
         ElMessage({
           message: '操作成功',

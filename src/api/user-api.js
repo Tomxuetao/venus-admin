@@ -1,36 +1,36 @@
-import { http, proxy } from '@/utils/http'
+import { http, venusServer } from '@/utils/http'
 
 export const sysUserListApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user/list`,
+	url: `${venusServer}/sys/user/list`,
 	method: 'get',
 	params: dataForm
 })
 
 export const sysUserDataApi = () => http({
-	url: `${proxy}/sys/user/info`,
+	url: `${venusServer}/sys/user/info`,
 	method: 'get'
 })
 
 export const sysUserDetailApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user/${dataForm.id}`,
+	url: `${venusServer}/sys/user/${dataForm.id}`,
 	method: 'get'
 })
 
 
-export const sysUserSaveApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user`,
+export const saveSysUserApi = (dataForm = {}) => http({
+	url: `${venusServer}/sys/user`,
 	method: 'post',
 	data: dataForm
 })
 
-export const sysUserUpdateApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user`,
+export const updateSysUserApi = (dataForm = {}) => http({
+	url: `${venusServer}/sys/user`,
 	method: 'put',
 	data: dataForm
 })
 
-export const sysUserDeleteApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user`,
+export const deleteSysUserApi = (dataForm = {}) => http({
+	url: `${venusServer}/sys/user`,
 	method: 'delete',
 	data: dataForm
 })
@@ -41,13 +41,13 @@ export const sysUserDeleteApi = (dataForm = {}) => http({
  * @returns {AxiosPromise}
  */
 export const updatePswApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user/password`,
+	url: `${venusServer}/sys/user/password`,
 	method: 'put',
 	data: dataForm
 })
 
-export const sysUserExportApi = (dataForm = {}) => http({
-	url: `${proxy}/sys/user/export`,
+export const exportSysUserApi = (dataForm = {}) => http({
+	url: `${venusServer}/sys/user/export`,
 	method: 'get',
 	params: dataForm
 })

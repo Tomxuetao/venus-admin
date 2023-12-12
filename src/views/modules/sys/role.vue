@@ -6,18 +6,29 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataListHandle()">查询</el-button>
-        <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()"
-                   :disabled="dataListSelections.length <= 0">批量删除
+        <el-button
+          v-if="isAuth('sys:role:save')"
+          type="primary"
+          @click="addOrUpdateHandle()"
+        >
+          新增
+        </el-button>
+        <el-button
+          v-if="isAuth('sys:role:delete')"
+          type="danger"
+          @click="deleteHandle()"
+          :disabled="dataListSelections.length <= 0"
+        >
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
     <el-table
-        :data="dataList"
-        border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
-        style="width: 100%;">
+      :data="dataList"
+      border
+      v-loading="dataListLoading"
+      @selection-change="selectionChangeHandle"
+      style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="roleId" align="center" width="80" label="ID"></el-table-column>
       <el-table-column prop="roleName" align="center" label="角色名称"></el-table-column>
@@ -35,13 +46,13 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="pageSizeChangeHandle"
-        @current-change="pageNumChangeHandle"
-        :current-page="searchForm.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="searchForm.pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper">
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
+      :current-page="searchForm.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="searchForm.pageSize"
+      :total="count"
+      layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
@@ -49,14 +60,11 @@
 </template>
 
 <script setup>
+import { sysRolePageApi, deleteSysRoleApi } from '@/api/role-api'
 import AddOrUpdate from './role-add-or-update.vue'
 import { ref, reactive, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 import { ElMessageBox, ElMessage } from 'element-plus'
-
-
-const http = useHttp()
 
 const searchForm = reactive({
   pageNum: 1,
@@ -64,7 +72,7 @@ const searchForm = reactive({
   roleName: null
 })
 
-let total = ref(0)
+let count = ref(0)
 let dataList = ref([])
 let dataListLoading = ref(false)
 let dataListSelections = ref([])
@@ -74,16 +82,11 @@ let addOrUpdateRef = ref(null)
 
 const getDataListHandle = () => {
   dataListLoading.value = true
-  http({
-    url: http.adornUrl('/sys/role/list'),
-    method: 'get',
-    params: http.adornParams(searchForm)
-  }).then(({ code, data }) => {
-    if (code === 200) {
-      dataListLoading.value = false
-      total.value = data.total
-      dataList.value = data.list
-    }
+  sysRolePageApi(searchForm).then(({ total, list }) => {
+    count.value = total
+    dataList.value = list
+  }).finally(() => {
+    dataListLoading.value = false
   })
 }
 
@@ -106,41 +109,30 @@ const selectionChangeHandle = (value) => {
   dataListSelections.value = value
 }
 
-const addOrUpdateHandle = (id) => {
+const addOrUpdateHandle = (id = undefined) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
     addOrUpdateRef.value.initDialogHandle(id)
   })
 }
 
-const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map(item => {
-    return item.roleId
-  })
+const deleteHandle = (id = undefined) => {
+  const ids = id ? [id] : dataListSelections.value.map(item => item.roleId)
   ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    http({
-      url: http.adornUrl('/sys/role/delete'),
-      method: 'post',
-      data: http.adornData(ids, false)
-    }).then(({ code, msg }) => {
-      if (code === 200) {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            getDataListHandle()
-          }
-        })
-      } else {
-        ElMessage.error(msg)
-      }
+    deleteSysRoleApi({ ids }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          getDataListHandle()
+        }
+      })
     })
-  }).catch(() => {
   })
 }
 </script>

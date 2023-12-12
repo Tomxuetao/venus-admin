@@ -1,50 +1,61 @@
-export default {
-  namespaced: true,
-  state: {
-    // 页面文档可视高度(随窗口改变大小)
-    documentClientHeight: 0,
-    // 导航条, 布局风格, default(默认) / inverse(反向)
-    navbarLayoutType: 'default',
-    // 侧边栏, 布局皮肤, light(浅色) / dark(黑色)
-    sidebarLayoutSkin: 'dark',
-    // 侧边栏, 折叠状态
-    sidebarFold: false,
-    // 侧边栏, 菜单
-    menuList: [],
-    menuActiveName: '',
-    // 内容, 是否需要刷新
-    contentIsNeedRefresh: false,
-    // 主入口标签页
-    mainTabs: [],
-    mainTabsActiveName: ''
+import { defineStore } from 'pinia'
+import { buildTree } from '@/utils'
+
+import { sysMenuListApi } from '@/api/menu-api'
+import { addDynamicRoutes } from '@/router'
+
+
+export const useCommonStore = defineStore('common', {
+  state: () => ({
+    authListState: [],
+    menuListState: [],
+    menuTreeState: []
+  }),
+  getters: {
+    authList: (state) => state.authListState.length ? state.authListState : JSON.parse(sessionStorage.getItem('authList')),
+    menuList: (state) => state.menuListState.length ? state.menuListState : JSON.parse(sessionStorage.getItem('menuList')),
+    menuTree: (state) => state.menuTreeState.length ? state.menuTreeState : JSON.parse(sessionStorage.getItem('menuTree'))
   },
-  mutations: {
-    updateDocumentClientHeight (state, height) {
-      state.documentClientHeight = height
+  actions: {
+    updateAuthList(list) {
+      this.authListState = list
+      sessionStorage.setItem('authList', JSON.stringify(list || []))
     },
-    updateNavbarLayoutType (state, type) {
-      state.navbarLayoutType = type
+    updateMenuList(list) {
+      this.menuListState = list
+      sessionStorage.setItem('menuList', JSON.stringify(list || []))
     },
-    updateSidebarLayoutSkin (state, skin) {
-      state.sidebarLayoutSkin = skin
+    updateMenuTree(tree) {
+      this.menuTreeState = tree
+      sessionStorage.setItem('menuTree', JSON.stringify(tree || []))
     },
-    updateSidebarFold (state, fold) {
-      state.sidebarFold = fold
-    },
-    updateMenuList (state, list) {
-      state.menuList = list
-    },
-    updateMenuActiveName (state, name) {
-      state.menuActiveName = name
-    },
-    updateContentIsNeedRefresh (state, status) {
-      state.contentIsNeedRefresh = status
-    },
-    updateMainTabs (state, tabs) {
-      state.mainTabs = tabs
-    },
-    updateMainTabsActiveName (state, name) {
-      state.mainTabsActiveName = name
+    
+    async initMenuAction() {
+      const menuList = await sysMenuListApi()
+      this.updateMenuList(menuList)
+      const authList = []
+      addDynamicRoutes(menuList)
+      const tempMenuList = menuList.map(item => {
+        const { id, pid, name, icon, url, type, sort, permissions } = item
+        if (permissions){
+          authList.push(...permissions.split(','))
+        }
+       
+        return {
+          id: id,
+          pid: pid,
+          text: name,
+          icon: icon,
+          url: url,
+          sort: sort,
+          children: [],
+          isMenu: type === 0
+        }
+      })
+      this.updateAuthList(authList)
+      this.updateMenuTree(buildTree(tempMenuList, '0'))
     }
   }
-}
+})
+
+

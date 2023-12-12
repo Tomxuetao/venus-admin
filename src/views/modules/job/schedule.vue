@@ -55,13 +55,13 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="pageSizeChangeHandle"
-        @current-change="pageNumChangeHandle"
-        :current-page="dataForm.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="dataForm.pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper">
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
+      :current-page="dataForm.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="dataForm.pageSize"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
@@ -75,12 +75,9 @@ import AddOrUpdate from './schedule-add-or-update.vue'
 import ScheduleLog from './schedule-log.vue'
 
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
-
-const http = useHttp()
 
 const dataForm = reactive({
   beanName: null,

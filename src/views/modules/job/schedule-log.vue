@@ -39,9 +39,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { useHttp } from '@/utils/http'
-
-const http = useHttp()
 
 const total = ref(0)
 const visible = ref()

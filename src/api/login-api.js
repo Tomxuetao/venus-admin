@@ -1,4 +1,4 @@
-import { http, proxy } from '@/utils/http'
+import { http, venusServer } from '@/utils/http'
 
 /**
  * 用户登录
@@ -6,9 +6,20 @@ import { http, proxy } from '@/utils/http'
  * @returns {AxiosPromise}
  */
 export const loginApi = (dataForm = {}) => http({
-	url: `${proxy}/login`,
-	method: 'post',
-	data: dataForm
+  url: `${venusServer}/login`,
+  method: 'post',
+  data: dataForm
+})
+
+/**
+ * 获取验证码
+ * @param dataForm
+ * @returns {Promise<axios.AxiosResponse<any>>}
+ */
+export const getCaptchaApi = (dataForm = {}) => http({
+  url: `${venusServer}/captcha`,
+  method: 'get',
+  params: dataForm
 })
 
 /**
@@ -16,6 +27,6 @@ export const loginApi = (dataForm = {}) => http({
  * @returns {AxiosPromise}
  */
 export const logoutApi = () => http({
-	url: `${proxy}/logout`,
-	method: 'post'
+  url: `${venusServer}/logout`,
+  method: 'post'
 })

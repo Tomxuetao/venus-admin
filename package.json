@@ -1,61 +1,75 @@
 {
-  "name": "venusadmin",
+  "name": "venus-admin",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:test": "vite build --mode test",
-    "serve": "vite preview",
-    "lint": "lint-staged",
+    "changeset": "changeset",
+    "prepare": "husky install",
+    "commit": "git add . && git-cz",
+    "version": "changeset version",
+    "preinstall": "npx only-allow pnpm",
     "fix": "eslint --fix --ext .js,.vue src",
-    "commit": "git add . & cz",
-    "prepare": "husky install"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-customizable"
-    }
-  },
-  "lint-staged": {
-    "*.{vue,js,ts}": "eslint --fix"
+    "lint": "eslint --ext .js,.ts,.tsx,.vue,.mjs,.cjs --fix"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Tomxuetao/venus-admin"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "qs": "^6.11.2",
+    "vue": "^3.3.9",
+    "pinia": "^2.1.7",
+    "axios": "^1.6.2",
+    "vue-router": "^4.2.5",
+    "layout-vue3": "^0.0.6",
+    "element-plus": "^2.4.2",
+    "normalize.css": "^8.0.1",
+    "@element-plus/icons-vue": "^2.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.0",
+    "@commitlint/cli": "^18.4.3",
+    "@changesets/cli": "^2.26.1",
+    "@changesets/changelog-git": "^0.2.0",
+    "@commitlint/config-conventional": "^18.4.3",
+    "vite": "^4.5.0",
+    "git-cz": "^4.9.0",
+    "prettier": "^3.1.0",
+    "commitizen": "^4.3.0",
+    "nano-staged": "^0.8.0",
+    "eslint": "^8.54.0",
+    "eslint-plugin-vue": "^9.18.1",
+    "eslint-plugin-import": "^2.29.0",
+    "vite-plugin-compression": "^0.5.1",
+    "husky": "^8.0.3",
+    "sass": "^1.69.5",
+    "postcss": "^8.4.31",
+    "unplugin-auto-import": "^0.17.1",
+    "unplugin-vue-components": "^0.25.2",
+    "postcss-px-to-viewport-8-plugin": "^1.1.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
+  "lint-staged": {
+    "*.{vue,js,ts}": "eslint --fix"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
   ],
-  "license": "MIT",
-  "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
-    "axios": "^0.21.1",
-    "element-plus": "^2.2.12",
-    "lodash": "^4.17.21",
-    "normalize.css": "^8.0.1",
-    "qs": "^6.10.1",
-    "vue": "^3.2.37",
-    "vue-router": "^4.1.3",
-    "vuex": "^4.0.1"
+  "engines": {
+    "pnpm": ">= 8.8.0"
   },
-  "devDependencies": {
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
-    "@vitejs/plugin-vue": "^3.0.0",
-    "commitizen": "^4.2.5",
-    "cz-conventional-changelog": "^3.3.0",
-    "cz-customizable": "^6.9.1",
-    "default-passive-events": "^2.0.0",
-    "eslint": "^8.21.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-vue": "^8.7.1",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "sass": "^1.54.0",
-    "unplugin-auto-import": "^0.10.3",
-    "unplugin-vue-components": "^0.22.0",
-    "vite": "^3.0.0"
+  "packageManager": "pnpm@8.8.0",
+  "nano-staged": {
+    "*.md": "prettier --write",
+    "*.{ts,tsx,js,vue,scss}": "prettier --write",
+    "*.{ts,tsx,js,vue}": "eslint --fix"
   }
 }

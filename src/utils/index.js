@@ -1,7 +1,9 @@
+import { ElMessage } from 'element-plus'
+
 /**
  * 获取uuid
  */
-export function getUUID () {
+export const getUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     return (c === 'x' ? (Math.random() * 16 | 0) : ('r&0x3' | '0x8')).toString(16)
   })
@@ -11,7 +13,7 @@ export function getUUID () {
  * URL地址
  * @param {*} s
  */
-export function isURL (s) {
+export const isURL = (s) => {
   return /^http[s]?:\/\/.*/.test(s)
 }
 
@@ -19,12 +21,12 @@ export function isURL (s) {
  * 是否有权限
  * @param {*} key
  */
-export function isAuth (key) {
-  return JSON.parse(sessionStorage.getItem('permissions') || '[]').includes(key) || false
+export const isAuth = (key) => {
+  return JSON.parse(sessionStorage.getItem('authList') || '[]').includes(key) || false
 }
 
-export function clearLoginInfo () {
-	localStorage.clear()
+export const clearLoginData = () => {
+  localStorage.clear()
   sessionStorage.clear()
 }
 
@@ -34,7 +36,7 @@ export function clearLoginInfo () {
  * @param {*} id
  * @param {*} pid
  */
-export function treeDataTranslate (data, id = 'id', pid = 'pid') {
+export const treeDataTranslate = (data, id = 'id', pid = 'pid') => {
   const res = []
   const temp = {}
   for (let i = 0; i < data.length; i++) {
@@ -55,4 +57,37 @@ export function treeDataTranslate (data, id = 'id', pid = 'pid') {
     }
   }
   return res
+}
+
+export const buildTree = (nodes, parentId) => {
+  const tree = []
+  
+  nodes.forEach(node => {
+    if (node.pid === parentId) {
+      const children = buildTree(nodes, node.id)
+      if (children.length) {
+        node.children = children
+      }
+      tree.push(node)
+    }
+  })
+  
+  return tree
+}
+
+/**
+ * 下载导出文件
+ * @param fileData
+ */
+export const downloadExport =(fileData) => {
+  const { data, downloadMethod } = fileData
+  if (downloadMethod && downloadMethod.includes('=')) {
+    const aDom = document.createElement('a')
+    const tempArray = downloadMethod.split('=')
+    aDom.download = decodeURI(tempArray[tempArray.length - 1])
+    aDom.href = URL.createObjectURL(new Blob([data], { type: 'charset=utf-8' }))
+    aDom.click()
+  } else {
+    ElMessage.error('下载文件失败')
+  }
 }
