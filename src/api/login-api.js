@@ -11,15 +11,9 @@ export const loginApi = (dataForm = {}) => http({
   data: dataForm
 })
 
-/**
- * 获取验证码
- * @param dataForm
- * @returns {Promise<axios.AxiosResponse<any>>}
- */
-export const getCaptchaApi = (dataForm = {}) => http({
-  url: `${venusServer}/captcha`,
-  method: 'get',
-  params: dataForm
+export const sysUserDataApi = () => http({
+  url: `${venusServer}/sys/user/info`,
+  method: 'get'
 })
 
 /**

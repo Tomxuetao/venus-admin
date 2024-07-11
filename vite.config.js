@@ -12,7 +12,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/venus-api': {
-				target: 'http://124.221.201.64:8888',
+				target: 'http://localhost:8888',
 				secure: false,
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')

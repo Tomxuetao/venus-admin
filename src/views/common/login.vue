@@ -38,15 +38,14 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { loginApi } from '@/api/login-api'
-import { useCommonStore } from '@/store'
 import { getUUID } from '@/utils'
-import { venusServer } from '@/utils/http'
-
-
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCommonStore } from '@/store'
+import { venusServer } from '@/utils/http'
+import { loginApi } from '@/api/login-api'
 
+const commonStore = useCommonStore()
 
 const dataForm = reactive({
   username: '',
@@ -54,6 +53,7 @@ const dataForm = reactive({
   uuid: '',
   captcha: ''
 })
+
 const dataRule = reactive({
   username: [
     { required: true, message: '帐号不能为空', trigger: 'blur' }
@@ -72,10 +72,8 @@ const getCaptcha = () => {
   dataForm.uuid = getUUID()
   captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
 }
+
 getCaptcha()
-
-
-const commonStore = useCommonStore()
 
 const router = useRouter()
 const dataFormRef = ref()
@@ -85,10 +83,13 @@ const dataFormSubmit = () => {
       loginApi(dataForm).then(async data => {
         const { token } = data
         sessionStorage.setItem('token', token)
+        await commonStore.initUserAction()
         await commonStore.initMenuAction()
         await router.push({
           path: '/sys/user'
         })
+      }).catch(() => {
+        getCaptcha()
       })
     }
   })

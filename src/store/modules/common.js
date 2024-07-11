@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { buildTree } from '@/utils'
-
-import { sysMenuListApi } from '@/api/menu-api'
 import { addDynamicRoutes } from '@/router'
 
+import { sysMenuListApi } from '@/api/menu-api'
+import { sysUserDataApi } from '@/api/login-api'
 
 export const useCommonStore = defineStore('common', {
   state: () => ({
+    userDataState: {},
     authListState: [],
     menuListState: [],
     menuTreeState: []
@@ -17,6 +18,9 @@ export const useCommonStore = defineStore('common', {
     menuTree: (state) => state.menuTreeState.length ? state.menuTreeState : JSON.parse(sessionStorage.getItem('menuTree'))
   },
   actions: {
+    updateUserData(data) {
+      this.userDataState = data
+    },
     updateAuthList(list) {
       this.authListState = list
       sessionStorage.setItem('authList', JSON.stringify(list || []))
@@ -28,6 +32,11 @@ export const useCommonStore = defineStore('common', {
     updateMenuTree(tree) {
       this.menuTreeState = tree
       sessionStorage.setItem('menuTree', JSON.stringify(tree || []))
+    },
+    
+    async initUserAction() {
+      const userData = await sysUserDataApi()
+      this.updateUserData(userData)
     },
     
     async initMenuAction() {

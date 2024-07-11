@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import ImgBg from '@/assets/img/img-bg.webp'
+import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
 
 import { clapTree } from 'layout-vue3/es/utils'
@@ -40,7 +40,7 @@ watch(
   <ev-layout
     v-model="activeData"
     class="layout-wrap"
-    :img-bg="ImgBg"
+    :img-bg="imgBg"
     :show-crumb="true"
     :collapse="collapse"
     :menu-list="menuTree"

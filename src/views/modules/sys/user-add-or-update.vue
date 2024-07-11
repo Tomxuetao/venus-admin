@@ -108,7 +108,7 @@ const dataRule = reactive({
   }]
 })
 
-const initDialogHandle = (id) => {
+const initDialogHandle = (id = undefined) => {
   dataForm.id = id || 0
 
   sysUserDetailApi({ id: id }).then((data) => {

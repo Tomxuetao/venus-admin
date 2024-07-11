@@ -6,11 +6,6 @@ export const sysUserListApi = (dataForm = {}) => http({
 	params: dataForm
 })
 
-export const sysUserDataApi = () => http({
-	url: `${venusServer}/sys/user/info`,
-	method: 'get'
-})
-
 export const sysUserDetailApi = (dataForm = {}) => http({
 	url: `${venusServer}/sys/user/${dataForm.id}`,
 	method: 'get'
