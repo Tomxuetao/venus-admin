@@ -7,7 +7,7 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
-      <el-form-item size="mini" label="授权">
+      <el-form-item label="授权">
         <el-tree :data="menuList" :props="{ label: 'name',children: 'children' }" :default-expanded-keys="expandedKeys"
                  ref="menuListTreeRef" node-key="menuId" show-checkbox></el-tree>
       </el-form-item>
@@ -21,8 +21,8 @@
 
 <script setup>
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { treeDataTranslate } from '@/utils'
+
 
 import { ElMessage } from 'element-plus'
 
@@ -45,8 +45,6 @@ const validateName = (rule, value, callback) => {
     })
   }
 }
-
-const http = useHttp()
 
 let btnLoading = ref(false)
 let visible = ref(false)
@@ -144,4 +142,8 @@ const closeDialogHandle = () => {
   visible.value = false
   dataFormRef.value.resetFields()
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>

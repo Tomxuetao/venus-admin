@@ -36,7 +36,7 @@
           <el-tag v-else size="small" type="danger">暂停</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" align="center" width="240" label="操作">
+      <el-table-column fixed="right" align="center" width="320" label="操作">
         <template v-slot="scope">
           <el-button v-if="isAuth('sys:schedule:update')" link size="small" @click="addOrUpdateHandle(scope.row.jobId)">
             修改
@@ -55,13 +55,13 @@
       </el-table-column>
     </el-table>
     <el-pagination
-        @size-change="pageSizeChangeHandle"
-        @current-change="pageNumChangeHandle"
-        :current-page="dataForm.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="dataForm.pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper">
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
+      :current-page="dataForm.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="dataForm.pageSize"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdateRef" @refreshDataList="getDataListHandle"></add-or-update>
@@ -75,12 +75,9 @@ import AddOrUpdate from './schedule-add-or-update.vue'
 import ScheduleLog from './schedule-log.vue'
 
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { isAuth } from '@/utils'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
-
-const http = useHttp()
 
 const dataForm = reactive({
   beanName: null,
@@ -96,7 +93,6 @@ const addOrUpdateVisible = ref(false)
 const dataListSelections = ref([])
 
 // 获取数据列表
-let isSizeChange = false
 const getDataListHandle = () => {
   dataListLoading.value = true
   http({
@@ -104,7 +100,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(dataForm)
   }).then(({ code, msg, data }) => {
-    isSizeChange = true
     if (code === 200) {
       dataList.value = data.list
       total.value = data.total
@@ -121,7 +116,6 @@ getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   dataForm.pageNum = 1
   dataForm.pageSize = pageSize
   getDataListHandle()
@@ -129,10 +123,8 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  dataForm.pageNum = pageNum
+  getDataListHandle()
 }
 
 // 多选

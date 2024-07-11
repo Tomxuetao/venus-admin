@@ -4,13 +4,18 @@
       <el-form-item>
         <el-button type="primary" @click="configHandle()">云存储配置</el-button>
         <el-button type="primary" @click="uploadHandle()">上传文件</el-button>
-        <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="danger" @click="deleteHandle(undefined)" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
-              style="width: 100%;">
+    <el-table
+      :data="dataList"
+      border
+      v-loading="dataListLoading"
+      @selection-change="selectionChangeHandle"
+    >
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" align="center" width="80" label="ID"></el-table-column>
+      <el-table-column prop="id" align="center" width="220" label="ID"></el-table-column>
+      <el-table-column prop="name" align="center" width="180" label="文件名"></el-table-column>
       <el-table-column prop="url" align="center" label="URL地址"></el-table-column>
       <el-table-column prop="createDate" align="center" width="180" label="创建时间"></el-table-column>
       <el-table-column fixed="right" align="center" width="150" label="操作">
@@ -25,7 +30,7 @@
         :current-page="dataForm.pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="dataForm.pageSize"
-        :total="total"
+        :total="count"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 云存储配置 -->
@@ -39,35 +44,23 @@
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
 import { reactive, ref, nextTick } from 'vue'
-import { useHttp } from '@/utils/http'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { ossConfigListApi, deleteRecordApi } from '@/api/oss-api'
 
-const http = useHttp()
-
-let isSizeChange = false
 let dataForm = reactive({
   pageSize: 10,
   pageNum: 1
 })
 let dataList = ref([])
 let dataListLoading = ref(false)
-let total = ref(0)
+let count = ref(0)
 
 const getDataListHandle = () => {
   dataListLoading.value = true
-  http({
-    url: http.adornUrl('/sys/oss/list'),
-    method: 'get',
-    params: http.adornParams(dataForm)
-  }).then(({ code, data }) => {
-    isSizeChange = true
-    if (code === 200) {
-      dataList.value = data.list
-      total.value = data.total
-    } else {
-      dataList.value = []
-      total.value = 0
-    }
+  ossConfigListApi(dataForm).then(({ list, total }) => {
+    dataList.value = list
+    count.value = total
+  }).finally(() => {
     dataListLoading.value = false
   })
 }
@@ -94,33 +87,26 @@ const uploadHandle = () => {
 
 // 删除
 const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map(item => {
-    return item.id
-  })
+  const ids = id ? [id] : dataListSelections.value.map(item => item.id)
   ElMessageBox.confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    http({
-      url: http.adornUrl('/sys/oss/delete'),
-      method: 'post',
-      data: http.adornData(ids, false)
-    }).then(({ code, msg }) => {
-      if (code === 200) {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            getDataListHandle()
-          }
-        })
-      } else {
-        ElMessage.error(msg)
-      }
+    deleteRecordApi({
+      ids: ids
+    }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          getDataListHandle()
+        }
+      })
+    }).catch(() => {
+      ElMessage.error(new Error())
     })
-  }).catch(() => {
   })
 }
 
@@ -131,7 +117,6 @@ const selectionChangeHandle = (value) => {
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
   dataForm.pageNum = 1
   dataForm.pageSize = pageSize
   getDataListHandle()
@@ -139,9 +124,7 @@ const pageSizeChangeHandle = (pageSize) => {
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  dataForm.pageNum = pageNum
+  getDataListHandle()
 }
 </script>

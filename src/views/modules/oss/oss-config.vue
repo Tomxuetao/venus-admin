@@ -1,8 +1,9 @@
 <template>
   <el-dialog title="云存储配置" v-model="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" label-width="140px">
-      <el-form-item size="mini" label="存储类型">
+      <el-form-item label="存储类型">
         <el-radio-group v-model="dataForm.type">
+          <el-radio :label="4">Minio</el-radio>
           <el-radio :label="1">七牛</el-radio>
           <el-radio :label="2">阿里云</el-radio>
           <el-radio :label="3">腾讯云</el-radio>
@@ -68,6 +69,23 @@
           <el-input v-model="dataForm.qcloudRegion" placeholder="如：sh（可选值 ，华南：gz 华北：tj 华东：sh）"></el-input>
         </el-form-item>
       </template>
+      <template v-else-if="dataForm.type === 4">
+        <el-form-item label="EndPoint" prop="minioEndPoint">
+          <el-input v-model="dataForm.minioEndPoint" placeholder="EndPoint"></el-input>
+        </el-form-item>
+        <el-form-item label="AccessKey" prop="minioAccessKey">
+          <el-input v-model="dataForm.minioAccessKey" placeholder="AccessKey"></el-input>
+        </el-form-item>
+        <el-form-item label="SecretKey" prop="minioSecretKey">
+          <el-input v-model="dataForm.minioSecretKey" placeholder="SecretKey"></el-input>
+        </el-form-item>
+        <el-form-item label="BucketName" prop="minioBucketName">
+          <el-input v-model="dataForm.minioBucketName" placeholder="BucketName"></el-input>
+        </el-form-item>
+        <el-form-item label="路径前缀" prop="minioPrefix">
+          <el-input v-model="dataForm.minioPrefix" placeholder="不设置默认为空"></el-input>
+        </el-form-item>
+      </template>
     </el-form>
     <template v-slot:footer>
       <div class="dialog-footer">
@@ -80,16 +98,14 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { useHttp } from '@/utils/http'
+import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
 import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['refresh-data-list'])
 
-const http = useHttp()
-
 let dataForm = reactive({
-  type: 1,
+  type: 4,
   qiniuDomain: '',
   qiniuPrefix: '',
   qiniuAccessKey: '',
@@ -109,22 +125,21 @@ let dataForm = reactive({
   qcloudSecretId: '',
   qcloudSecretKey: '',
   qcloudBucketName: '',
-  qcloudRegion: ''
+  qcloudRegion: '',
+
+  minioPrefix: '',
+  minioEndPoint: '',
+  minioAccessKey: '',
+  minioSecretKey: '',
+  minioBucketName: ''
 })
 
 let visible = ref(false)
-const initDialogHandle = (id) => {
+const initDialogHandle = () => {
   visible.value = true
-  http({
-    url: http.adornUrl('/sys/oss/config'),
-    method: 'get',
-    params: http.adornParams()
-  }).then(({ data, code, msg }) => {
-    if (code === 200) {
-      dataForm = Object.assign(dataForm, data)
-    } else {
-      ElMessage.error(msg)
-    }
+
+  ossConfigDetailApi().then(data => {
+    dataForm = Object.assign(dataForm, data.type ? data : {...data, type: 4})
   })
 }
 
@@ -132,27 +147,22 @@ const dataFormRef = ref(null)
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      http({
-        url: http.adornUrl('/sys/oss/saveConfig'),
-        method: 'post',
-        data: http.adornData(dataForm)
-      }).then(({ code, msg }) => {
-        if (code === 200) {
-          ElMessage({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              visible.value = false
-              emit('refresh-data-list')
-            }
-          })
-        } else {
-          ElMessage.error(msg)
-        }
+      savaOssConfigApi(dataForm).then(() => {
+        ElMessage({
+          message: '操作成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            visible.value = false
+            emit('refresh-data-list')
+          }
+        })
       })
     }
   })
 }
 
+defineExpose({
+  initDialogHandle
+})
 </script>

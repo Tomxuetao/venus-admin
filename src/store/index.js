@@ -1,10 +1,8 @@
-import { createStore } from 'vuex'
-import common from './modules/common'
-import user from './modules/user'
+import { createPinia } from 'pinia'
 
-export default createStore({
-  modules: {
-    common,
-    user
-  }
-})
+import { useCommonStore } from './modules/common'
+
+const pinia = createPinia()
+
+export { useCommonStore }
+export default pinia

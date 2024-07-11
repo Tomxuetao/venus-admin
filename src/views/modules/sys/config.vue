@@ -41,12 +41,9 @@
 <script setup>
 import AddOrUpdate from './config-add-or-update.vue'
 
-import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
-
-const http = useHttp()
 
 const searchForm = reactive({
   paramKey: '',
@@ -59,7 +56,6 @@ let dataListLoading = ref(false)
 let dataList = ref([])
 let total = ref(0)
 
-let isSizeChange = false
 const getDataListHandle = () => {
   dataListLoading.value = true
   http({
@@ -67,7 +63,6 @@ const getDataListHandle = () => {
     method: 'get',
     params: http.adornParams(searchForm)
   }).then(({ code, data }) => {
-    isSizeChange = false
     if (code === 200) {
       dataList.value = [...data.list]
       total.value = data.total
@@ -83,18 +78,15 @@ getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  isSizeChange = true
-  dataForm.pageNum = 1
-  dataForm.pageSize = pageSize
+  searchForm.pageNum = 1
+  searchForm.pageSize = pageSize
   getDataListHandle()
 }
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  if (!isSizeChange) {
-    dataForm.pageNum = pageNum
-    getDataListHandle()
-  }
+  searchForm.pageNum = pageNum
+  getDataListHandle()
 }
 
 // 多选

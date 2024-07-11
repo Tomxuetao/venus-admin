@@ -1,19 +1,21 @@
+import { resolve } from 'node:path'
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { resolve } from 'path'
 import { BuilderSvg } from './src/utils/builder-svg'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
+	base: '/venus-admin',
 	server: {
 		proxy: {
-			'/proxyApi': {
-				target: 'http://localhost:9080/venus-fast/',
-				changeOrigin: true,
+			'/venus-api': {
+				target: 'http://localhost:8888',
 				secure: false,
-				rewrite: (path) => path.replace(/^\/proxyApi/, '')
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')
 			}
 		},
 		host: '127.0.0.1'
@@ -32,9 +34,6 @@ export default defineConfig({
 		alias: [
 			{ find: '@', replacement: resolve(__dirname, 'src') }
 		]
-	},
-	optimizeDeps: {
-		include: ['lodash']
 	},
 	build: {
 		target: 'chrome80',

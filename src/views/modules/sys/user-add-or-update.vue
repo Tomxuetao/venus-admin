@@ -16,14 +16,14 @@
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
       </el-form-item>
-      <el-form-item label="角色" size="mini" prop="roleIdList">
+      <el-form-item label="角色" prop="roleIdList">
         <el-checkbox-group v-model="dataForm.roleIdList">
           <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">
             {{ role.roleName }}
           </el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="状态" size="mini" prop="status">
+      <el-form-item label="状态" prop="status">
         <el-radio-group v-model="dataForm.status">
           <el-radio :label="0">禁用</el-radio>
           <el-radio :label="1">正常</el-radio>
@@ -40,14 +40,13 @@
 </template>
 
 <script setup>
+import { sysUserDetailApi } from '@/api/user-api'
 import { isEmail, isMobile } from '@/utils/validate'
 import { ref, reactive } from 'vue'
-import { useHttp } from '@/utils/http'
 
 import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['refresh-data-list'])
-const http = useHttp()
 
 const validatePassword = (rule, value, callback) => {
   if (!dataForm.id && !/\S/.test(value)) {
@@ -80,24 +79,6 @@ const validateMobile = (rule, value, callback) => {
   }
 }
 
-const validateName = (rule, value, callback) => {
-  if (!dataForm.roleName && !/\S/.test(value)) {
-    callback(new Error('用户名称不能为空'))
-  } else {
-    http({
-      url: http.adornUrl('/sys/user/validName'),
-      method: 'get',
-      params: http.adornParams({ userName: value })
-    }).then(({ data }) => {
-      if (dataForm.id) {
-        data > 1 ? callback(new Error('用户名称不可用')) : callback()
-      } else {
-        data ? callback(new Error('用户名称不可用')) : callback()
-      }
-    })
-  }
-}
-
 const visible = ref(false)
 
 let roleList = ref([])
@@ -117,7 +98,7 @@ let dataForm = reactive({
 const dataFormRef = ref(null)
 
 const dataRule = reactive({
-  username: [{ required: true, asyncValidator: validateName, trigger: 'blur' }],
+  username: [{ required: true, trigger: 'blur' }],
   password: [{ validator: validatePassword, trigger: 'blur' }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
   email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }, { validator: validateEmail, trigger: 'blur' }],
@@ -127,8 +108,16 @@ const dataRule = reactive({
   }]
 })
 
-const initDialogHandle = (id) => {
+const initDialogHandle = (id = undefined) => {
   dataForm.id = id || 0
+
+  sysUserDetailApi({ id: id }).then((data) => {
+    roleList.value = data.roleIdList
+  }).then(() => {
+    visible.value = true
+  }).then(() => {
+
+  })
   http({
     url: http.adornUrl('/sys/role/select'),
     method: 'get',
@@ -178,4 +167,8 @@ const dataFormSubmit = () => {
     }
   })
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>

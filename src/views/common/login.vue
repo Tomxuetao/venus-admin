@@ -9,7 +9,7 @@
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" status-icon @keyup.enter="dataFormSubmit()">
+          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" @keyup.enter="dataFormSubmit()">
             <el-form-item prop="username">
               <el-input v-model="dataForm.username" placeholder="帐号"></el-input>
             </el-form-item>
@@ -37,16 +37,15 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { getUUID } from '@/utils'
-import { useHttp } from '@/utils/http'
-import { useRouter } from 'vue-router'
-
 import { reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { useCommonStore } from '@/store'
+import { venusServer } from '@/utils/http'
+import { loginApi } from '@/api/login-api'
 
-const http = useHttp()
-const router = useRouter()
+const commonStore = useCommonStore()
 
 const dataForm = reactive({
   username: '',
@@ -54,6 +53,7 @@ const dataForm = reactive({
   uuid: '',
   captcha: ''
 })
+
 const dataRule = reactive({
   username: [
     { required: true, message: '帐号不能为空', trigger: 'blur' }
@@ -68,33 +68,28 @@ const dataRule = reactive({
 
 const captchaPath = ref('')
 
-const dataFormRef = ref(null)
-
 const getCaptcha = () => {
   dataForm.uuid = getUUID()
-  captchaPath.value = http.adornUrl(`/captcha.jpg?uuid=${dataForm.uuid}`)
+  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
 }
+
 getCaptcha()
 
+const router = useRouter()
+const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      http({
-        url: http.adornUrl('/sys/login'),
-        method: 'post',
-        data: http.adornData(dataForm)
-      }).then(({ code, data, msg }) => {
-        if (code === 200) {
-          const { token } = data
-          localStorage.setItem('token', token)
-          router.replace({ name: 'home' })
-        } else {
-          ElMessage({
-            message: msg,
-            type: 'error'
-          })
-          getCaptcha()
-        }
+      loginApi(dataForm).then(async data => {
+        const { token } = data
+        sessionStorage.setItem('token', token)
+        await commonStore.initUserAction()
+        await commonStore.initMenuAction()
+        await router.push({
+          path: '/sys/user'
+        })
+      }).catch(() => {
+        getCaptcha()
       })
     }
   })

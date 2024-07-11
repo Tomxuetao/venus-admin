@@ -19,13 +19,10 @@
 </template>
 
 <script setup>
-import { useHttp } from '@/utils/http'
 import { ref, reactive, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['refresh-data-list'])
-
-const http = useHttp()
 
 let dataForm = reactive({
   id: undefined,
@@ -102,4 +99,8 @@ const dataFormSubmit = () => {
     }
   })
 }
+
+defineExpose({
+  initDialogHandle
+})
 </script>
