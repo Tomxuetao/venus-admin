@@ -28,7 +28,7 @@ const props = defineProps({
 })
 
 const getName = computed(() => {
-  return `#icon-${props.name}`
+  return `#${props.name}`
 })
 
 const getClassName = computed(() => {

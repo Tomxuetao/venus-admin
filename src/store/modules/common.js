@@ -43,7 +43,7 @@ export const useCommonStore = defineStore('common', {
       const menuList = await sysMenuListApi()
       this.updateMenuList(menuList)
       const authList = []
-      addDynamicRoutes(menuList)
+      addDynamicRoutes(menuList || [])
       const tempMenuList = menuList.map(item => {
         const { id, pid, name, icon, url, type, sort, permissions } = item
         if (permissions){
