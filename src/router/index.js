@@ -2,10 +2,11 @@ import { useCommonStore } from '@/store'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
-const commonModules = import.meta.glob('../views/common/*.vue')
-const layoutModules = import.meta.glob('../views/layout/*.vue')
-const dynamicModules = import.meta.glob('../views/modules/*/*.vue')
+const commonModules = import.meta.glob(['../views/common/*.vue'])
+const layoutModules = import.meta.glob(['../views/layout/*.vue'])
+const dynamicModules = import.meta.glob(['../views/modules/*/*.vue'])
 
+console.log(dynamicModules)
 // 主入口路由(需嵌套上左右整体布局)
 const mainRoutes = [
 	{
@@ -52,8 +53,8 @@ export const addDynamicRoutes = (routeList = []) => {
 		if (item.url) {
 			const route = {
 				path: item.url,
-				component: dynamicModules[`../views/modules${item.url}.vue`] || commonModules['../views/common/404.vue'],
-				name: item.url.replace('/', '-').replace('-', ''),
+				component: dynamicModules[`../views/modules/${item.url}.vue`] || commonModules['../views/common/404.vue'],
+				name: item.url.replace('/', '-'),
 				meta: {
 					id: item.id,
 					title: item.name

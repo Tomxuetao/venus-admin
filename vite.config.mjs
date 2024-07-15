@@ -24,7 +24,10 @@ export default defineConfig({
 		vue(),
 		BuilderSvg('./src/icons/svg/', ''),
 		AutoImport({
-			resolvers: [ElementPlusResolver()]
+			dts: true,
+			imports: ['vue', 'vue-router'],
+			resolvers: [ElementPlusResolver()],
+			dirs: ['src/views/common/**', 'src/views/modules/**/**']
 		}),
 		Components({
 			resolvers: [ElementPlusResolver()]

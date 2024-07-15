@@ -1,19 +1,19 @@
 <script setup>
+defineOptions({
+  name: 'main-layout'
+})
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
-
+import { useCommonStore } from '@/store'
 import { clapTree } from 'layout-vue3/es/utils'
 import { Layout as EvLayout } from 'layout-vue3'
-import { useCommonStore } from '@/store'
 
 const commonStore = useCommonStore()
 
-const menuTree = commonStore.menuTree
-
-
-const pathMap = clapTree(menuTree, 'url')
+console.log(commonStore.menuTree)
+const pathMap = clapTree(commonStore.menuTree, 'url')
 
 const collapse = ref(false)
 
@@ -24,13 +24,15 @@ const toggleCollapse = () => {
 const route = useRoute()
 const router = useRouter()
 
-const activeData = ref(pathMap.get(route.path) || menuTree[0])
+const activeData = ref(pathMap.get(route.path) || commonStore.menuTree[0])
 
+console.log(activeData)
 watch(
   () => activeData.value,
   (data) => {
+    console.log(data)
     router.push({
-      path: data.url
+      path: `/${data.url}`
     })
   }
 )
@@ -43,7 +45,7 @@ watch(
     :img-bg="imgBg"
     :show-crumb="true"
     :collapse="collapse"
-    :menu-list="menuTree"
+    :menu-list="commonStore.menuTree"
   >
     <template #logo>
       <div class="logo-wrap">
