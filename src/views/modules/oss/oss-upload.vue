@@ -1,9 +1,10 @@
 <template>
   <el-dialog
-      title="上传文件"
-      :close-on-click-modal="false"
-      @close="closeHandle"
-      v-model="visible">
+    title="上传文件"
+    :close-on-click-modal="false"
+    @close="closeHandle"
+    v-model="visible"
+  >
     <el-upload
       drag
       :action="url"
@@ -11,7 +12,7 @@
       :before-upload="beforeUploadHandle"
       :on-success="successHandle"
       :file-list="fileList"
-      style="text-align: center;"
+      style="text-align: center"
     >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -42,11 +43,11 @@ const initDialogHandle = () => {
 
 // 上传之前
 const beforeUploadHandle = (file) => {
-  // const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
-  // if (!fileTypeArray.includes(file.type)) {
-  //   ElMessage.error('只支持jpg、png、gif格式的图片！')
-  //   return false
-  // }
+  const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+  if (!fileTypeArray.includes(file.type)) {
+    ElMessage.error('只支持jpg、png、gif格式的图片！')
+    return false
+  }
   num.value++
 }
 

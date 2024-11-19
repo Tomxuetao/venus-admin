@@ -1,11 +1,14 @@
 import { ElMessage } from 'element-plus'
+import { useCommonStore } from '@/store'
 
 /**
  * 获取uuid
  */
 export const getUUID = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    return (c === 'x' ? (Math.random() * 16 | 0) : ('r&0x3' | '0x8')).toString(16)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    return (c === 'x' ? (Math.random() * 16) | 0 : 'r&0x3' | '0x8').toString(
+      16
+    )
   })
 }
 
@@ -22,7 +25,8 @@ export const isURL = (s) => {
  * @param {*} key
  */
 export const isAuth = (key) => {
-  return JSON.parse(sessionStorage.getItem('authList') || '[]').includes(key) || false
+  const { authList = [] } = useCommonStore()
+  return authList.includes(key) || false
 }
 
 export const clearLoginData = () => {
@@ -61,8 +65,8 @@ export const treeDataTranslate = (data, id = 'id', pid = 'pid') => {
 
 export const buildTree = (nodes, parentId) => {
   const tree = []
-  
-  nodes.forEach(node => {
+
+  nodes.forEach((node) => {
     if (node.pid === parentId) {
       const children = buildTree(nodes, node.id)
       if (children.length) {
@@ -71,7 +75,7 @@ export const buildTree = (nodes, parentId) => {
       tree.push(node)
     }
   })
-  
+
   return tree
 }
 
@@ -79,15 +83,32 @@ export const buildTree = (nodes, parentId) => {
  * 下载导出文件
  * @param fileData
  */
-export const downloadExport =(fileData) => {
+export const downloadExport = (fileData) => {
   const { data, downloadMethod } = fileData
   if (downloadMethod && downloadMethod.includes('=')) {
     const aDom = document.createElement('a')
     const tempArray = downloadMethod.split('=')
     aDom.download = decodeURI(tempArray[tempArray.length - 1])
-    aDom.href = URL.createObjectURL(new Blob([data], { type: 'charset=utf-8' }))
+    aDom.href = URL.createObjectURL(
+      new Blob([data], { type: 'charset=utf-8' })
+    )
     aDom.click()
   } else {
     ElMessage.error('下载文件失败')
+  }
+}
+
+/**
+ * 执行一次
+ * @param {Function} fn
+ * @returns {(function(): void)|*}
+ */
+export const executeOnce = (fn) => {
+  let called = false
+  return function () {
+    if (!called) {
+      called = true
+      fn.apply(this, arguments)
+    }
   }
 }

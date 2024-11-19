@@ -1,50 +1,36 @@
 <template>
-  <svg
-      :class="getClassName"
-      :width="width"
-      :height="height"
-      aria-hidden="true">
-    <use :xlink:href="getName"></use>
-  </svg>
+  <component
+    :is="loadSvgIcon(name)"
+    class="icon-svg"
+    v-bind="$attrs"
+  ></component>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
+defineProps({
   name: {
     type: String,
-    required: true
-  },
-  className: {
-    type: String
-  },
-  width: {
-    type: String
-  },
-  height: {
-    type: String
+    default: ''
   }
 })
 
-const getName = computed(() => {
-  return `#${props.name}`
+const svgRecords = import.meta.glob(['../assets/icons/svg/*'], {
+  eager: true,
+  import: 'default',
+  query: '?component'
 })
 
-const getClassName = computed(() => {
-  return [
-    'icon-svg',
-    `icon-svg__${props.name}`,
-    props.className && /\S/.test(props.className) ? `${props.className}` : ''
-  ]
-})
+const loadSvgIcon = (name) =>
+  svgRecords[`../assets/icons/svg/${name}.svg`] ||
+  svgRecords['../assets/icons/svg/icon-0.svg']
 </script>
 
 <style>
 .icon-svg {
-  width: 1em;
-  height: 1em;
-  fill: currentColor;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
   overflow: hidden;
+  fill: currentColor;
 }
 </style>

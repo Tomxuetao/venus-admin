@@ -1,18 +1,18 @@
 <script setup>
+import { ref, watch } from 'vue'
+import { useCommonStore } from '@/store'
+import imgBg from '@/assets/img/img-bg.webp'
+import SvgIcon from '@/components/icon-svg.vue'
+import { clapTree } from 'layout-vue3/es/utils'
+import { Layout as EvLayout } from 'layout-vue3'
+import { useRouter, useRoute } from 'vue-router'
+
 defineOptions({
   name: 'main-layout'
 })
-import { ref, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import imgBg from '@/assets/img/img-bg.webp'
-import SvgIcon from '@/components/icon-svg.vue'
-import { useCommonStore } from '@/store'
-import { clapTree } from 'layout-vue3/es/utils'
-import { Layout as EvLayout } from 'layout-vue3'
 
 const commonStore = useCommonStore()
 
-console.log(commonStore.menuTree)
 const pathMap = clapTree(commonStore.menuTree, 'url')
 
 const collapse = ref(false)
@@ -24,13 +24,13 @@ const toggleCollapse = () => {
 const route = useRoute()
 const router = useRouter()
 
-const activeData = ref(pathMap.get(route.path) || commonStore.menuTree[0])
+const activeData = ref()
 
-console.log(activeData)
+activeData.value = pathMap.get(route.path.replace('/', ''))
+
 watch(
   () => activeData.value,
   (data) => {
-    console.log(data)
     router.push({
       path: `/${data.url}`
     })
@@ -45,40 +45,29 @@ watch(
     :img-bg="imgBg"
     :show-crumb="true"
     :collapse="collapse"
+    :unique-opened="true"
     :menu-list="commonStore.menuTree"
   >
     <template #logo>
       <div class="logo-wrap">
-        <img
-          class="logo-img"
-          src="@/assets/img/img-logo.webp"
-          alt=""
-        >
-        <div class="logo-text">
-          Venus后台管理
-        </div>
+        <img class="logo-img" src="@/assets/img/img-logo.webp" alt="" />
+        <div class="logo-text">Venus后台管理</div>
       </div>
     </template>
     <template #fold>
-      <div
-        class="fold-wrap"
-        @click="toggleCollapse()"
-      >
+      <div class="fold-wrap" @click="toggleCollapse()">
         <img
           :class="['fold-img', collapse ? 'img-fold' : 'img-open']"
           src="@/assets/img/img-fold.webp"
           alt=""
-        >
+        />
       </div>
     </template>
     <template #router>
       <router-view></router-view>
     </template>
     <template #menuIcon="menu">
-      <svg-icon
-        :name="menu.icon"
-        class="menu-svg"
-      />
+      <svg-icon :name="menu.icon" class="menu-svg" />
     </template>
   </ev-layout>
 </template>
