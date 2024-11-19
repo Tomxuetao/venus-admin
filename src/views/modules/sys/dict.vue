@@ -1,15 +1,14 @@
 <script setup>
-import { isAuth } from '@/utils';
+import { buildTree, isAuth } from '@/utils';
 import useCommonView from '@/hooks/useCommonView';
-import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue';
 
 const commonView = reactive({
   ...useCommonView({
-    deleteIsBatch: false,
-    deleteUrl: '/sys/params',
-    dataListUrl: '/sys/params/page',
+    deleteUrl: '/sys/dict',
+    dataListUrl: '/sys/dict/page',
     dataForm: {
-      paramCode: undefined,
+      value: undefined,
+      label: undefined,
     },
   }),
 });
@@ -21,7 +20,7 @@ const addOrUpdateHandle = (id = undefined) => {
 </script>
 
 <template>
-  <div class="mod-params mod-wrap">
+  <div class="mod-dict mod-wrap">
     <el-form
       :inline="true"
       :model="commonView.dataForm"
@@ -29,8 +28,15 @@ const addOrUpdateHandle = (id = undefined) => {
     >
       <el-form-item>
         <el-input
-          v-model="commonView.dataForm.paramCode"
-          placeholder="编码"
+          v-model="commonView.dataForm.value"
+          placeholder="字典值"
+          clearable
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          v-model="commonView.dataForm.label"
+          placeholder="字典标签"
           clearable
         ></el-input>
       </el-form-item>
@@ -39,18 +45,18 @@ const addOrUpdateHandle = (id = undefined) => {
       </el-form-item>
       <el-form-item>
         <el-button
-          v-if="isAuth('sys:params:save')"
+          v-if="isAuth('sys:dict:save')"
           type="primary"
           @click="addOrUpdateHandle()"
-          >新增
+        >
+          新增
         </el-button>
       </el-form-item>
       <el-form-item>
         <el-button
-          v-if="isAuth('sys:params:delete')"
+          v-if="isAuth('sys:dict:delete')"
           type="danger"
           @click="commonView.deleteHandle()"
-          :disabled="commonView.dataSelections.length <= 0"
         >
           删除
         </el-button>
@@ -59,10 +65,10 @@ const addOrUpdateHandle = (id = undefined) => {
     <div class="table-wrap">
       <el-table
         v-loading="commonView.dataLoading"
-        :data="commonView.dataList"
         border
-        @selection-change="commonView.dataSelections"
+        row-key="id"
         style="width: 100%"
+        :data="buildTree(commonView.dataList, '0')"
       >
         <el-table-column
           type="selection"
@@ -70,24 +76,38 @@ const addOrUpdateHandle = (id = undefined) => {
           align="center"
           width="50"
         ></el-table-column>
+        <el-table-column prop="label" label="字典标签"> </el-table-column>
         <el-table-column
-          prop="paramCode"
-          label="编码"
+          prop="value"
+          label="字典值"
           header-align="center"
           align="center"
-        ></el-table-column>
+        >
+        </el-table-column>
         <el-table-column
-          prop="paramValue"
-          label="值"
+          prop="sort"
+          label="排序"
+          sortable="custom"
           header-align="center"
           align="center"
-        ></el-table-column>
+        >
+        </el-table-column>
         <el-table-column
           prop="remark"
           label="备注"
           header-align="center"
           align="center"
-        ></el-table-column>
+        >
+        </el-table-column>
+        <el-table-column
+          prop="createDate"
+          label="创建时间"
+          sortable="custom"
+          header-align="center"
+          align="center"
+          width="180"
+        >
+        </el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
@@ -97,17 +117,17 @@ const addOrUpdateHandle = (id = undefined) => {
         >
           <template v-slot="scope">
             <el-button
-              v-if="isAuth('sys:params:update')"
-              type="primary"
+              v-if="isAuth('sys:dict:update')"
               link
+              type="primary"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
             <el-button
-              v-if="isAuth('sys:params:delete')"
-              type="primary"
+              v-if="isAuth('sys:dict:delete')"
               link
+              type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
             >
               删除
@@ -116,6 +136,7 @@ const addOrUpdateHandle = (id = undefined) => {
         </el-table-column>
       </el-table>
     </div>
+
     <el-pagination
       :current-page="commonView.pageNum"
       :page-sizes="[10, 20, 50, 100]"
@@ -124,12 +145,8 @@ const addOrUpdateHandle = (id = undefined) => {
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="commonView.pageSizeChange"
       @current-change="commonView.pageNumChange"
-    >
-    </el-pagination>
+    ></el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update
-      ref="addOrUpdateRef"
-      @refreshDataList="commonView.getDataList"
-    ></add-or-update>
+    <!--    <add-or-update ref="addOrUpdateRef" @refreshDataList="commonView.getDataList"></add-or-update>-->
   </div>
 </template>

@@ -5,7 +5,8 @@
 }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.15;
   color: #303133;
@@ -25,12 +26,11 @@ img {
   vertical-align: middle;
 }
 
-
 /* Utils
 ------------------------------ */
 .clearfix:before,
 .clearfix:after {
-  content: " ";
+  content: ' ';
   display: table;
 }
 
@@ -38,12 +38,11 @@ img {
   clear: both;
 }
 
-
 /* Animation
 ------------------------------ */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
@@ -51,8 +50,27 @@ img {
   opacity: 0;
 }
 
-
 .el-pagination {
   margin-top: 24px;
   justify-content: flex-end;
+}
+
+/* Custom-table
+------------------------------ */
+
+.mod-wrap {
+  height: 100%;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: max-content 1fr max-content;
+
+  .table-wrap {
+    position: relative;
+
+    .el-table {
+      height: 100%;
+      overflow-y: auto;
+      position: absolute;
+    }
+  }
 }

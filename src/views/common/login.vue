@@ -4,17 +4,31 @@
       <div class="site-content">
         <div class="brand-info">
           <h2 class="brand-info__text">VenusAdmin</h2>
-          <p class="brand-info__intro">VenusAdmin基于Vue3、Element
-            Plus构建开发，实现VenusFast后台管理前端功能，提供一套更优的前端解决方案。</p>
+          <p class="brand-info__intro">
+            VenusAdmin基于Vue3、Element
+            Plus构建开发，实现VenusFast后台管理前端功能，提供一套更优的前端解决方案。
+          </p>
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form :model="dataForm" :rules="dataRule" ref="dataFormRef" @keyup.enter="dataFormSubmit()">
+          <el-form
+            :model="dataForm"
+            :rules="dataRule"
+            ref="dataFormRef"
+            @keyup.enter="dataFormSubmit()"
+          >
             <el-form-item prop="username">
-              <el-input v-model="dataForm.username" placeholder="帐号"></el-input>
+              <el-input
+                v-model="dataForm.username"
+                placeholder="帐号"
+              ></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+              <el-input
+                v-model="dataForm.password"
+                type="password"
+                placeholder="密码"
+              ></el-input>
             </el-form-item>
             <el-form-item prop="captcha">
               <el-row :gutter="20">
@@ -23,12 +37,17 @@
                   </el-input>
                 </el-col>
                 <el-col :span="10" class="login-captcha">
-                  <img :src="captchaPath" @click="getCaptcha()" alt="">
+                  <img :src="captchaPath" @click="getCaptcha()" alt="" />
                 </el-col>
               </el-row>
             </el-form-item>
             <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+              <el-button
+                class="login-btn-submit"
+                type="primary"
+                @click="dataFormSubmit()"
+                >登录</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
@@ -38,62 +57,74 @@
 </template>
 
 <script setup>
-import { getUUID } from '@/utils'
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useCommonStore } from '@/store'
-import { venusServer } from '@/utils/http'
-import { loginApi } from '@/api/login-api'
+import { getUUID } from '@/utils';
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useCommonStore } from '@/store';
+import { venusServer } from '@/utils/http';
+import { loginApi } from '@/api/login-api';
 
-const commonStore = useCommonStore()
+const commonStore = useCommonStore();
 
 const dataForm = reactive({
   username: '',
   password: '',
   uuid: '',
-  captcha: ''
-})
+  captcha: '',
+});
 
-const dataRule = reactive({
+const dataRule = {
   username: [
-    { required: true, message: '帐号不能为空', trigger: 'blur' }
+    {
+      required: true,
+      message: '帐号不能为空',
+      trigger: 'blur',
+    },
   ],
   password: [
-    { required: true, message: '密码不能为空', trigger: 'blur' }
+    {
+      required: true,
+      message: '密码不能为空',
+      trigger: 'blur',
+    },
   ],
   captcha: [
-    { required: true, message: '验证码不能为空', trigger: 'blur' }
-  ]
-})
+    {
+      required: true,
+      message: '验证码不能为空',
+      trigger: 'blur',
+    },
+  ],
+};
 
-const captchaPath = ref('')
+const captchaPath = ref('');
 
 const getCaptcha = () => {
-  dataForm.uuid = getUUID()
-  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
-}
+  dataForm.uuid = getUUID();
+  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`;
+};
 
-getCaptcha()
+getCaptcha();
 
-const router = useRouter()
-const dataFormRef = ref()
+const router = useRouter();
+const dataFormRef = ref();
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      loginApi(dataForm).then(async data => {
-        const { token } = data
-        sessionStorage.setItem('token', token)
-        await commonStore.initUserAction()
-        await commonStore.initMenuAction()
-        await router.push({
-          path: '/sys/user'
+      loginApi(dataForm)
+        .then(async (data) => {
+          const { token } = data;
+          commonStore.updateToken(token);
+          await router.push({
+            name: 'main-dynamic',
+          });
         })
-      }).catch(() => {
-        getCaptcha()
-      })
+        .catch(() => {
+          getCaptcha();
+        });
     }
-  })
-}
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -112,7 +143,7 @@ const dataFormSubmit = () => {
     z-index: -1;
     width: 100%;
     height: 100%;
-    content: "";
+    content: '';
     background-image: url(@/assets/img/login-bg.png);
     background-size: cover;
   }
@@ -150,7 +181,7 @@ const dataFormSubmit = () => {
     margin: 10px 0;
     font-size: 16px;
     line-height: 1.58;
-    opacity: .6;
+    opacity: 0.6;
   }
 
   .login-main {
