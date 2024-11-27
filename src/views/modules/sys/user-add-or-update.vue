@@ -50,7 +50,7 @@ let dataForm = reactive({
   email: '',
   mobile: '',
   roleIdList: [],
-  status: 1,
+  status: 1
 })
 
 const dataFormRef = ref()
@@ -59,43 +59,43 @@ const dataRule = {
   username: [
     {
       required: true,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   password: [
     {
       validator: validatePassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   confirmPassword: [
     {
       validator: validateConfirmPassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   email: [
     {
       required: true,
       message: '邮箱不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateEmail,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   mobile: [
     {
       required: true,
       message: '手机号不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateMobile,
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const initDialogHandle = async (id) => {
@@ -124,7 +124,7 @@ const dataFormSubmit = () => {
       await commonApi(
         `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
         dataForm,
-        { method: 'post' },
+        { method: 'post' }
       )
       visible.value = false
       ElMessage({
@@ -133,14 +133,14 @@ const dataFormSubmit = () => {
         duration: 1500,
         onClose: () => {
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  initDialogHandle,
+  initDialogHandle
 })
 </script>
 

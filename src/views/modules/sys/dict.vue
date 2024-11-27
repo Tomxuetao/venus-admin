@@ -8,9 +8,9 @@ const commonView = reactive({
     dataListUrl: '/sys/dict/page',
     dataForm: {
       value: undefined,
-      label: undefined,
-    },
-  }),
+      label: undefined
+    }
+  })
 })
 
 const addOrUpdateRef = ref()

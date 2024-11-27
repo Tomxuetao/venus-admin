@@ -1,6 +1,8 @@
 <script setup>
 import AddOrUpdate from './role-add-or-update.vue'
-import { ref, reactive, nextTick } from 'vue'
+import {
+ ref, reactive, nextTick 
+} from 'vue'
 import { isAuth } from '@/utils'
 import useCommonView from '@/hooks/useCommonView'
 
@@ -10,9 +12,9 @@ const commonView = reactive({
     deleteUrl: '/sys/role',
     dataListUrl: '/sys/role/page',
     dataForm: {
-      name: undefined,
-    },
-  }),
+      name: undefined
+    }
+  })
 })
 
 let addOrUpdateRef = ref()

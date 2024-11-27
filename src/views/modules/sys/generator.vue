@@ -9,9 +9,9 @@ const commonView = reactive({
     deleteUrl: '/sys/gen/delete',
     dataListUrl: '/sys/gen/list',
     dataForm: {
-      tableName: undefined,
-    },
-  }),
+      tableName: undefined
+    }
+  })
 })
 </script>
 

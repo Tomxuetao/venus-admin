@@ -1,6 +1,8 @@
 <script setup>
 import { isAuth } from '@/utils'
-import { ref, reactive, nextTick } from 'vue'
+import {
+ ref, reactive, nextTick 
+} from 'vue'
 import useCommonView from '@/hooks/useCommonView'
 import AddOrUpdate from './user-add-or-update.vue'
 
@@ -12,9 +14,9 @@ const commonView = reactive({
     deleteUrl: '/sys/user/delete',
     dataListUrl: '/sys/user/list',
     dataForm: {
-      username: undefined,
-    },
-  }),
+      username: undefined
+    }
+  })
 })
 const addOrUpdateVisible = ref(false)
 

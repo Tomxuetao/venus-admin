@@ -11,9 +11,9 @@ const commonView = reactive({
     exportUrl: '/sys/log/error/export',
     dataForm: {
       jobId: null,
-      beanName: undefined,
-    },
-  }),
+      beanName: undefined
+    }
+  })
 })
 
 // 失败信息

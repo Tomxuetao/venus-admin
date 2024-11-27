@@ -1,5 +1,7 @@
 <script setup>
-import { reactive, ref, nextTick } from 'vue'
+import {
+ reactive, ref, nextTick 
+} from 'vue'
 import { treeDataTranslate } from '@/utils'
 
 import { ElMessage } from 'element-plus'
@@ -14,7 +16,7 @@ let expandedKeys = ref([1])
 let dataForm = reactive({
   id: undefined,
   name: '',
-  remark: '',
+  remark: ''
 })
 
 const dataFormRef = ref()
@@ -62,10 +64,10 @@ const dataFormSubmit = () => {
           ...dataForm,
           menuIdList: [
             ...menuListTreeRef.value.getCheckedKeys(),
-            ...menuListTreeRef.value.getHalfCheckedKeys(),
-          ],
+            ...menuListTreeRef.value.getHalfCheckedKeys()
+          ]
         },
-        { method: dataForm.id ? 'put' : 'post' },
+        { method: dataForm.id ? 'put' : 'post' }
       )
       ElMessage({
         message: '操作成功',
@@ -74,7 +76,7 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     } else {
       btnLoading.value = false
@@ -88,7 +90,7 @@ const closeDialogHandle = () => {
 }
 
 defineExpose({
-  initDialogHandle,
+  initDialogHandle
 })
 </script>
 

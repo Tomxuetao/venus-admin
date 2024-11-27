@@ -5,13 +5,13 @@ import useCommonView from '@/hooks/useCommonView'
 
 const operationMap = new Map([
   [0, '登录'],
-  [1, '退出'],
+  [1, '退出']
 ])
 
 const statusMap = new Map([
   [0, '失败'],
   [1, '成功'],
-  [2, '账号锁定'],
+  [2, '账号锁定']
 ])
 
 const commonView = reactive({
@@ -21,9 +21,9 @@ const commonView = reactive({
     exportUrl: '/sys/log/login/export',
     dataForm: {
       status: undefined,
-      creatorName: undefined,
-    },
-  }),
+      creatorName: undefined
+    }
+  })
 })
 </script>
 

@@ -9,9 +9,9 @@ const commonView = reactive({
     dataListUrl: '/sys/log/error/page',
     exportUrl: '/sys/log/error/export',
     dataForm: {
-      status: undefined,
-    },
-  }),
+      status: undefined
+    }
+  })
 })
 </script>
 

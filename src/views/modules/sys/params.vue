@@ -9,9 +9,9 @@ const commonView = reactive({
     deleteUrl: '/sys/params',
     dataListUrl: '/sys/params/page',
     dataForm: {
-      paramCode: undefined,
-    },
-  }),
+      paramCode: undefined
+    }
+  })
 })
 
 const addOrUpdateRef = ref()

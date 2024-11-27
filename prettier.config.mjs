@@ -1,5 +1,6 @@
 export default {
   semi: false,
   singleQuote: true,
-  proseWrap: 'never'
+  proseWrap: 'never',
+  allowTrailingComma: 'none'
 }
