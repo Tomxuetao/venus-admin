@@ -1,96 +1,3 @@
-<template>
-  <div class="mod-oss">
-    <el-form :inline="true" :model="dataForm">
-      <el-form-item>
-        <el-button
-          v-if="isAuth('oss:config:info')"
-          type="primary"
-          @click="configHandle()"
-        >云存储配置
-        </el-button
-        >
-        <el-button
-          v-if="isAuth('sys:oss:upload')"
-          type="primary"
-          @click="uploadHandle()"
-        >上传文件
-        </el-button
-        >
-        <el-button
-          type="danger"
-          @click="deleteHandle(undefined)"
-          :disabled="dataListSelections.length <= 0"
-        >批量删除
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="50"
-      ></el-table-column>
-      <el-table-column
-        prop="id"
-        align="center"
-        width="220"
-        label="ID"
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        align="center"
-        width="180"
-        label="文件名"
-      ></el-table-column>
-      <el-table-column
-        prop="url"
-        align="center"
-        label="URL地址"
-      ></el-table-column>
-      <el-table-column
-        prop="createDate"
-        align="center"
-        width="180"
-        label="创建时间"
-      ></el-table-column>
-      <el-table-column fixed="right" align="center" width="150" label="操作">
-        <template v-slot="scope">
-          <el-button
-            link
-            size="small"
-            @click="deleteHandle(scope.row.id)"
-            style="color: #f56c6c"
-          >删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="pageSizeChangeHandle"
-      @current-change="pageNumChangeHandle"
-      :current-page="dataForm.pageNum"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="dataForm.pageSize"
-      :total="count"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
-    <!-- 弹窗, 云存储配置 -->
-    <config v-if="configVisible" ref="configRef"></config>
-    <!-- 弹窗, 上传文件 -->
-    <upload
-      v-if="uploadVisible"
-      ref="uploadRef"
-      @refreshDataList="getDataListHandle"
-    ></upload>
-  </div>
-</template>
-
 <script setup>
 import { isAuth } from '@/utils'
 import Config from './oss-config.vue'
@@ -112,10 +19,7 @@ let count = ref(0)
 const getDataListHandle = () => {
   dataListLoading.value = true
   ossConfigListApi(dataForm)
-    .then(({
-      list,
-      total
-    }) => {
+    .then(({ list, total }) => {
       dataList.value = list
       count.value = total
     })
@@ -193,3 +97,96 @@ const pageNumChangeHandle = (pageNum) => {
   getDataListHandle()
 }
 </script>
+
+<template>
+  <div class="mod-oss mod-wrap">
+    <el-form :inline="true" :model="dataForm">
+      <el-form-item>
+        <el-button
+          v-if="isAuth('oss:config:info')"
+          type="primary"
+          @click="configHandle()"
+          >云存储配置</el-button
+        >
+        <el-button
+          v-if="isAuth('sys:oss:upload')"
+          type="primary"
+          @click="uploadHandle()"
+          >上传文件</el-button
+        >
+        <el-button
+          type="danger"
+          @click="deleteHandle(undefined)"
+          :disabled="dataListSelections.length <= 0"
+          >批量删除
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <div class="table-wrap">
+      <el-table
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        @selection-change="selectionChangeHandle"
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          prop="id"
+          align="center"
+          width="220"
+          label="ID"
+        ></el-table-column>
+        <el-table-column
+          prop="name"
+          align="center"
+          width="180"
+          label="文件名"
+        ></el-table-column>
+        <el-table-column
+          prop="url"
+          align="center"
+          label="URL地址"
+        ></el-table-column>
+        <el-table-column
+          prop="createDate"
+          align="center"
+          width="180"
+          label="创建时间"
+        ></el-table-column>
+        <el-table-column fixed="right" align="center" width="150" label="操作">
+          <template v-slot="scope">
+            <el-button
+              link
+              size="small"
+              @click="deleteHandle(scope.row.id)"
+              style="color: #f56c6c"
+              >删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <el-pagination
+      @size-change="pageSizeChangeHandle"
+      @current-change="pageNumChangeHandle"
+      :current-page="dataForm.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="dataForm.pageSize"
+      :total="count"
+      layout="total, sizes, prev, pager, next, jumper"
+    >
+    </el-pagination>
+    <!-- 弹窗, 云存储配置 -->
+    <config v-if="configVisible" ref="configRef"></config>
+    <!-- 弹窗, 上传文件 -->
+    <upload
+      v-if="uploadVisible"
+      ref="uploadRef"
+      @refreshDataList="getDataListHandle"
+    ></upload>
+  </div>
+</template>
