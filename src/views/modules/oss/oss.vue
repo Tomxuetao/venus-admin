@@ -90,56 +90,56 @@
 </template>
 
 <script setup>
-import { isAuth } from '@/utils';
-import Config from './oss-config.vue';
-import Upload from './oss-upload.vue';
-import { reactive, ref, nextTick } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
-import { ossConfigListApi, deleteRecordApi } from '@/api/oss-api';
+import { isAuth } from '@/utils'
+import Config from './oss-config.vue'
+import Upload from './oss-upload.vue'
+import { reactive, ref, nextTick } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import { ossConfigListApi, deleteRecordApi } from '@/api/oss-api'
 
 let dataForm = reactive({
   pageSize: 10,
   pageNum: 1,
-});
-let dataList = ref([]);
-let dataListLoading = ref(false);
-let count = ref(0);
+})
+let dataList = ref([])
+let dataListLoading = ref(false)
+let count = ref(0)
 
 const getDataListHandle = () => {
-  dataListLoading.value = true;
+  dataListLoading.value = true
   ossConfigListApi(dataForm)
     .then(({ list, total }) => {
-      dataList.value = list;
-      count.value = total;
+      dataList.value = list
+      count.value = total
     })
     .finally(() => {
-      dataListLoading.value = false;
-    });
-};
-getDataListHandle();
+      dataListLoading.value = false
+    })
+}
+getDataListHandle()
 
-let configVisible = ref(false);
-let configRef = ref();
+let configVisible = ref(false)
+let configRef = ref()
 const configHandle = () => {
-  configVisible.value = true;
+  configVisible.value = true
   nextTick(() => {
-    configRef.value.initDialogHandle();
-  });
-};
+    configRef.value.initDialogHandle()
+  })
+}
 
 // 上传文件
-let uploadVisible = ref(false);
-let uploadRef = ref();
+let uploadVisible = ref(false)
+let uploadRef = ref()
 const uploadHandle = () => {
-  uploadVisible.value = true;
+  uploadVisible.value = true
   nextTick(() => {
-    uploadRef.value.initDialogHandle();
-  });
-};
+    uploadRef.value.initDialogHandle()
+  })
+}
 
 // 删除
 const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
     '提示',
@@ -158,31 +158,31 @@ const deleteHandle = (id) => {
           type: 'success',
           duration: 1500,
           onClose: () => {
-            getDataListHandle();
+            getDataListHandle()
           },
-        });
+        })
       })
       .catch(() => {
-        ElMessage.error(new Error());
-      });
-  });
-};
+        ElMessage.error(new Error())
+      })
+  })
+}
 
-let dataListSelections = ref([]);
+let dataListSelections = ref([])
 const selectionChangeHandle = (value) => {
-  dataListSelections.value = value;
-};
+  dataListSelections.value = value
+}
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  dataForm.pageNum = 1;
-  dataForm.pageSize = pageSize;
-  getDataListHandle();
-};
+  dataForm.pageNum = 1
+  dataForm.pageSize = pageSize
+  getDataListHandle()
+}
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  dataForm.pageNum = pageNum;
-  getDataListHandle();
-};
+  dataForm.pageNum = pageNum
+  getDataListHandle()
+}
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-const router = useRouter();
+const router = useRouter()
 </script>
 <template>
   <div class="site-wrapper site-page--not-found">

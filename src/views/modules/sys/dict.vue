@@ -1,6 +1,6 @@
 <script setup>
-import { buildTree, isAuth } from '@/utils';
-import useCommonView from '@/hooks/useCommonView';
+import { buildTree, isAuth } from '@/utils'
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -11,12 +11,12 @@ const commonView = reactive({
       label: undefined,
     },
   }),
-});
+})
 
-const addOrUpdateRef = ref();
+const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateRef.value.init(id);
-};
+  addOrUpdateRef.value.init(id)
+}
 </script>
 
 <template>

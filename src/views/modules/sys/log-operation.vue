@@ -1,11 +1,11 @@
 <script setup>
-import { reactive } from 'vue';
-import useCommonView from '@/hooks/useCommonView';
+import { reactive } from 'vue'
+import useCommonView from '@/hooks/useCommonView'
 
 const statusMap = new Map([
   [0, '失败'],
   [1, '成功'],
-]);
+])
 
 const commonView = reactive({
   ...useCommonView({
@@ -16,7 +16,7 @@ const commonView = reactive({
       status: undefined,
     },
   }),
-});
+})
 </script>
 
 <template>

@@ -4,20 +4,20 @@ import {
   saveSysMenuApi,
   sysMenuSelectApi,
   updateSysMenuApi,
-} from '@/api/menu-api';
-import { treeDataTranslate } from '@/utils';
-import Icon from '@/assets/icons/index';
-import { ref, reactive, nextTick } from 'vue';
+} from '@/api/menu-api'
+import { treeDataTranslate } from '@/utils'
+import Icon from '@/assets/icons/index'
+import { ref, reactive, nextTick } from 'vue'
 
-import { ElMessage } from 'element-plus';
-import { commonApi } from '@/api/common-api';
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
 
-const emit = defineEmits(['refresh-data-list']);
+const emit = defineEmits(['refresh-data-list'])
 
 const menuTypeMap = new Map([
   [0, '菜单'],
   [1, '按钮'],
-]);
+])
 
 let dataForm = reactive({
   id: undefined,
@@ -29,15 +29,15 @@ let dataForm = reactive({
   sort: 0,
   icon: '',
   permissions: '',
-});
+})
 
 const validateUrl = (rule, value, callback) => {
   if (dataForm.type === 1 && !/\S/.test(value)) {
-    callback(new Error('菜单URL不能为空'));
+    callback(new Error('菜单URL不能为空'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
 const dataRule = {
   name: [
@@ -60,38 +60,38 @@ const dataRule = {
       trigger: 'blur',
     },
   ],
-};
+}
 
-const iconList = Icon.getNameList();
-let menuListTree = ref([]);
+const iconList = Icon.getNameList()
+let menuListTree = ref([])
 
-let visible = ref(false);
+let visible = ref(false)
 
-let dataFormRef = ref();
+let dataFormRef = ref()
 
 const initDialogHandle = (id) => {
-  dataForm.id = id;
+  dataForm.id = id
   sysMenuSelectApi({ id: id })
     .then((data) => {
-      const tempMenuList = data || [].filter((item) => item.type === 0);
-      const menuList = [];
+      const tempMenuList = data || [].filter((item) => item.type === 0)
+      const menuList = []
       tempMenuList.forEach((item) => {
         menuList.push({
           ...item,
           label: item.name,
           value: item.id,
-        });
-      });
-      menuListTree.value = treeDataTranslate(menuList);
-      console.log(menuListTree.value);
+        })
+      })
+      menuListTree.value = treeDataTranslate(menuList)
+      console.log(menuListTree.value)
     })
     .then(() => {
-      visible.value = true;
+      visible.value = true
       nextTick(() => {
         if (dataFormRef.value) {
-          dataFormRef.value.resetFields();
+          dataFormRef.value.resetFields()
         }
-      });
+      })
     })
     .then(() => {
       if (!dataForm.id) {
@@ -100,41 +100,41 @@ const initDialogHandle = (id) => {
       } else {
         // 修改
         sysMenuDetailApi(dataForm).then((data) => {
-          dataForm = Object.assign(dataForm, data);
-        });
+          dataForm = Object.assign(dataForm, data)
+        })
       }
-    });
-};
+    })
+}
 
 // 图标选中
 const iconActiveHandle = (iconName) => {
-  dataForm.icon = iconName;
-};
+  dataForm.icon = iconName
+}
 
 // 表单提交
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      commonApi();
-      const tempSysMenuApi = dataForm.id ? updateSysMenuApi : saveSysMenuApi;
+      commonApi()
+      const tempSysMenuApi = dataForm.id ? updateSysMenuApi : saveSysMenuApi
       tempSysMenuApi(dataForm).then(() => {
         ElMessage({
           message: '操作成功',
           type: 'success',
           duration: 1500,
           onClose: () => {
-            visible.value = false;
-            emit('refresh-data-list');
+            visible.value = false
+            emit('refresh-data-list')
           },
-        });
-      });
+        })
+      })
     }
-  });
-};
+  })
+}
 
 defineExpose({
   initDialogHandle,
-});
+})
 </script>
 
 <template>

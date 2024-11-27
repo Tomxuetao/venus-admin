@@ -1,60 +1,60 @@
 <script setup>
-import { reactive, ref, nextTick } from 'vue';
-import { treeDataTranslate } from '@/utils';
+import { reactive, ref, nextTick } from 'vue'
+import { treeDataTranslate } from '@/utils'
 
-import { ElMessage } from 'element-plus';
-import { commonApi } from '@/api/common-api';
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
 
-const emit = defineEmits(['refresh-data-list']);
+const emit = defineEmits(['refresh-data-list'])
 
-let btnLoading = ref(false);
-let visible = ref(false);
-let menuList = ref([]);
-let expandedKeys = ref([1]);
+let btnLoading = ref(false)
+let visible = ref(false)
+let menuList = ref([])
+let expandedKeys = ref([1])
 let dataForm = reactive({
   id: undefined,
   name: '',
   remark: '',
-});
+})
 
-const dataFormRef = ref();
-const menuListTreeRef = ref();
+const dataFormRef = ref()
+const menuListTreeRef = ref()
 
-const tempKey = ref(-666666);
+const tempKey = ref(-666666)
 
 const initDialogHandle = (id) => {
-  btnLoading.value = false;
-  dataForm.id = id || undefined;
+  btnLoading.value = false
+  dataForm.id = id || undefined
   commonApi('/sys/menu/list')
     .then((data) => {
-      visible.value = true;
-      console.log(data);
-      menuList.value = treeDataTranslate(data);
+      visible.value = true
+      console.log(data)
+      menuList.value = treeDataTranslate(data)
       nextTick(() => {
         if (dataFormRef.value && menuListTreeRef.value) {
-          dataFormRef.value.resetFields();
-          menuListTreeRef.value.setCheckedKeys([]);
+          dataFormRef.value.resetFields()
+          menuListTreeRef.value.setCheckedKeys([])
         }
-      });
+      })
     })
     .then(() => {
       if (dataForm.id) {
         commonApi(`/sys/role/${dataForm.id}`).then((data) => {
-          dataForm.name = data.name;
-          dataForm.remark = data.remark;
-          const idx = data.menuIdList.indexOf(tempKey);
+          dataForm.name = data.name
+          dataForm.remark = data.remark
+          const idx = data.menuIdList.indexOf(tempKey)
           if (idx !== -1) {
-            data.menuIdList.splice(idx, data.menuIdList.length - idx);
+            data.menuIdList.splice(idx, data.menuIdList.length - idx)
           }
-          menuListTreeRef.value.setCheckedKeys(data.menuIdList);
-        });
+          menuListTreeRef.value.setCheckedKeys(data.menuIdList)
+        })
       }
-    });
-};
+    })
+}
 
 const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
-    btnLoading.value = true;
+    btnLoading.value = true
     if (valid) {
       await commonApi(
         `/sys/role/${!dataForm.id ? 'save' : 'update'}`,
@@ -66,30 +66,30 @@ const dataFormSubmit = () => {
           ],
         },
         { method: dataForm.id ? 'put' : 'post' },
-      );
+      )
       ElMessage({
         message: '操作成功',
         type: 'success',
         duration: 1500,
         onClose: () => {
-          visible.value = false;
-          emit('refresh-data-list');
+          visible.value = false
+          emit('refresh-data-list')
         },
-      });
+      })
     } else {
-      btnLoading.value = false;
+      btnLoading.value = false
     }
-  });
-};
+  })
+}
 
 const closeDialogHandle = () => {
-  visible.value = false;
-  dataFormRef.value.resetFields();
-};
+  visible.value = false
+  dataFormRef.value.resetFields()
+}
 
 defineExpose({
   initDialogHandle,
-});
+})
 </script>
 
 <template>

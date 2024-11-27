@@ -1,11 +1,11 @@
 <script setup>
-import { reactive, ref } from 'vue';
-import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api';
+import { reactive, ref } from 'vue'
+import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
-import { ElMessage } from 'element-plus';
-import { isAuth } from '@/utils';
+import { ElMessage } from 'element-plus'
+import { isAuth } from '@/utils'
 
-const emit = defineEmits(['refresh-data-list']);
+const emit = defineEmits(['refresh-data-list'])
 
 let dataForm = reactive({
   type: 4,
@@ -35,7 +35,7 @@ let dataForm = reactive({
   minioAccessKey: '',
   minioSecretKey: '',
   minioBucketName: '',
-});
+})
 
 const dataRule = {
   qiniuDomain: [
@@ -143,11 +143,11 @@ const dataRule = {
       trigger: 'blur',
     },
   ],
-};
+}
 
-let visible = ref(false);
+let visible = ref(false)
 const initDialogHandle = () => {
-  visible.value = true;
+  visible.value = true
 
   ossConfigDetailApi().then((data) => {
     dataForm = Object.assign(
@@ -158,11 +158,11 @@ const initDialogHandle = () => {
             ...data,
             type: 4,
           },
-    );
-  });
-};
+    )
+  })
+}
 
-const dataFormRef = ref();
+const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
@@ -172,18 +172,18 @@ const dataFormSubmit = () => {
           type: 'success',
           duration: 1500,
           onClose: () => {
-            visible.value = false;
-            emit('refresh-data-list');
+            visible.value = false
+            emit('refresh-data-list')
           },
-        });
-      });
+        })
+      })
     }
-  });
-};
+  })
+}
 
 defineExpose({
   initDialogHandle,
-});
+})
 </script>
 
 <template>

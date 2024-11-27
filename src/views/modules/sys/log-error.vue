@@ -1,7 +1,7 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
-import useCommonView from '@/hooks/useCommonView';
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -12,7 +12,7 @@ const commonView = reactive({
       status: undefined,
     },
   }),
-});
+})
 </script>
 
 <template>

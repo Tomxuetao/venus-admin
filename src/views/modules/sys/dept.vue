@@ -1,8 +1,8 @@
 <script setup>
-import AddOrUpdate from './dept-add-or-update.vue';
+import AddOrUpdate from './dept-add-or-update.vue'
 
-import { ref, nextTick } from 'vue';
-import useCommonView from '@/hooks/useCommonView';
+import { ref, nextTick } from 'vue'
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -14,17 +14,17 @@ const commonView = reactive({
       name: undefined,
     },
   }),
-});
+})
 
-let addOrUpdateVisible = ref(false);
+let addOrUpdateVisible = ref(false)
 
-const addOrUpdateRef = ref();
+const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true;
+  addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.init(id);
-  });
-};
+    addOrUpdateRef.value.init(id)
+  })
+}
 </script>
 
 <template>

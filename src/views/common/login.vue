@@ -131,136 +131,136 @@
 </template>
 
 <script setup>
-import { getUUID } from '@/utils';
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useCommonStore } from '@/store';
-import { venusServer } from '@/utils/http';
-import { loginApi } from '@/api/login-api';
-import { commonApi } from '@/api/common-api';
-import { ElMessage } from 'element-plus';
+import { getUUID } from '@/utils'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCommonStore } from '@/store'
+import { venusServer } from '@/utils/http'
+import { loginApi } from '@/api/login-api'
+import { commonApi } from '@/api/common-api'
+import { ElMessage } from 'element-plus'
 
-const commonStore = useCommonStore();
+const commonStore = useCommonStore()
 
 const dataForm = reactive({
   account: '',
   uuid: '',
   captcha: '',
-  secretKey: '',
-});
+  secretKey: ''
+})
 
 const dataRule = {
   account: [
     {
       required: true,
       message: '帐号不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   secretKey: [
     {
       required: true,
       message: '密钥不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   captcha: [
     {
       required: true,
       message: '图片验证码不能为空',
-      trigger: 'blur',
-    },
-  ],
-};
+      trigger: 'blur'
+    }
+  ]
+}
 
-const captchaPath = ref('');
+const captchaPath = ref('')
 
 const getCaptcha = () => {
-  dataForm.uuid = getUUID();
-  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`;
-};
+  dataForm.uuid = getUUID()
+  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
+}
 
-getCaptcha();
+getCaptcha()
 
-const router = useRouter();
-const dataFormRef = ref();
+const router = useRouter()
+const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
       loginApi(dataForm)
         .then(async ({ token }) => {
-          commonStore.updateToken(token);
+          commonStore.updateToken(token)
           await router.push({
-            name: 'main-dynamic',
-          });
+            name: 'main-dynamic'
+          })
         })
         .catch(() => {
-          getCaptcha();
-        });
+          getCaptcha()
+        })
     }
-  });
-};
+  })
+}
 
 const msgCodeLogin = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
       commonApi('/codeLogin', dataForm, { method: 'post' })
         .then(async ({ token }) => {
-          commonStore.updateToken(token);
+          commonStore.updateToken(token)
           await router.push({
-            name: 'main-dynamic',
-          });
+            name: 'main-dynamic'
+          })
         })
         .catch(() => {
-          getCaptcha();
-        });
+          getCaptcha()
+        })
     }
-  });
-};
+  })
+}
 
-const activeWay = ref(0);
+const activeWay = ref(0)
 const changeLoginWay = (way) => {
   if (activeWay.value !== way) {
-    getCaptcha();
-    activeWay.value = way;
+    getCaptcha()
+    activeWay.value = way
   }
-};
+}
 
-const timer = ref(0);
-const timerId = ref(null);
+const timer = ref(0)
+const timerId = ref(null)
 
 const getMsgCode = () => {
   commonApi('/code', dataForm, { method: 'post' })
     .then(() => {
-      ElMessage.success('验证码发送成功');
-      createInterval();
+      ElMessage.success('验证码发送成功')
+      createInterval()
     })
     .catch(() => {
-      getCaptcha();
-    });
-};
+      getCaptcha()
+    })
+}
 
 const clearIntervalTimer = () => {
   if (timerId.value) {
-    timer.value = 60;
-    clearInterval(timerId.value);
-    timerId.value = undefined;
+    timer.value = 60
+    clearInterval(timerId.value)
+    timerId.value = undefined
   }
-};
+}
 
 const createInterval = () => {
-  clearIntervalTimer();
+  clearIntervalTimer()
   timerId.value = setInterval(() => {
-    timer.value = timer.value - 1;
+    timer.value = timer.value - 1
     if (timer.value <= 0) {
-      clearIntervalTimer();
+      clearIntervalTimer()
     }
-  }, 1000);
-};
+  }, 1000)
+}
 
 onBeforeUnmount(() => {
-  clearIntervalTimer();
-});
+  clearIntervalTimer()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <script setup>
-import { isAuth } from '@/utils';
-import useCommonView from '@/hooks/useCommonView';
-import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue';
+import { isAuth } from '@/utils'
+import useCommonView from '@/hooks/useCommonView'
+import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue'
 
 const commonView = reactive({
   ...useCommonView({
@@ -12,12 +12,12 @@ const commonView = reactive({
       paramCode: undefined,
     },
   }),
-});
+})
 
-const addOrUpdateRef = ref();
+const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateRef.value.init(id);
-};
+  addOrUpdateRef.value.init(id)
+}
 </script>
 
 <template>

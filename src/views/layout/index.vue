@@ -1,41 +1,41 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { useCommonStore } from '@/store';
-import imgBg from '@/assets/img/img-bg.webp';
-import SvgIcon from '@/components/icon-svg.vue';
-import { clapTree } from 'layout-vue3/es/utils';
-import { Layout as EvLayout } from 'layout-vue3';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, watch } from 'vue'
+import { useCommonStore } from '@/store'
+import imgBg from '@/assets/img/img-bg.webp'
+import SvgIcon from '@/components/icon-svg.vue'
+import { clapTree } from 'layout-vue3/es/utils'
+import { Layout as EvLayout } from 'layout-vue3'
+import { useRouter, useRoute } from 'vue-router'
 
 defineOptions({
-  name: 'main-layout',
-});
+  name: 'main-layout'
+})
 
-const commonStore = useCommonStore();
+const commonStore = useCommonStore()
 
-const pathMap = clapTree(commonStore.menuTree, 'url');
+const pathMap = clapTree(commonStore.menuTree, 'url')
 
-const collapse = ref(false);
+const collapse = ref(false)
 
 const toggleCollapse = () => {
-  collapse.value = !collapse.value;
-};
+  collapse.value = !collapse.value
+}
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const activeData = ref();
+const activeData = ref()
 
-activeData.value = pathMap.get(route.path.replace('/', ''));
+activeData.value = pathMap.get(route.path.replace('/', ''))
 
 watch(
   () => activeData.value,
   (data) => {
     router.push({
-      path: `/${data.url}`,
-    });
-  },
-);
+      path: `/${data.url}`
+    })
+  }
+)
 </script>
 
 <template>

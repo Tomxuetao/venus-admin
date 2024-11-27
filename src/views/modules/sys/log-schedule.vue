@@ -1,8 +1,8 @@
 <script setup>
-import { reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import { commonApi } from '@/api/common-api';
-import useCommonView from '@/hooks/useCommonView';
+import { reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -14,13 +14,13 @@ const commonView = reactive({
       beanName: undefined,
     },
   }),
-});
+})
 
 // 失败信息
 const showErrorHandle = async (id) => {
-  const data = await commonApi(`/sys/scheduleLog/info/${id}`);
-  ElMessage.error(data);
-};
+  const data = await commonApi(`/sys/scheduleLog/info/${id}`)
+  ElMessage.error(data)
+}
 </script>
 
 <template>

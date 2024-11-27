@@ -1,18 +1,18 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
-import useCommonView from '@/hooks/useCommonView';
+import useCommonView from '@/hooks/useCommonView'
 
 const operationMap = new Map([
   [0, '登录'],
   [1, '退出'],
-]);
+])
 
 const statusMap = new Map([
   [0, '失败'],
   [1, '成功'],
   [2, '账号锁定'],
-]);
+])
 
 const commonView = reactive({
   ...useCommonView({
@@ -24,7 +24,7 @@ const commonView = reactive({
       creatorName: undefined,
     },
   }),
-});
+})
 </script>
 
 <template>

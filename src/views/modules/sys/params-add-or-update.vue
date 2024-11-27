@@ -1,19 +1,19 @@
 <script setup>
-import { reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
-import { commonApi } from '@/api/common-api';
+import { reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
 
-const emit = defineEmits(['refreshDataList']);
+const emit = defineEmits(['refreshDataList'])
 
-const visible = ref(false);
-const dataFormRef = ref();
+const visible = ref(false)
+const dataFormRef = ref()
 
 const dataForm = reactive({
   id: '',
   paramCode: '',
   paramValue: '',
   remark: '',
-});
+})
 
 const rules = ref({
   paramCode: [
@@ -30,29 +30,29 @@ const rules = ref({
       trigger: 'blur',
     },
   ],
-});
+})
 
 const init = (id) => {
-  visible.value = true;
-  dataForm.id = '';
+  visible.value = true
+  dataForm.id = ''
 
   // 重置表单数据
   if (dataFormRef.value) {
-    dataFormRef.value.resetFields();
+    dataFormRef.value.resetFields()
   }
 
   if (id) {
     commonApi(`/sys/params/${id}`).then((data) => {
-      Object.assign(dataForm, data);
-    });
+      Object.assign(dataForm, data)
+    })
   }
-};
+}
 
 // 表单提交
 const dataFormSubmitHandle = () => {
   dataFormRef.value.validate((valid) => {
     if (!valid) {
-      return false;
+      return false
     }
     commonApi('/sys/params', dataForm, {
       method: dataForm.id ? 'put' : 'post',
@@ -61,17 +61,17 @@ const dataFormSubmitHandle = () => {
         message: '成功',
         duration: 500,
         onClose: () => {
-          visible.value = false;
-          emit('refreshDataList');
+          visible.value = false
+          emit('refreshDataList')
         },
-      });
-    });
-  });
-};
+      })
+    })
+  })
+}
 
 defineExpose({
   init,
-});
+})
 </script>
 
 <template>

@@ -164,157 +164,159 @@
 </template>
 
 <script setup>
-import { reactive, ref, nextTick } from 'vue';
+import {
+ reactive, ref, nextTick 
+} from 'vue'
 
-import { isAuth } from '@/utils';
-import { commonApi } from '@/api/common-api';
+import { isAuth } from '@/utils'
+import { commonApi } from '@/api/common-api'
 
-import AddOrUpdate from './schedule-add-or-update.vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import AddOrUpdate from './schedule-add-or-update.vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const dataForm = reactive({
   beanName: null,
   pageSize: 10,
-  pageNum: 1,
-});
+  pageNum: 1
+})
 
-const dataList = ref([]);
-const total = ref(0);
-const dataListLoading = ref(false);
-const addOrUpdateVisible = ref(false);
-const dataListSelections = ref([]);
+const dataList = ref([])
+const total = ref(0)
+const dataListLoading = ref(false)
+const addOrUpdateVisible = ref(false)
+const dataListSelections = ref([])
 
 // 获取数据列表
 const getDataListHandle = async () => {
-  dataListLoading.value = true;
-  const data = await commonApi('/sys/schedule/page');
-  dataListLoading.value = false;
-  dataList.value = data.list;
-  total.value = data.total;
-};
+  dataListLoading.value = true
+  const data = await commonApi('/sys/schedule/page')
+  dataListLoading.value = false
+  dataList.value = data.list
+  total.value = data.total
+}
 
-getDataListHandle();
+getDataListHandle()
 
 // 每页数
 const pageSizeChangeHandle = (pageSize) => {
-  dataForm.pageNum = 1;
-  dataForm.pageSize = pageSize;
-  getDataListHandle();
-};
+  dataForm.pageNum = 1
+  dataForm.pageSize = pageSize
+  getDataListHandle()
+}
 
 // 当前页
 const pageNumChangeHandle = (pageNum) => {
-  dataForm.pageNum = pageNum;
-  getDataListHandle();
-};
+  dataForm.pageNum = pageNum
+  getDataListHandle()
+}
 
 // 多选
 const selectionChangeHandle = (val) => {
-  dataListSelections.value = val;
-};
+  dataListSelections.value = val
+}
 
 // 新增 / 修改
-let addOrUpdateRef = ref();
+let addOrUpdateRef = ref()
 const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true;
+  addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id);
-  });
-};
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
 
 // 删除
 const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
     '提示',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
-    await commonApi('/sys/schedule/delete', ids, { method: 'post' });
+    await commonApi('/sys/schedule/delete', ids, { method: 'post' })
     ElMessage({
       message: '操作成功',
       type: 'success',
       duration: 1500,
       onClose: () => {
-        getDataListHandle();
-      },
-    });
-  });
-};
+        getDataListHandle()
+      }
+    })
+  })
+}
 
 // 暂停
 const pauseHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`,
     '提示',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
-    await commonApi('/sys/schedule/pause', ids, { method: 'put' });
+    await commonApi('/sys/schedule/pause', ids, { method: 'put' })
     ElMessage({
       message: '操作成功',
       type: 'success',
       duration: 1500,
       onClose: () => {
-        getDataListHandle();
-      },
-    });
-  });
-};
+        getDataListHandle()
+      }
+    })
+  })
+}
 
 // 恢复
 const resumeHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`,
     '提示',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
-    await commonApi('/sys/schedule/resume', ids, { method: 'put' });
+    await commonApi('/sys/schedule/resume', ids, { method: 'put' })
     ElMessage({
       message: '操作成功',
       type: 'success',
       duration: 1500,
       onClose: () => {
-        getDataListHandle();
-      },
-    });
-  });
-};
+        getDataListHandle()
+      }
+    })
+  })
+}
 
 // 立即执行
 const runHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id);
+  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`,
     '提示',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
-    await commonApi('/sys/schedule/run', ids, { method: 'put' });
+    await commonApi('/sys/schedule/run', ids, { method: 'put' })
     ElMessage({
       message: '操作成功',
       type: 'success',
       duration: 1500,
       onClose: () => {
-        getDataListHandle();
-      },
-    });
-  });
-};
+        getDataListHandle()
+      }
+    })
+  })
+}
 </script>

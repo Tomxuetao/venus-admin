@@ -1,8 +1,8 @@
 <script setup>
-import AddOrUpdate from './role-add-or-update.vue';
-import { ref, reactive, nextTick } from 'vue';
-import { isAuth } from '@/utils';
-import useCommonView from '@/hooks/useCommonView';
+import AddOrUpdate from './role-add-or-update.vue'
+import { ref, reactive, nextTick } from 'vue'
+import { isAuth } from '@/utils'
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -13,17 +13,17 @@ const commonView = reactive({
       name: undefined,
     },
   }),
-});
+})
 
-let addOrUpdateRef = ref();
-let addOrUpdateVisible = ref(false);
+let addOrUpdateRef = ref()
+let addOrUpdateVisible = ref(false)
 
 const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateVisible.value = true;
+  addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id);
-  });
-};
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
 </script>
 
 <template>

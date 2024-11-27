@@ -1,7 +1,7 @@
 <script setup>
-import { isAuth } from '@/utils';
-import { reactive } from 'vue';
-import useCommonView from '@/hooks/useCommonView';
+import { isAuth } from '@/utils'
+import { reactive } from 'vue'
+import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({
   ...useCommonView({
@@ -12,7 +12,7 @@ const commonView = reactive({
       tableName: undefined,
     },
   }),
-});
+})
 </script>
 
 <template>

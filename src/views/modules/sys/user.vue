@@ -1,10 +1,10 @@
 <script setup>
-import { isAuth } from '@/utils';
-import { ref, reactive, nextTick } from 'vue';
-import useCommonView from '@/hooks/useCommonView';
-import AddOrUpdate from './user-add-or-update.vue';
+import { isAuth } from '@/utils'
+import { ref, reactive, nextTick } from 'vue'
+import useCommonView from '@/hooks/useCommonView'
+import AddOrUpdate from './user-add-or-update.vue'
 
-const addOrUpdateRef = ref();
+const addOrUpdateRef = ref()
 
 const commonView = reactive({
   ...useCommonView({
@@ -15,16 +15,16 @@ const commonView = reactive({
       username: undefined,
     },
   }),
-});
-const addOrUpdateVisible = ref(false);
+})
+const addOrUpdateVisible = ref(false)
 
 // 新增 / 修改
 const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true;
+  addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id);
-  });
-};
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
 </script>
 
 <template>

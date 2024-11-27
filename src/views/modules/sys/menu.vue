@@ -1,18 +1,18 @@
 <script setup>
-import { ref, nextTick } from 'vue';
-import { buildTree } from '@/utils';
-import useCommonView from '@/hooks/useCommonView';
-import AddOrUpdate from './menu-add-or-update.vue';
+import { ref, nextTick } from 'vue'
+import { buildTree } from '@/utils'
+import useCommonView from '@/hooks/useCommonView'
+import AddOrUpdate from './menu-add-or-update.vue'
 
 const menuTypeMap = new Map([
   [0, '菜单'],
   [1, '按钮'],
-]);
+])
 
 const tagTypeMap = new Map([
   [0, 'primary'],
   [1, 'success'],
-]);
+])
 const commonView = reactive({
   ...useCommonView({
     isPage: false,
@@ -24,16 +24,16 @@ const commonView = reactive({
       creatorName: undefined,
     },
   }),
-});
+})
 
-const addOrUpdateRef = ref();
-let addOrUpdateVisible = ref(false);
+const addOrUpdateRef = ref()
+let addOrUpdateVisible = ref(false)
 const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true;
+  addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id);
-  });
-};
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
 </script>
 
 <template>

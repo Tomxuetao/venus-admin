@@ -22,39 +22,39 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { venusServer } from '@/utils/http';
+import { ref } from 'vue'
+import { venusServer } from '@/utils/http'
 
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessageBox, ElMessage } from 'element-plus'
 
-const emit = defineEmits(['refresh-data-list']);
+const emit = defineEmits(['refresh-data-list'])
 
-let visible = ref(false);
+let visible = ref(false)
 
-let fileList = ref([]);
-let url = ref(null);
-let num = ref(0);
-let successNum = ref(0);
+let fileList = ref([])
+let url = ref(null)
+let num = ref(0)
+let successNum = ref(0)
 
 const initDialogHandle = () => {
-  url.value = `${venusServer}/sys/oss/upload?token=${sessionStorage.getItem('token')}`;
-  visible.value = true;
-};
+  url.value = `${venusServer}/sys/oss/upload?token=${sessionStorage.getItem('token')}`
+  visible.value = true
+}
 
 // 上传之前
 const beforeUploadHandle = (file) => {
-  const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+  const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   if (!fileTypeArray.includes(file.type)) {
-    ElMessage.error('只支持jpg、png、gif格式的图片！');
-    return false;
+    ElMessage.error('只支持jpg、png、gif格式的图片！')
+    return false
   }
-  num.value++;
-};
+  num.value++
+}
 
 // 上传成功
 const successHandle = (response, file, list) => {
-  fileList.value = list;
-  successNum.value++;
+  fileList.value = list
+  successNum.value++
   if (response?.code === 200) {
     if (num.value === successNum.value) {
       ElMessageBox.confirm('操作成功, 是否继续操作?', '提示', {
@@ -62,21 +62,21 @@ const successHandle = (response, file, list) => {
         cancelButtonText: '取消',
         type: 'warning',
       }).catch(() => {
-        visible.value = false;
-      });
+        visible.value = false
+      })
     }
   } else {
-    ElMessage.error(response.msg);
+    ElMessage.error(response.msg)
   }
-};
+}
 
 // 弹窗关闭时
 const closeHandle = () => {
-  fileList.value = [];
-  emit('refresh-data-list');
-};
+  fileList.value = []
+  emit('refresh-data-list')
+}
 
 defineExpose({
   initDialogHandle,
-});
+})
 </script>
