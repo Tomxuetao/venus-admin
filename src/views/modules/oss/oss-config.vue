@@ -1,8 +1,7 @@
 <script setup>
-import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
-
-import { ElMessage } from 'element-plus'
 import { isAuth } from '@/utils'
+import { ElMessage } from 'element-plus'
+import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
 const emit = defineEmits(['refresh-data-list'])
 

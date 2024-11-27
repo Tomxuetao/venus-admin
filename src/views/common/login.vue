@@ -1,3 +1,134 @@
+<script setup>
+import { getUUID } from '@/utils'
+import { useCommonStore } from '@/store'
+import { venusServer } from '@/utils/http'
+import { loginApi } from '@/api/login-api'
+import { commonApi } from '@/api/common-api'
+import { ElMessage } from 'element-plus'
+
+const commonStore = useCommonStore()
+
+const dataForm = reactive({
+  account: '',
+  uuid: '',
+  captcha: '',
+  secretKey: '',
+})
+
+const dataRule = {
+  account: [
+    {
+      required: true,
+      message: '帐号不能为空',
+      trigger: 'blur',
+    },
+  ],
+  secretKey: [
+    {
+      required: true,
+      message: '密钥不能为空',
+      trigger: 'blur',
+    },
+  ],
+  captcha: [
+    {
+      required: true,
+      message: '图片验证码不能为空',
+      trigger: 'blur',
+    },
+  ],
+}
+
+const captchaPath = ref('')
+
+const getCaptcha = () => {
+  dataForm.uuid = getUUID()
+  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
+}
+
+getCaptcha()
+
+const router = useRouter()
+const dataFormRef = ref()
+const dataFormSubmit = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      loginApi(dataForm)
+        .then(async ({ token }) => {
+          commonStore.updateToken(token)
+          await router.push({
+            name: 'main-dynamic',
+          })
+        })
+        .catch(() => {
+          getCaptcha()
+        })
+    }
+  })
+}
+
+const msgCodeLogin = () => {
+  dataFormRef.value.validate((valid) => {
+    if (valid) {
+      commonApi('/codeLogin', dataForm, { method: 'post' })
+        .then(async ({ token }) => {
+          commonStore.updateToken(token)
+          await router.push({
+            name: 'main-dynamic',
+          })
+        })
+        .catch(() => {
+          getCaptcha()
+        })
+    }
+  })
+}
+
+const activeWay = ref(0)
+const changeLoginWay = (way) => {
+  if (activeWay.value !== way) {
+    getCaptcha()
+    activeWay.value = way
+  }
+}
+
+const timer = ref(0)
+const timerId = ref(null)
+
+const getMsgCode = () => {
+  commonApi('/code', dataForm, { method: 'post' })
+    .then(() => {
+      ElMessage.success('验证码发送成功')
+      createInterval()
+    })
+    .catch(() => {
+      getCaptcha()
+    })
+}
+
+const clearIntervalTimer = () => {
+  if (timerId.value) {
+    timer.value = 60
+    clearInterval(timerId.value)
+    timerId.value = undefined
+  }
+}
+
+const createInterval = () => {
+  clearIntervalTimer()
+  timerId.value = setInterval(() => {
+    timer.value = timer.value - 1
+    if (timer.value <= 0) {
+      clearIntervalTimer()
+    }
+  }, 1000)
+}
+
+onBeforeUnmount(() => {
+  clearIntervalTimer()
+})
+</script>
+
 <template>
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
@@ -129,137 +260,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { getUUID } from '@/utils'
-import { useCommonStore } from '@/store'
-import { venusServer } from '@/utils/http'
-import { loginApi } from '@/api/login-api'
-import { commonApi } from '@/api/common-api'
-import { ElMessage } from 'element-plus'
-
-const commonStore = useCommonStore()
-
-const dataForm = reactive({
-  account: '',
-  uuid: '',
-  captcha: '',
-  secretKey: ''
-})
-
-const dataRule = {
-  account: [
-    {
-      required: true,
-      message: '帐号不能为空',
-      trigger: 'blur'
-    }
-  ],
-  secretKey: [
-    {
-      required: true,
-      message: '密钥不能为空',
-      trigger: 'blur'
-    }
-  ],
-  captcha: [
-    {
-      required: true,
-      message: '图片验证码不能为空',
-      trigger: 'blur'
-    }
-  ]
-}
-
-const captchaPath = ref('')
-
-const getCaptcha = () => {
-  dataForm.uuid = getUUID()
-  captchaPath.value = `${venusServer}/captcha?uuid=${dataForm.uuid}`
-}
-
-getCaptcha()
-
-const router = useRouter()
-const dataFormRef = ref()
-const dataFormSubmit = () => {
-  dataFormRef.value.validate((valid) => {
-    if (valid) {
-      loginApi(dataForm)
-        .then(async ({ token }) => {
-          commonStore.updateToken(token)
-          await router.push({
-            name: 'main-dynamic'
-          })
-        })
-        .catch(() => {
-          getCaptcha()
-        })
-    }
-  })
-}
-
-const msgCodeLogin = () => {
-  dataFormRef.value.validate((valid) => {
-    if (valid) {
-      commonApi('/codeLogin', dataForm, { method: 'post' })
-        .then(async ({ token }) => {
-          commonStore.updateToken(token)
-          await router.push({
-            name: 'main-dynamic'
-          })
-        })
-        .catch(() => {
-          getCaptcha()
-        })
-    }
-  })
-}
-
-const activeWay = ref(0)
-const changeLoginWay = (way) => {
-  if (activeWay.value !== way) {
-    getCaptcha()
-    activeWay.value = way
-  }
-}
-
-const timer = ref(0)
-const timerId = ref(null)
-
-const getMsgCode = () => {
-  commonApi('/code', dataForm, { method: 'post' })
-    .then(() => {
-      ElMessage.success('验证码发送成功')
-      createInterval()
-    })
-    .catch(() => {
-      getCaptcha()
-    })
-}
-
-const clearIntervalTimer = () => {
-  if (timerId.value) {
-    timer.value = 60
-    clearInterval(timerId.value)
-    timerId.value = undefined
-  }
-}
-
-const createInterval = () => {
-  clearIntervalTimer()
-  timerId.value = setInterval(() => {
-    timer.value = timer.value - 1
-    if (timer.value <= 0) {
-      clearIntervalTimer()
-    }
-  }, 1000)
-}
-
-onBeforeUnmount(() => {
-  clearIntervalTimer()
-})
-</script>
 
 <style lang="scss" scoped>
 .site-wrapper.site-page--login {

@@ -11,11 +11,11 @@ export const noAccessDialog = executeOnce(() => {
   ElMessageBox.confirm('登录已过期，请重新登录', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    type: 'warning'
-  }).finally(() => {
+    type: 'warning',
+  }).finally(async () => {
     sessionStorage.clear()
-    router.push({
-      name: 'login'
+    await router.push({
+      name: 'login',
     })
   })
 })
@@ -29,8 +29,8 @@ export const createHttp = () => {
     timeout: 1000 * 3,
     withCredentials: true,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   })
 
   /**
@@ -39,11 +39,11 @@ export const createHttp = () => {
   http.interceptors.request.use(
     (config) => {
       config.headers = Object.assign(config.headers, {
-        token: sessionStorage.getItem('token')
+        token: sessionStorage.getItem('token'),
       })
       return config
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   )
 
   /**
@@ -68,10 +68,10 @@ export const createHttp = () => {
 
       return {
         downloadMethod: headers['content-disposition'],
-        data: response.data
+        data: response.data,
       }
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   )
 
   return http

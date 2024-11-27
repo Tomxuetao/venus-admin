@@ -2,17 +2,14 @@
 import { useCommonStore } from '@/store'
 import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
-import { clapTree } from 'layout-vue3/es/utils'
 import { Layout as EvLayout } from 'layout-vue3'
 import { useRouter, useRoute } from 'vue-router'
 
 defineOptions({
-  name: 'main-layout'
+  name: 'main-layout',
 })
 
 const commonStore = useCommonStore()
-
-const pathMap = clapTree(commonStore.menuTree, 'url')
 
 const collapse = ref(false)
 
@@ -23,29 +20,38 @@ const toggleCollapse = () => {
 const route = useRoute()
 const router = useRouter()
 
-const activeData = ref()
+const routes = router.getRoutes()
 
-activeData.value = pathMap.get(route.path.replace('/', ''))
+const activeId = ref(route.meta.id)
+
+const changeRoute = (id) => {
+  if (activeId.value !== id) {
+    activeId.value = id
+    const targetRoute = routes.find((item) => item.meta.id === id)
+    if (targetRoute) {
+      router.push(targetRoute)
+    }
+  }
+}
 
 watch(
-  () => activeData.value,
-  (data) => {
-    router.push({
-      path: `/${data.url}`
-    })
-  }
+  () => route.meta.id,
+  (id) => {
+    activeId.value = id
+  },
 )
 </script>
 
 <template>
   <ev-layout
-    v-model="activeData"
     class="layout-wrap"
     :img-bg="imgBg"
     :show-crumb="true"
     :collapse="collapse"
     :unique-opened="true"
+    :model-value="activeId"
     :menu-list="commonStore.menuTree"
+    @update:model-value="changeRoute"
   >
     <template #logo>
       <div class="logo-wrap">

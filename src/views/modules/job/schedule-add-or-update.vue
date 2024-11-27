@@ -1,3 +1,74 @@
+<script setup>
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
+
+const emit = defineEmits(['refresh-data-list'])
+
+let dataForm = reactive({
+  id: undefined,
+  beanName: '',
+  params: '',
+  cronExpression: '',
+  remark: '',
+  status: 0,
+})
+
+const dataRule = {
+  beanName: [
+    {
+      required: true,
+      message: '用户名不能为空',
+      trigger: 'blur',
+    },
+  ],
+  cronExpression: [
+    {
+      required: true,
+      message: 'cron表达式不能为空',
+      trigger: 'blur',
+    },
+  ],
+}
+
+const dataFormRef = ref()
+const visible = ref(false)
+const initDialogHandle = (id) => {
+  dataForm.id = id
+  visible.value = true
+  nextTick(async () => {
+    if (dataFormRef.value) {
+      dataFormRef.value.resetFields()
+    }
+    if (dataForm.id) {
+      const data = await commonApi(`/sys/schedule/info/${dataForm.id}`, {}, {})
+      dataForm = Object.assign(dataForm, data)
+    }
+  })
+}
+
+// 表单提交
+const dataFormSubmit = () => {
+  dataFormRef.value.validate(async (valid) => {
+    if (valid) {
+      await commonApi(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`)
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          visible.value = false
+          emit('refresh-data-list')
+        },
+      })
+    }
+  })
+}
+
+defineExpose({
+  initDialogHandle,
+})
+</script>
+
 <template>
   <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
     <el-form
@@ -33,74 +104,3 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup>
-import { ElMessage } from 'element-plus'
-import { commonApi } from '@/api/common-api'
-
-const emit = defineEmits(['refresh-data-list'])
-
-let dataForm = reactive({
-  id: undefined,
-  beanName: '',
-  params: '',
-  cronExpression: '',
-  remark: '',
-  status: 0
-})
-
-const dataRule = {
-  beanName: [
-    {
-      required: true,
-      message: '用户名不能为空',
-      trigger: 'blur'
-    }
-  ],
-  cronExpression: [
-    {
-      required: true,
-      message: 'cron表达式不能为空',
-      trigger: 'blur'
-    }
-  ]
-}
-
-const dataFormRef = ref()
-const visible = ref(false)
-const initDialogHandle = (id) => {
-  dataForm.id = id
-  visible.value = true
-  nextTick(async () => {
-    if (dataFormRef.value) {
-      dataFormRef.value.resetFields()
-    }
-    if (dataForm.id) {
-      const data = await commonApi(`/sys/schedule/info/${dataForm.id}`, {}, {})
-      dataForm = Object.assign(dataForm, data)
-    }
-  })
-}
-
-// 表单提交
-const dataFormSubmit = () => {
-  dataFormRef.value.validate(async (valid) => {
-    if (valid) {
-      await commonApi(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`)
-      ElMessage({
-        message: '操作成功',
-        type: 'success',
-        duration: 1500,
-        onClose: () => {
-          visible.value = false
-          emit('refresh-data-list')
-        }
-      })
-    }
-  })
-}
-
-defineExpose({
-  initDialogHandle
-})
-</script>

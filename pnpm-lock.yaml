@@ -18,8 +18,8 @@ importers:
         specifier: ^2.8.8
         version: 2.8.8(vue@3.5.13(typescript@5.5.3))
       layout-vue3:
-        specifier: ^0.0.12
-        version: 0.0.12(element-plus@2.8.8(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3))
+        specifier: ^0.0.14
+        version: 0.0.14(element-plus@2.8.8(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3))
       normalize.css:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1557,8 +1557,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  layout-vue3@0.0.12:
-    resolution: {integrity: sha512-mWdRz15p3KWH5Zmw0CBDhaUTNVjO0NBq4dvuRdf16M/3FThhLaOxPJExzJUCn5J6N24hFMTCzrP7vA6VJtpNwg==}
+  layout-vue3@0.0.14:
+    resolution: {integrity: sha512-EPISsh+gNn3YkdAH/dqMgQ9leyiDAAB11xw2kL7D+ekZC1+duQVltA6e7q+8RN56TvbtSHT1uoCkPD/3cmAsGA==}
     peerDependencies:
       element-plus: ^2.8.7
       vue: ^3.5.12
@@ -3856,7 +3856,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  layout-vue3@0.0.12(element-plus@2.8.8(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3)):
+  layout-vue3@0.0.14(element-plus@2.8.8(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3)):
     dependencies:
       element-plus: 2.8.8(vue@3.5.13(typescript@5.5.3))
       vue: 3.5.13(typescript@5.5.3)
