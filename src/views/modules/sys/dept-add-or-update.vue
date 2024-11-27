@@ -115,9 +115,7 @@ const iconActiveHandle = (iconName) => {
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      const tempSysMenuApi = dataForm.menuId
-        ? updateSysMenuApi
-        : saveSysMenuApi
+      const tempSysMenuApi = dataForm.menuId ? updateSysMenuApi : saveSysMenuApi
       tempSysMenuApi(dataForm).then(() => {
         ElMessage({
           message: '操作成功',

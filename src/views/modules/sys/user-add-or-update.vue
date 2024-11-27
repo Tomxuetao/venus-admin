@@ -1,45 +1,45 @@
 <script setup>
-import { ref, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import { commonApi } from '@/api/common-api';
-import { isEmail, isMobile } from '@/utils/validate';
+import { ref, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { commonApi } from '@/api/common-api'
+import { isEmail, isMobile } from '@/utils/validate'
 
-const emit = defineEmits(['refresh-data-list']);
+const emit = defineEmits(['refresh-data-list'])
 
 const validatePassword = (rule, value, callback) => {
   if (!dataForm.id && !/\S/.test(value)) {
-    callback(new Error('密码不能为空'));
+    callback(new Error('密码不能为空'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 const validateConfirmPassword = (rule, value, callback) => {
   if (!dataForm.id && !/\S/.test(value)) {
-    callback(new Error('确认密码不能为空'));
+    callback(new Error('确认密码不能为空'))
   } else if (dataForm.password !== value) {
-    callback(new Error('确认密码与密码输入不一致'));
+    callback(new Error('确认密码与密码输入不一致'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 const validateEmail = (rule, value, callback) => {
   if (!isEmail(value)) {
-    callback(new Error('邮箱格式错误'));
+    callback(new Error('邮箱格式错误'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 const validateMobile = (rule, value, callback) => {
   if (!isMobile(value)) {
-    callback(new Error('手机号格式错误'));
+    callback(new Error('手机号格式错误'))
   } else {
-    callback();
+    callback()
   }
-};
+}
 
-const visible = ref(false);
+const visible = ref(false)
 
-let roleList = ref([]);
+let roleList = ref([])
 
 let dataForm = reactive({
   id: undefined,
@@ -50,59 +50,59 @@ let dataForm = reactive({
   email: '',
   mobile: '',
   roleIdList: [],
-  status: 1,
-});
+  status: 1
+})
 
-const dataFormRef = ref();
+const dataFormRef = ref()
 
 const dataRule = {
   username: [
     {
       required: true,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   password: [
     {
       validator: validatePassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   confirmPassword: [
     {
       validator: validateConfirmPassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   email: [
     {
       required: true,
       message: '邮箱不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateEmail,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   mobile: [
     {
       required: true,
       message: '手机号不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateMobile,
-      trigger: 'blur',
-    },
-  ],
-};
+      trigger: 'blur'
+    }
+  ]
+}
 
 const initDialogHandle = async (id) => {
-  dataForm.id = id;
-  visible.value = true;
+  dataForm.id = id
+  visible.value = true
 
-  roleList.value = await commonApi('/sys/role/list');
+  roleList.value = await commonApi('/sys/role/list')
 
   //  sysUserDetailApi({ id: id }).then((data) => {
   //    roleList.value = data.roleIdList
@@ -115,7 +115,7 @@ const initDialogHandle = async (id) => {
   //  const tempData = commonApi(`/sys/user/info/${dataForm.id}`)
 
   //  dataForm = Object.assign(dataForm, tempData)
-};
+}
 
 // 表单提交
 const dataFormSubmit = () => {
@@ -124,24 +124,24 @@ const dataFormSubmit = () => {
       await commonApi(
         `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
         dataForm,
-        { method: 'post' },
-      );
-      visible.value = false;
+        { method: 'post' }
+      )
+      visible.value = false
       ElMessage({
         message: '操作成功',
         type: 'success',
         duration: 1500,
         onClose: () => {
-          emit('refresh-data-list');
-        },
-      });
+          emit('refresh-data-list')
+        }
+      })
     }
-  });
-};
+  })
+}
 
 defineExpose({
-  initDialogHandle,
-});
+  initDialogHandle
+})
 </script>
 
 <template>
