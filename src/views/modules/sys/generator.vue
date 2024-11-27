@@ -1,32 +1,18 @@
 <script setup>
 import { isAuth } from '@/utils'
-import {
- ref, reactive, nextTick 
-} from 'vue'
+import { reactive } from 'vue'
 import useCommonView from '@/hooks/useCommonView'
-import AddOrUpdate from './user-add-or-update.vue'
-
-const addOrUpdateRef = ref()
 
 const commonView = reactive({
   ...useCommonView({
     isPage: true,
-    deleteUrl: '/sys/user/delete',
-    dataListUrl: '/sys/user/list',
+    deleteUrl: '/sys/gen/delete',
+    dataListUrl: '/sys/gen/list',
     dataForm: {
-      username: undefined
+      tableName: undefined
     }
   })
 })
-const addOrUpdateVisible = ref(false)
-
-// 新增 / 修改
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
-  })
-}
 </script>
 
 <template>
@@ -34,20 +20,14 @@ const addOrUpdateHandle = (id) => {
     <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-input
-          v-model="commonView.dataForm.username"
-          placeholder="用户名"
           clearable
+          v-model="commonView.dataForm.tableName"
+          placeholder="表名"
+          @clear="commonView.getDataList()"
         ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="commonView.getDataList()">查询</el-button>
-        <el-button
-          v-if="isAuth('sys:user:save')"
-          type="primary"
-          @click="addOrUpdateHandle(undefined)"
-        >
-          新增
-        </el-button>
         <el-button
           v-if="isAuth('sys:user:delete')"
           type="danger"
@@ -70,35 +50,22 @@ const addOrUpdateHandle = (id) => {
         width="50"
       ></el-table-column>
       <el-table-column
-        prop="username"
+        prop="tableName"
         align="center"
-        label="用户名"
+        label="表名"
       ></el-table-column>
       <el-table-column
-        prop="email"
+        prop="tableComment"
         align="center"
-        label="邮箱"
+        label="表说明"
       ></el-table-column>
-      <el-table-column
-        prop="mobile"
-        align="center"
-        label="手机号"
-      ></el-table-column>
-      <el-table-column prop="status" align="center" label="状态">
-        <template v-slot="scope">
-          <el-tag v-if="scope.row.status === 0" size="small" type="danger"
-            >禁用
-          </el-tag>
-          <el-tag v-else size="small">正常</el-tag>
-        </template>
-      </el-table-column>
       <el-table-column
         prop="createDate"
         align="center"
         width="180"
         label="创建时间"
       ></el-table-column>
-      <el-table-column fixed="right" align="center" width="150" label="操作">
+      <el-table-column fixed="right" align="center" width="280" label="操作">
         <template v-slot="scope">
           <el-button
             v-if="isAuth('sys:user:update')"
@@ -107,15 +74,6 @@ const addOrUpdateHandle = (id) => {
             @click="addOrUpdateHandle(scope.row.id)"
           >
             修改
-          </el-button>
-          <el-button
-            v-if="isAuth('sys:user:delete')"
-            link
-            size="small"
-            @click="commonView.deleteHandle(scope.row.id)"
-            style="color: #f56c6c"
-          >
-            删除
           </el-button>
         </template>
       </el-table-column>
@@ -130,11 +88,5 @@ const addOrUpdateHandle = (id) => {
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
-    <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update
-      v-if="addOrUpdateVisible"
-      ref="addOrUpdateRef"
-      @refreshDataList="commonView.getDataList()"
-    ></add-or-update>
   </div>
 </template>

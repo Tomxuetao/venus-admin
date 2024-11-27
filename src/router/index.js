@@ -30,6 +30,11 @@ const mainRoutes = [
     component: commonModules['../views/common/login.vue'],
     name: 'login',
     meta: { title: '登录' }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: commonModules['../views/common/404.vue']
   }
 ]
 
@@ -53,7 +58,8 @@ router.beforeEach(async (to) => {
         addDynamicRoutes(menuList)
         return {
           ...to,
-          replace: true
+          replace: true,
+          name: undefined
         }
       }
     } else {

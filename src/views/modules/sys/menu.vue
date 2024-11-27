@@ -1,10 +1,48 @@
+<script setup>
+import { ref, nextTick } from 'vue'
+import { buildTree } from '@/utils'
+import useCommonView from '@/hooks/useCommonView'
+import AddOrUpdate from './menu-add-or-update.vue'
+
+const menuTypeMap = new Map([
+  [0, '菜单'],
+  [1, '按钮']
+])
+
+const tagTypeMap = new Map([
+  [0, 'primary'],
+  [1, 'success']
+])
+const commonView = reactive({
+  ...useCommonView({
+    isPage: false,
+    deleteIsBatch: false,
+    dataListUrl: '/sys/menu/list',
+    deleteUrl: '/sys/menu',
+    dataForm: {
+      status: undefined,
+      creatorName: undefined
+    }
+  })
+})
+
+const addOrUpdateRef = ref()
+let addOrUpdateVisible = ref(false)
+const addOrUpdateHandle = (id) => {
+  addOrUpdateVisible.value = true
+  nextTick(() => {
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
+</script>
+
 <template>
   <div class="mod-menu mod-wrap">
     <el-form :inline="true">
       <el-form-item>
         <el-button type="primary" @click="addOrUpdateHandle(undefined)"
-          >新增</el-button
-        >
+          >新增
+        </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">
@@ -21,8 +59,8 @@
         </el-table-column>
         <el-table-column prop="type" align="center" label="类型">
           <template v-slot="scope">
-            <el-tag size="small" :type="scope.row.type ? 'success' : 'primary'"
-              >{{ menuTypeMap.get(scope.row.type) }}
+            <el-tag size="small" :type="tagTypeMap.get(scope.row.type)">
+              {{ menuTypeMap.get(scope.row.type) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -75,37 +113,3 @@
     </add-or-update>
   </div>
 </template>
-
-<script setup>
-import { ref, nextTick } from 'vue'
-import { buildTree } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
-import AddOrUpdate from './menu-add-or-update.vue'
-
-const menuTypeMap = new Map([
-  [0, '菜单'],
-  [1, '按钮']
-])
-
-const commonView = reactive({
-  ...useCommonView({
-    isPage: false,
-    deleteIsBatch: false,
-    dataListUrl: '/sys/menu/list',
-    deleteUrl: '/sys/menu',
-    dataForm: {
-      status: undefined,
-      creatorName: undefined
-    }
-  })
-})
-
-const addOrUpdateRef = ref()
-let addOrUpdateVisible = ref(false)
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
-  })
-}
-</script>

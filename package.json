@@ -18,18 +18,18 @@
   "license": "MIT",
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "element-plus": "^2.8.8",
-    "layout-vue3": "^0.0.9",
+    "layout-vue3": "^0.0.12",
     "normalize.css": "^8.0.1",
     "pinia": "^2.2.6",
     "qs": "^6.13.1",
     "vue": "^3.5.13",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.0",
-    "@changesets/cli": "^2.27.9",
+    "@changesets/cli": "^2.27.10",
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/js": "^9.15.0",
@@ -55,6 +55,11 @@
     "commitizen": {
       "path": "git-cz"
     }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "lint-staged": {
     "*.{vue,js,ts}": "eslint --fix"

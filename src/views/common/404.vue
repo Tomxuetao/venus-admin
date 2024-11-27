@@ -11,8 +11,8 @@ const router = useRouter()
         <el-button
           type="primary"
           class="not-found-btn-home"
-          @click="router.push({ name: 'home' })"
-          >进入首页
+          @click="router.push({ name: 'main-dynamic' })"
+          >进入主页
         </el-button>
       </div>
     </div>

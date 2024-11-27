@@ -1,7 +1,7 @@
 <script setup>
-import { isAuth } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
-import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue'
+import { isAuth } from '@/utils';
+import useCommonView from '@/hooks/useCommonView';
+import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue';
 
 const commonView = reactive({
   ...useCommonView({
@@ -9,15 +9,15 @@ const commonView = reactive({
     deleteUrl: '/sys/params',
     dataListUrl: '/sys/params/page',
     dataForm: {
-      paramCode: undefined
-    }
-  })
-})
+      paramCode: undefined,
+    },
+  }),
+});
 
-const addOrUpdateRef = ref()
+const addOrUpdateRef = ref();
 const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateRef.value.init(id)
-}
+  addOrUpdateRef.value.init(id);
+};
 </script>
 
 <template>
@@ -58,11 +58,11 @@ const addOrUpdateHandle = (id = undefined) => {
     </el-form>
     <div class="table-wrap">
       <el-table
-        v-loading="commonView.dataLoading"
-        :data="commonView.dataList"
         border
-        @selection-change="commonView.dataSelections"
         style="width: 100%"
+        :data="commonView.dataList"
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.dataSelections"
       >
         <el-table-column
           type="selection"
@@ -117,10 +117,10 @@ const addOrUpdateHandle = (id = undefined) => {
       </el-table>
     </div>
     <el-pagination
-      :current-page="commonView.pageNum"
+      :total="commonView.total"
       :page-sizes="[10, 20, 50, 100]"
       :page-size="commonView.pageSize"
-      :total="commonView.total"
+      :current-page="commonView.pageNum"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="commonView.pageSizeChange"
       @current-change="commonView.pageNumChange"
@@ -129,7 +129,7 @@ const addOrUpdateHandle = (id = undefined) => {
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       ref="addOrUpdateRef"
-      @refreshDataList="commonView.getDataList"
+      @refreshDataList="commonView.getDataList()"
     ></add-or-update>
   </div>
 </template>

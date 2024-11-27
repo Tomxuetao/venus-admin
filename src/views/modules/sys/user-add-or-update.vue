@@ -1,3 +1,149 @@
+<script setup>
+import { ref, reactive } from 'vue';
+import { ElMessage } from 'element-plus';
+import { commonApi } from '@/api/common-api';
+import { isEmail, isMobile } from '@/utils/validate';
+
+const emit = defineEmits(['refresh-data-list']);
+
+const validatePassword = (rule, value, callback) => {
+  if (!dataForm.id && !/\S/.test(value)) {
+    callback(new Error('密码不能为空'));
+  } else {
+    callback();
+  }
+};
+const validateConfirmPassword = (rule, value, callback) => {
+  if (!dataForm.id && !/\S/.test(value)) {
+    callback(new Error('确认密码不能为空'));
+  } else if (dataForm.password !== value) {
+    callback(new Error('确认密码与密码输入不一致'));
+  } else {
+    callback();
+  }
+};
+const validateEmail = (rule, value, callback) => {
+  if (!isEmail(value)) {
+    callback(new Error('邮箱格式错误'));
+  } else {
+    callback();
+  }
+};
+const validateMobile = (rule, value, callback) => {
+  if (!isMobile(value)) {
+    callback(new Error('手机号格式错误'));
+  } else {
+    callback();
+  }
+};
+
+const visible = ref(false);
+
+let roleList = ref([]);
+
+let dataForm = reactive({
+  id: undefined,
+  username: '',
+  password: '',
+  confirmPassword: '',
+  salt: '',
+  email: '',
+  mobile: '',
+  roleIdList: [],
+  status: 1,
+});
+
+const dataFormRef = ref();
+
+const dataRule = {
+  username: [
+    {
+      required: true,
+      trigger: 'blur',
+    },
+  ],
+  password: [
+    {
+      validator: validatePassword,
+      trigger: 'blur',
+    },
+  ],
+  confirmPassword: [
+    {
+      validator: validateConfirmPassword,
+      trigger: 'blur',
+    },
+  ],
+  email: [
+    {
+      required: true,
+      message: '邮箱不能为空',
+      trigger: 'blur',
+    },
+    {
+      validator: validateEmail,
+      trigger: 'blur',
+    },
+  ],
+  mobile: [
+    {
+      required: true,
+      message: '手机号不能为空',
+      trigger: 'blur',
+    },
+    {
+      validator: validateMobile,
+      trigger: 'blur',
+    },
+  ],
+};
+
+const initDialogHandle = async (id) => {
+  dataForm.id = id;
+  visible.value = true;
+
+  roleList.value = await commonApi('/sys/role/list');
+
+  //  sysUserDetailApi({ id: id }).then((data) => {
+  //    roleList.value = data.roleIdList
+  //  }).then(() => {
+  //    visible.value = true
+  //  })
+  //  roleList.value = await commonApi('/sys/role/select')
+  //  visible.value = true
+
+  //  const tempData = commonApi(`/sys/user/info/${dataForm.id}`)
+
+  //  dataForm = Object.assign(dataForm, tempData)
+};
+
+// 表单提交
+const dataFormSubmit = () => {
+  dataFormRef.value.validate(async (valid) => {
+    if (valid) {
+      await commonApi(
+        `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
+        dataForm,
+        { method: 'post' },
+      );
+      visible.value = false;
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          emit('refresh-data-list');
+        },
+      });
+    }
+  });
+};
+
+defineExpose({
+  initDialogHandle,
+});
+</script>
+
 <template>
   <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
     <el-form
@@ -59,149 +205,3 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup>
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-import { commonApi } from '@/api/common-api'
-import { isEmail, isMobile } from '@/utils/validate'
-
-const emit = defineEmits(['refresh-data-list'])
-
-const validatePassword = (rule, value, callback) => {
-  if (!dataForm.id && !/\S/.test(value)) {
-    callback(new Error('密码不能为空'))
-  } else {
-    callback()
-  }
-}
-const validateConfirmPassword = (rule, value, callback) => {
-  if (!dataForm.id && !/\S/.test(value)) {
-    callback(new Error('确认密码不能为空'))
-  } else if (dataForm.password !== value) {
-    callback(new Error('确认密码与密码输入不一致'))
-  } else {
-    callback()
-  }
-}
-const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value)) {
-    callback(new Error('邮箱格式错误'))
-  } else {
-    callback()
-  }
-}
-const validateMobile = (rule, value, callback) => {
-  if (!isMobile(value)) {
-    callback(new Error('手机号格式错误'))
-  } else {
-    callback()
-  }
-}
-
-const visible = ref(false)
-
-let roleList = ref([])
-
-let dataForm = reactive({
-  id: undefined,
-  username: '',
-  password: '',
-  confirmPassword: '',
-  salt: '',
-  email: '',
-  mobile: '',
-  roleIdList: [],
-  status: 1
-})
-
-const dataFormRef = ref()
-
-const dataRule = {
-  username: [
-    {
-      required: true,
-      trigger: 'blur'
-    }
-  ],
-  password: [
-    {
-      validator: validatePassword,
-      trigger: 'blur'
-    }
-  ],
-  confirmPassword: [
-    {
-      validator: validateConfirmPassword,
-      trigger: 'blur'
-    }
-  ],
-  email: [
-    {
-      required: true,
-      message: '邮箱不能为空',
-      trigger: 'blur'
-    },
-    {
-      validator: validateEmail,
-      trigger: 'blur'
-    }
-  ],
-  mobile: [
-    {
-      required: true,
-      message: '手机号不能为空',
-      trigger: 'blur'
-    },
-    {
-      validator: validateMobile,
-      trigger: 'blur'
-    }
-  ]
-}
-
-const initDialogHandle = async (id) => {
-  dataForm.id = id
-  visible.value = true
-
-  roleList.value = await commonApi('/sys/role/list')
-
-  //  sysUserDetailApi({ id: id }).then((data) => {
-  //    roleList.value = data.roleIdList
-  //  }).then(() => {
-  //    visible.value = true
-  //  })
-  //  roleList.value = await commonApi('/sys/role/select')
-  //  visible.value = true
-
-  //  const tempData = commonApi(`/sys/user/info/${dataForm.id}`)
-
-  //  dataForm = Object.assign(dataForm, tempData)
-}
-
-// 表单提交
-const dataFormSubmit = () => {
-  dataFormRef.value.validate(async (valid) => {
-    if (valid) {
-      await commonApi(
-        `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
-        dataForm,
-        { method: 'post' }
-      )
-      visible.value = false
-      ElMessage({
-        message: '操作成功',
-        type: 'success',
-        duration: 1500,
-        onClose: () => {
-          emit('refresh-data-list')
-        }
-      })
-    }
-  })
-}
-
-defineExpose({
-  initDialogHandle
-})
-</script>

@@ -2,14 +2,26 @@
   <div class="mod-oss">
     <el-form :inline="true" :model="dataForm">
       <el-form-item>
-        <el-button type="primary" @click="configHandle()">云存储配置</el-button>
-        <el-button type="primary" @click="uploadHandle()">上传文件</el-button>
+        <el-button
+          v-if="isAuth('oss:config:info')"
+          type="primary"
+          @click="configHandle()"
+        >云存储配置
+        </el-button
+        >
+        <el-button
+          v-if="isAuth('sys:oss:upload')"
+          type="primary"
+          @click="uploadHandle()"
+        >上传文件
+        </el-button
+        >
         <el-button
           type="danger"
           @click="deleteHandle(undefined)"
           :disabled="dataListSelections.length <= 0"
-          >批量删除</el-button
-        >
+        >批量删除
+        </el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -53,8 +65,8 @@
             size="small"
             @click="deleteHandle(scope.row.id)"
             style="color: #f56c6c"
-            >删除</el-button
-          >
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,6 +92,7 @@
 </template>
 
 <script setup>
+import { isAuth } from '@/utils'
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
 import {
@@ -99,7 +112,10 @@ let count = ref(0)
 const getDataListHandle = () => {
   dataListLoading.value = true
   ossConfigListApi(dataForm)
-    .then(({ list, total }) => {
+    .then(({
+      list,
+      total
+    }) => {
       dataList.value = list
       count.value = total
     })
