@@ -27,10 +27,10 @@
  * @property {Boolean} [deleteIsBatch] - 是否批量删除
  */
 
-import qs from 'qs';
-import { venusServer } from '@/utils/http';
-import { commonApi } from '@/api/common-api';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import qs from 'qs'
+import { venusServer } from '@/utils/http'
+import { commonApi } from '@/api/common-api'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 /**
  * 通用表格配置
@@ -47,8 +47,8 @@ const useCommonView = (config) => {
     isPage: true,
     dataLoading: true,
     dataSelections: [],
-    deleteIsBatch: true,
-  });
+    deleteIsBatch: true
+  })
 
   /**
    * 合并配置项
@@ -56,88 +56,88 @@ const useCommonView = (config) => {
    * @param config {CommonViewConfig}
    * @returns {CommonViewConfig}
    */
-  const mergeOptions = (options, config) => Object.assign(config, options);
+  const mergeOptions = (options, config) => Object.assign(config, options)
 
   /**
    *
    * @type {{total?: Number, pageNum?: Number, pageSize?: Number, dataList?: Array, dataForm?: Object, isPage: Boolean, exportUrl?: String, deleteUrl?: String, dataListUrl?: String, dataLoading?: Boolean, dataSelections?: Array, deleteIsBatch?: Boolean}}
    */
-  const state = mergeOptions(config, defaultConfig);
+  const state = mergeOptions(config, defaultConfig)
 
   const queryDataList = () => {
     if (state.dataListUrl) {
-      state.dataLoading = true;
+      state.dataLoading = true
       commonApi(state.dataListUrl, {
         ...state.dataForm,
         pageNum: state.isPage ? state.pageNum : undefined,
-        pageSize: state.isPage ? state.pageSize : undefined,
+        pageSize: state.isPage ? state.pageSize : undefined
       })
         .then((data) => {
-          state.total = state.isPage ? data.total : 0;
-          state.dataList = state.isPage ? data.list : data;
+          state.total = state.isPage ? data.total : 0
+          state.dataList = state.isPage ? data.list : data
         })
         .finally(() => {
-          state.dataLoading = false;
-        });
+          state.dataLoading = false
+        })
     }
-  };
+  }
   // 获取数据列表
   const getDataList = () => {
-    state.pageNum = 1;
-    queryDataList();
-  };
+    state.pageNum = 1
+    queryDataList()
+  }
 
-  getDataList();
+  getDataList()
 
   const deleteHandle = (id = undefined) => {
-    const ids = id ? [id] : state.dataSelections.map((item) => item.id);
+    const ids = id ? [id] : state.dataSelections.map((item) => item.id)
     ElMessageBox.confirm(
       `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
       '提示',
       {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
-      },
+        type: 'warning'
+      }
     ).then(() => {
       commonApi(state.deleteUrl, state.deleteIsBatch ? { ids } : { id }, {
-        method: 'delete',
+        method: 'delete'
       }).then(() => {
         ElMessage({
           message: '操作成功',
           type: 'success',
           duration: 1500,
           onClose: () => {
-            getDataList();
-          },
-        });
-      });
-    });
-  };
+            getDataList()
+          }
+        })
+      })
+    })
+  }
 
   const exportHandle = () => {
     location.href = `${venusServer}${state.exportUrl}?${qs.stringify({
       ...state.dataForm,
-      token: sessionStorage.getItem('token'),
-    })}`;
-  };
+      token: sessionStorage.getItem('token')
+    })}`
+  }
 
   const pageNumChange = (value) => {
-    state.pageNum = value;
-    queryDataList();
-  };
+    state.pageNum = value
+    queryDataList()
+  }
 
   const pageSizeChange = (value) => {
-    state.pageNum = 1;
-    state.pageSize = value;
-    queryDataList();
-  };
+    state.pageNum = 1
+    state.pageSize = value
+    queryDataList()
+  }
 
   const selectionChange = (value) => {
-    state.dataSelections = value;
-  };
+    state.dataSelections = value
+  }
 
-  const sortChangeHandle = () => {};
+  const sortChangeHandle = () => {}
 
   return {
     ...toRefs(state),
@@ -147,8 +147,8 @@ const useCommonView = (config) => {
     pageNumChange,
     pageSizeChange,
     selectionChange,
-    sortChangeHandle,
-  };
-};
+    sortChangeHandle
+  }
+}
 
-export default useCommonView;
+export default useCommonView

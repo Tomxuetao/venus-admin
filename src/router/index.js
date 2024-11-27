@@ -1,10 +1,10 @@
-import { useCommonStore } from '@/store';
+import { useCommonStore } from '@/store'
 
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
-const commonModules = import.meta.glob(['../views/common/*.vue']);
-const layoutModules = import.meta.glob(['../views/layout/*.vue']);
-const dynamicModules = import.meta.glob(['../views/modules/*/*.vue']);
+const commonModules = import.meta.glob(['../views/common/*.vue'])
+const layoutModules = import.meta.glob(['../views/layout/*.vue'])
+const dynamicModules = import.meta.glob(['../views/modules/*/*.vue'])
 
 // 主入口路由(需嵌套上左右整体布局)
 const mainRoutes = [
@@ -18,52 +18,58 @@ const mainRoutes = [
       if (to.name === 'main-dynamic') {
         next({
           replace: true,
-          ...router.getRoutes()[0],
-        });
+          ...router.getRoutes()[0]
+        })
       } else {
-        next();
+        next()
       }
-    },
+    }
   },
   {
     path: '/login',
     component: commonModules['../views/common/login.vue'],
     name: 'login',
-    meta: { title: '登录' },
+    meta: { title: '登录' }
   },
-];
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: commonModules['../views/common/404.vue']
+  }
+]
 
 const router = createRouter({
   routes: mainRoutes,
   history: createWebHistory('/venus-admin'),
-  scrollBehavior: () => ({ top: 0 }),
-});
+  scrollBehavior: () => ({ top: 0 })
+})
 
 router.beforeEach(async (to) => {
-  const commonState = useCommonStore();
+  const commonState = useCommonStore()
   if (to.name === 'login') {
-    return true;
+    return true
   } else {
     if (commonState.token) {
       if (router.options.isDynamic) {
-        return true;
+        return true
       } else {
-        await commonState.initUserAction();
-        const menuList = await commonState.initMenuAction();
-        addDynamicRoutes(menuList);
+        await commonState.initUserAction()
+        const menuList = await commonState.initMenuAction()
+        addDynamicRoutes(menuList)
         return {
           ...to,
           replace: true,
-        };
+          name: undefined
+        }
       }
     } else {
       return {
         name: 'login',
-        replace: true,
-      };
+        replace: true
+      }
     }
   }
-});
+})
 
 export const addDynamicRoutes = (routeList = []) => {
   routeList.forEach((item) => {
@@ -76,13 +82,13 @@ export const addDynamicRoutes = (routeList = []) => {
         name: item.url.replace('/', '-'),
         meta: {
           id: item.id,
-          title: item.name,
-        },
-      };
-      router.addRoute('main-dynamic', route);
+          title: item.name
+        }
+      }
+      router.addRoute('main-dynamic', route)
     }
-  });
-  router.options.isDynamic = true;
-};
+  })
+  router.options.isDynamic = true
+}
 
-export default router;
+export default router

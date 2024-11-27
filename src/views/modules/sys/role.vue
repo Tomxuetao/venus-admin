@@ -1,3 +1,31 @@
+<script setup>
+import AddOrUpdate from './role-add-or-update.vue';
+import { ref, reactive, nextTick } from 'vue';
+import { isAuth } from '@/utils';
+import useCommonView from '@/hooks/useCommonView';
+
+const commonView = reactive({
+  ...useCommonView({
+    isPage: true,
+    deleteUrl: '/sys/role',
+    dataListUrl: '/sys/role/page',
+    dataForm: {
+      name: undefined,
+    },
+  }),
+});
+
+let addOrUpdateRef = ref();
+let addOrUpdateVisible = ref(false);
+
+const addOrUpdateHandle = (id = undefined) => {
+  addOrUpdateVisible.value = true;
+  nextTick(() => {
+    addOrUpdateRef.value.initDialogHandle(id);
+  });
+};
+</script>
+
 <template>
   <div class="mod-role mod-wrap">
     <el-form :inline="true" :model="commonView.dataForm">
@@ -107,31 +135,3 @@
     </add-or-update>
   </div>
 </template>
-
-<script setup>
-import AddOrUpdate from './role-add-or-update.vue';
-import { ref, reactive, nextTick } from 'vue';
-import { isAuth } from '@/utils';
-import useCommonView from '@/hooks/useCommonView';
-
-const commonView = reactive({
-  ...useCommonView({
-    isPage: true,
-    deleteUrl: '/sys/role',
-    dataListUrl: '/sys/role/page',
-    dataForm: {
-      name: undefined,
-    },
-  }),
-});
-
-let addOrUpdateRef = ref();
-let addOrUpdateVisible = ref(false);
-
-const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateVisible.value = true;
-  nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id);
-  });
-};
-</script>

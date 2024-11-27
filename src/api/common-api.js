@@ -1,4 +1,4 @@
-import { http, venusServer } from '@/utils/http';
+import { http, venusServer } from '@/utils/http'
 
 /**
  * 通用api
@@ -14,5 +14,5 @@ export const commonApi = (url, dataForm = {}, config = { method: 'get' }) =>
     method: config?.method || 'get',
     ...(config?.method !== 'get'
       ? { data: dataForm || {} }
-      : { params: dataForm || {} }),
-  });
+      : { params: dataForm || {} })
+  })

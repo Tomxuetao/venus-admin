@@ -1,32 +1,3 @@
-<template>
-  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
-    <el-form :model="dataForm" ref="dataFormRef" label-width="80px">
-      <el-form-item label="角色名称" prop="name">
-        <el-input v-model="dataForm.name" placeholder="角色名称"></el-input>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
-      </el-form-item>
-      <el-form-item label="授权">
-        <el-tree
-          ref="menuListTreeRef"
-          node-key="id"
-          show-checkbox
-          :data="menuList"
-          :default-expanded-keys="expandedKeys"
-          :props="{ label: 'name', children: 'children' }"
-        ></el-tree>
-      </el-form-item>
-    </el-form>
-    <span class="dialog-footer">
-      <el-button @click="closeDialogHandle">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()" :loading="btnLoading"
-        >确定</el-button
-      >
-    </span>
-  </el-dialog>
-</template>
-
 <script setup>
 import { reactive, ref, nextTick } from 'vue';
 import { treeDataTranslate } from '@/utils';
@@ -120,3 +91,32 @@ defineExpose({
   initDialogHandle,
 });
 </script>
+
+<template>
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+    <el-form :model="dataForm" ref="dataFormRef" label-width="80px">
+      <el-form-item label="角色名称" prop="name">
+        <el-input v-model="dataForm.name" placeholder="角色名称"></el-input>
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+      </el-form-item>
+      <el-form-item label="授权">
+        <el-tree
+          ref="menuListTreeRef"
+          node-key="id"
+          show-checkbox
+          :data="menuList"
+          :default-expanded-keys="expandedKeys"
+          :props="{ label: 'name', children: 'children' }"
+        ></el-tree>
+      </el-form-item>
+    </el-form>
+    <span class="dialog-footer">
+      <el-button @click="closeDialogHandle">取消</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" :loading="btnLoading"
+        >确定</el-button
+      >
+    </span>
+  </el-dialog>
+</template>

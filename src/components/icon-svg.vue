@@ -10,19 +10,19 @@
 defineProps({
   name: {
     type: String,
-    default: '',
-  },
-});
+    default: ''
+  }
+})
 
 const svgRecords = import.meta.glob(['../assets/icons/svg/*'], {
   eager: true,
   import: 'default',
-  query: '?component',
-});
+  query: '?component'
+})
 
 const loadSvgIcon = (name) =>
   svgRecords[`../assets/icons/svg/${name}.svg`] ||
-  svgRecords['../assets/icons/svg/icon-0.svg'];
+  svgRecords['../assets/icons/svg/icon-0.svg']
 </script>
 
 <style>
