@@ -1,5 +1,4 @@
 <script setup>
-import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import useCommonView from '@/hooks/useCommonView'
@@ -11,9 +10,9 @@ const commonView = reactive({
     exportUrl: '/sys/log/error/export',
     dataForm: {
       jobId: null,
-      beanName: undefined
-    }
-  })
+      beanName: undefined,
+    },
+  }),
 })
 
 // 失败信息

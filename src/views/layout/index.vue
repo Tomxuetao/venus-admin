@@ -1,5 +1,4 @@
 <script setup>
-import { ref, watch } from 'vue'
 import { useCommonStore } from '@/store'
 import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'

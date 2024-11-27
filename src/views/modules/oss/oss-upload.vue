@@ -22,7 +22,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { venusServer } from '@/utils/http'
 
 import { ElMessageBox, ElMessage } from 'element-plus'
@@ -60,7 +59,7 @@ const successHandle = (response, file, list) => {
       ElMessageBox.confirm('操作成功, 是否继续操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       }).catch(() => {
         visible.value = false
       })
@@ -77,6 +76,6 @@ const closeHandle = () => {
 }
 
 defineExpose({
-  initDialogHandle
+  initDialogHandle,
 })
 </script>

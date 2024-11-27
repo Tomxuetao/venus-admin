@@ -132,8 +132,6 @@
 
 <script setup>
 import { getUUID } from '@/utils'
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useCommonStore } from '@/store'
 import { venusServer } from '@/utils/http'
 import { loginApi } from '@/api/login-api'

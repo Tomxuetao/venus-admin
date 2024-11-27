@@ -1,8 +1,6 @@
 <script setup>
-import AddOrUpdate from './dept-add-or-update.vue'
-
-import { ref, nextTick } from 'vue'
 import useCommonView from '@/hooks/useCommonView'
+import AddOrUpdate from './dept-add-or-update.vue'
 
 const commonView = reactive({
   ...useCommonView({
@@ -11,9 +9,9 @@ const commonView = reactive({
     deleteUrl: '/sys/dept',
     dataListUrl: '/sys/dept/list',
     dataForm: {
-      name: undefined
-    }
-  })
+      name: undefined,
+    },
+  }),
 })
 
 let addOrUpdateVisible = ref(false)

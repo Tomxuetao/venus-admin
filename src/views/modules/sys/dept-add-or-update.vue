@@ -1,12 +1,9 @@
 <script setup>
 import {
- ref, reactive, nextTick 
-} from 'vue'
-import {
   saveSysMenuApi,
   sysMenuDetailApi,
   sysMenuSelectApi,
-  updateSysMenuApi
+  updateSysMenuApi,
 } from '@/api/menu-api'
 import Icon from '@/assets/icons/index'
 import { ElMessage } from 'element-plus'
@@ -17,7 +14,7 @@ const emit = defineEmits(['refresh-data-list'])
 const menuTypeMap = new Map([
   [0, '目录'],
   [1, '菜单'],
-  [2, '按钮']
+  [2, '按钮'],
 ])
 
 let dataForm = reactive({
@@ -28,7 +25,7 @@ let dataForm = reactive({
   parentName: '',
   url: '',
   sort: 0,
-  icon: ''
+  icon: '',
 })
 
 const validateUrl = (rule, value, callback) => {
@@ -44,22 +41,22 @@ const dataRule = {
     {
       required: true,
       message: '菜单名称不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   parentName: [
     {
       required: true,
       message: '上级菜单不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   url: [
     {
       validator: validateUrl,
-      trigger: 'blur'
-    }
-  ]
+      trigger: 'blur',
+    },
+  ],
 }
 
 const iconList = Icon.getNameList()
@@ -80,7 +77,7 @@ const initDialogHandle = (id) => {
         menuList.push({
           ...item,
           label: item.name,
-          value: item.id
+          value: item.id,
         })
       })
       menuListTree.value = treeDataTranslate(menuList)
@@ -124,7 +121,7 @@ const dataFormSubmit = () => {
           onClose: () => {
             visible.value = false
             emit('refresh-data-list')
-          }
+          },
         })
       })
     }
@@ -132,7 +129,7 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  init: initDialogHandle
+  init: initDialogHandle,
 })
 </script>
 

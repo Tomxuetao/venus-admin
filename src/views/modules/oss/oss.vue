@@ -2,15 +2,12 @@
 import { isAuth } from '@/utils'
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
-import {
- reactive, ref, nextTick 
-} from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ossConfigListApi, deleteRecordApi } from '@/api/oss-api'
 
 let dataForm = reactive({
   pageSize: 10,
-  pageNum: 1
+  pageNum: 1,
 })
 let dataList = ref([])
 let dataListLoading = ref(false)
@@ -57,11 +54,11 @@ const deleteHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
-    }
+      type: 'warning',
+    },
   ).then(() => {
     deleteRecordApi({
-      ids: ids
+      ids: ids,
     })
       .then(() => {
         ElMessage({
@@ -70,7 +67,7 @@ const deleteHandle = (id) => {
           duration: 1500,
           onClose: () => {
             getDataListHandle()
-          }
+          },
         })
       })
       .catch(() => {
