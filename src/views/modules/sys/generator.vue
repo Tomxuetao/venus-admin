@@ -1,6 +1,5 @@
 <script setup>
 import { isAuth } from '@/utils'
-import { reactive } from 'vue'
 import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({

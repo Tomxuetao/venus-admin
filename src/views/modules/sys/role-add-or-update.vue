@@ -1,7 +1,4 @@
 <script setup>
-import {
- reactive, ref, nextTick 
-} from 'vue'
 import { treeDataTranslate } from '@/utils'
 
 import { ElMessage } from 'element-plus'

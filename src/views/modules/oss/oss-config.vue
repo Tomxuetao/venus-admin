@@ -1,6 +1,5 @@
 <script setup>
 import { isAuth } from '@/utils'
-import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
@@ -356,8 +355,8 @@ defineExpose({
           v-if="isAuth('oss:config:update')"
           type="primary"
           @click="dataFormSubmit()"
-          >确定
-        </el-button>
+          >确定</el-button
+        >
       </div>
     </template>
   </el-dialog>

@@ -1,6 +1,4 @@
 <script setup>
-import { reactive } from 'vue'
-
 import useCommonView from '@/hooks/useCommonView'
 
 const commonView = reactive({

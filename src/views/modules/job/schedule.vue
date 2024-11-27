@@ -1,15 +1,118 @@
+<script setup>
+import { isAuth } from '@/utils'
+import { commonApi } from '@/api/common-api'
+import useCommonView from '@/hooks/useCommonView'
+
+import AddOrUpdate from './schedule-add-or-update.vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+
+const router = useRouter()
+const commonView = reactive({
+  ...useCommonView({
+    deleteUrl: '/sys/oss',
+    dataListUrl: '/sys/schedule/page',
+    dataForm: {
+      beanName: undefined
+    }
+  })
+})
+
+const addOrUpdateVisible = ref(false)
+
+// 新增 / 修改
+let addOrUpdateRef = ref()
+const addOrUpdateHandle = (id) => {
+  addOrUpdateVisible.value = true
+  nextTick(() => {
+    addOrUpdateRef.value.initDialogHandle(id)
+  })
+}
+
+// 暂停
+const pauseHandle = (id) => {
+  const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
+  ElMessageBox.confirm(
+    `确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    await commonApi('/sys/schedule/pause', ids, { method: 'put' })
+    ElMessage({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        commonView.getDataList()
+      }
+    })
+  })
+}
+
+// 恢复
+const resumeHandle = (id) => {
+  const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
+  ElMessageBox.confirm(
+    `确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    await commonApi('/sys/schedule/resume', ids, { method: 'put' })
+    ElMessage({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        commonView.getDataList()
+      }
+    })
+  })
+}
+
+// 立即执行
+const runHandle = (id) => {
+  const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
+  ElMessageBox.confirm(
+    `确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    await commonApi('/sys/schedule/run', ids, { method: 'put' })
+    ElMessage({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        commonView.getDataList()
+      }
+    })
+  })
+}
+</script>
+
 <template>
   <div class="mod-schedule mod-wrap">
-    <el-form :inline="true" :model="dataForm">
+    <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-input
-          v-model="dataForm.beanName"
+          v-model="commonView.dataForm.beanName"
           placeholder="bean名称"
           clearable
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataListHandle()">查询</el-button>
+        <el-button @click="commonView.getDataList()">查询</el-button>
         <el-button
           v-if="isAuth('sys:schedule:save')"
           type="primary"
@@ -20,8 +123,8 @@
         <el-button
           v-if="isAuth('sys:schedule:delete')"
           type="danger"
-          @click="deleteHandle()"
-          :disabled="dataListSelections.length <= 0"
+          @click="commonView.deleteHandle()"
+          :disabled="commonView.dataSelections <= 0"
         >
           批量删除
         </el-button>
@@ -29,36 +132,38 @@
           v-if="isAuth('sys:schedule:pause')"
           type="danger"
           @click="pauseHandle()"
-          :disabled="dataListSelections.length <= 0"
+          :disabled="commonView.dataSelections.length <= 0"
           >批量暂停
         </el-button>
         <el-button
           v-if="isAuth('sys:schedule:resume')"
           type="danger"
           @click="resumeHandle()"
-          :disabled="dataListSelections.length <= 0"
+          :disabled="commonView.dataSelections.length <= 0"
           >批量恢复
         </el-button>
         <el-button
           v-if="isAuth('sys:schedule:run')"
           type="danger"
           @click="runHandle()"
-          :disabled="dataListSelections.length <= 0"
+          :disabled="commonView.dataSelections.length <= 0"
           >批量立即执行
         </el-button>
-        <el-button v-if="isAuth('sys:schedule:log')" type="success" @click="$"
-          >日志列表</el-button
-        >
+        <el-button
+          v-if="isAuth('sys:schedule:log')"
+          type="success"
+          @click="router.push({ name: 'sys-log-schedule' })"
+          >日志列表
+        </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">
       <el-table
-        :data="dataList"
         border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
         empty-text="暂无数据"
-        style="width: 100%"
+        :data="commonView.dataList"
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.selectionChange"
       >
         <el-table-column
           type="selection"
@@ -112,7 +217,7 @@
               link
               size="small"
               type="danger"
-              @click="deleteHandle(scope.row.id)"
+              @click="commonView.deleteHandle(scope.row.id)"
             >
               删除
             </el-button>
@@ -145,12 +250,12 @@
       </el-table>
     </div>
     <el-pagination
-      @size-change="pageSizeChangeHandle"
-      @current-change="pageNumChangeHandle"
-      :current-page="dataForm.pageNum"
+      :total="commonView.total"
       :page-sizes="[10, 20, 50, 100]"
-      :page-size="dataForm.pageSize"
-      :total="total"
+      @size-change="commonView.pageSizeChange"
+      @current-change="commonView.pageNumChange"
+      :page-size="commonView.dataForm.pageSize"
+      :current-page="commonView.dataForm.pageNum"
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
@@ -162,161 +267,3 @@
     ></add-or-update>
   </div>
 </template>
-
-<script setup>
-import {
- reactive, ref, nextTick 
-} from 'vue'
-
-import { isAuth } from '@/utils'
-import { commonApi } from '@/api/common-api'
-
-import AddOrUpdate from './schedule-add-or-update.vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
-
-const dataForm = reactive({
-  beanName: null,
-  pageSize: 10,
-  pageNum: 1
-})
-
-const dataList = ref([])
-const total = ref(0)
-const dataListLoading = ref(false)
-const addOrUpdateVisible = ref(false)
-const dataListSelections = ref([])
-
-// 获取数据列表
-const getDataListHandle = async () => {
-  dataListLoading.value = true
-  const data = await commonApi('/sys/schedule/page')
-  dataListLoading.value = false
-  dataList.value = data.list
-  total.value = data.total
-}
-
-getDataListHandle()
-
-// 每页数
-const pageSizeChangeHandle = (pageSize) => {
-  dataForm.pageNum = 1
-  dataForm.pageSize = pageSize
-  getDataListHandle()
-}
-
-// 当前页
-const pageNumChangeHandle = (pageNum) => {
-  dataForm.pageNum = pageNum
-  getDataListHandle()
-}
-
-// 多选
-const selectionChangeHandle = (val) => {
-  dataListSelections.value = val
-}
-
-// 新增 / 修改
-let addOrUpdateRef = ref()
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
-  })
-}
-
-// 删除
-const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
-  ElMessageBox.confirm(
-    `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(async () => {
-    await commonApi('/sys/schedule/delete', ids, { method: 'post' })
-    ElMessage({
-      message: '操作成功',
-      type: 'success',
-      duration: 1500,
-      onClose: () => {
-        getDataListHandle()
-      }
-    })
-  })
-}
-
-// 暂停
-const pauseHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
-  ElMessageBox.confirm(
-    `确定对[id=${ids.join(',')}]进行[${id ? '暂停' : '批量暂停'}]操作?`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(async () => {
-    await commonApi('/sys/schedule/pause', ids, { method: 'put' })
-    ElMessage({
-      message: '操作成功',
-      type: 'success',
-      duration: 1500,
-      onClose: () => {
-        getDataListHandle()
-      }
-    })
-  })
-}
-
-// 恢复
-const resumeHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
-  ElMessageBox.confirm(
-    `确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(async () => {
-    await commonApi('/sys/schedule/resume', ids, { method: 'put' })
-    ElMessage({
-      message: '操作成功',
-      type: 'success',
-      duration: 1500,
-      onClose: () => {
-        getDataListHandle()
-      }
-    })
-  })
-}
-
-// 立即执行
-const runHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
-  ElMessageBox.confirm(
-    `确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(async () => {
-    await commonApi('/sys/schedule/run', ids, { method: 'put' })
-    ElMessage({
-      message: '操作成功',
-      type: 'success',
-      duration: 1500,
-      onClose: () => {
-        getDataListHandle()
-      }
-    })
-  })
-}
-</script>

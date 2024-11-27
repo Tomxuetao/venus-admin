@@ -12,9 +12,9 @@ export const noAccessDialog = executeOnce(() => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  }).finally(() => {
+  }).finally(async () => {
     sessionStorage.clear()
-    router.push({
+    await router.push({
       name: 'login'
     })
   })

@@ -1,5 +1,4 @@
 <script setup>
-import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import { isEmail, isMobile } from '@/utils/validate'

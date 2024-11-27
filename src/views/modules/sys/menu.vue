@@ -1,5 +1,4 @@
 <script setup>
-import { ref, nextTick } from 'vue'
 import { buildTree } from '@/utils'
 import useCommonView from '@/hooks/useCommonView'
 import AddOrUpdate from './menu-add-or-update.vue'

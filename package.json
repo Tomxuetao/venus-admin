@@ -20,7 +20,7 @@
     "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.7.8",
     "element-plus": "^2.8.8",
-    "layout-vue3": "^0.0.12",
+    "layout-vue3": "^0.0.14",
     "normalize.css": "^8.0.1",
     "pinia": "^2.2.6",
     "qs": "^6.13.1",

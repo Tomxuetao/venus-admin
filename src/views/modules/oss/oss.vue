@@ -2,32 +2,16 @@
 import { isAuth } from '@/utils'
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
-import {
- reactive, ref, nextTick 
-} from 'vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import { ossConfigListApi, deleteRecordApi } from '@/api/oss-api'
 
-let dataForm = reactive({
-  pageSize: 10,
-  pageNum: 1
+import useCommonView from '@/hooks/useCommonView'
+
+const commonView = reactive({
+  ...useCommonView({
+    deleteUrl: '/sys/oss',
+    dataListUrl: '/sys/oss/page',
+    dataForm: {}
+  })
 })
-let dataList = ref([])
-let dataListLoading = ref(false)
-let count = ref(0)
-
-const getDataListHandle = () => {
-  dataListLoading.value = true
-  ossConfigListApi(dataForm)
-    .then(({ list, total }) => {
-      dataList.value = list
-      count.value = total
-    })
-    .finally(() => {
-      dataListLoading.value = false
-    })
-}
-getDataListHandle()
 
 let configVisible = ref(false)
 let configRef = ref()
@@ -47,87 +31,41 @@ const uploadHandle = () => {
     uploadRef.value.initDialogHandle()
   })
 }
-
-// 删除
-const deleteHandle = (id) => {
-  const ids = id ? [id] : dataListSelections.value.map((item) => item.id)
-  ElMessageBox.confirm(
-    `确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(() => {
-    deleteRecordApi({
-      ids: ids
-    })
-      .then(() => {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            getDataListHandle()
-          }
-        })
-      })
-      .catch(() => {
-        ElMessage.error(new Error())
-      })
-  })
-}
-
-let dataListSelections = ref([])
-const selectionChangeHandle = (value) => {
-  dataListSelections.value = value
-}
-
-// 每页数
-const pageSizeChangeHandle = (pageSize) => {
-  dataForm.pageNum = 1
-  dataForm.pageSize = pageSize
-  getDataListHandle()
-}
-
-// 当前页
-const pageNumChangeHandle = (pageNum) => {
-  dataForm.pageNum = pageNum
-  getDataListHandle()
-}
 </script>
 
 <template>
   <div class="mod-oss mod-wrap">
-    <el-form :inline="true" :model="dataForm">
+    <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-button
           v-if="isAuth('oss:config:info')"
           type="primary"
           @click="configHandle()"
-          >云存储配置</el-button
         >
+          云存储配置
+        </el-button>
         <el-button
           v-if="isAuth('sys:oss:upload')"
           type="primary"
           @click="uploadHandle()"
-          >上传文件</el-button
         >
+          上传文件
+        </el-button>
         <el-button
           type="danger"
-          @click="deleteHandle(undefined)"
-          :disabled="dataListSelections.length <= 0"
-          >批量删除
+          @click="commonView.deleteHandle(undefined)"
+          :disabled="commonView.dataSelections.length <= 0"
+        >
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">
       <el-table
-        :data="dataList"
         border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
+        :data="commonView.dataList"
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.dataSelections"
       >
         <el-table-column
           type="selection"
@@ -162,7 +100,7 @@ const pageNumChangeHandle = (pageNum) => {
             <el-button
               link
               size="small"
-              @click="deleteHandle(scope.row.id)"
+              @click="commonView.deleteHandle(scope.row.id)"
               style="color: #f56c6c"
               >删除
             </el-button>
@@ -171,12 +109,12 @@ const pageNumChangeHandle = (pageNum) => {
       </el-table>
     </div>
     <el-pagination
-      @size-change="pageSizeChangeHandle"
-      @current-change="pageNumChangeHandle"
-      :current-page="dataForm.pageNum"
+      :total="commonView.total"
       :page-sizes="[10, 20, 50, 100]"
-      :page-size="dataForm.pageSize"
-      :total="count"
+      @size-change="commonView.pageSizeChange"
+      @current-change="commonView.pageNumChange"
+      :page-size="commonView.dataForm.pageSize"
+      :current-page="commonView.dataForm.pageNum"
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>

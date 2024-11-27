@@ -77,9 +77,9 @@ export const addDynamicRoutes = (routeList = []) => {
       const route = {
         path: item.url,
         component:
-          dynamicModules[`../views/modules/${item.url}.vue`] ||
+          dynamicModules[`../views/modules${item.url}.vue`] ||
           commonModules['../views/common/404.vue'],
-        name: item.url.replace('/', '-'),
+        name: item.url.replaceAll('/', '-').replace('-', ''),
         meta: {
           id: item.id,
           title: item.name
