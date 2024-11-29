@@ -1,16 +1,14 @@
 <script setup>
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 import AddOrUpdate from './dept-add-or-update.vue'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: false,
     deleteIsBatch: false,
     deleteUrl: '/sys/dept',
     dataListUrl: '/sys/dept/list',
-    dataForm: {
-      name: undefined
-    }
+    dataForm: {}
   })
 })
 

@@ -15,10 +15,11 @@ const mainRoutes = [
     meta: { title: '主入口整体布局' },
     children: [],
     beforeEnter: (to, from, next) => {
+      const { menuTree } = useCommonStore()
       if (to.name === 'main-dynamic') {
         next({
           replace: true,
-          ...router.getRoutes()[0]
+          path: menuTree[0].children[0].url
         })
       } else {
         next()

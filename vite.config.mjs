@@ -5,41 +5,76 @@ import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import { visualizer } from 'rollup-plugin-visualizer'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
-	base: '/venus-admin',
-	server: {
-		proxy: {
-			'/venus-api': {
-				target: 'http://localhost:8888',
-				secure: false,
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')
-			}
-		},
-		host: '127.0.0.1'
-	},
-	plugins: [
-		vue(),
-		svgLoader(),
-		AutoImport({
-			dts: true,
-			imports: ['vue', 'vue-router'],
-			resolvers: [ElementPlusResolver()],
-			dirs: ['src/views/common/**', 'src/views/modules/**/**']
-		}),
-		Components({
-			resolvers: [ElementPlusResolver()]
-		})
-	],
-	resolve: {
-		alias: [
-			{ find: '@', replacement: resolve(__dirname, 'src') }
-		]
-	},
-	build: {
-		target: 'chrome80',
-		polyfillDynamicImport: true
-	}
+  base: '/venus-admin',
+  server: {
+    proxy: {
+      '/venus-api': {
+        target: 'http://localhost:8888',
+        secure: false,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')
+      }
+    },
+    host: '127.0.0.1'
+  },
+  plugins: [
+    vue(),
+    svgLoader(),
+    visualizer({
+      open: true,
+      gzipSize: true
+    }),
+    AutoImport({
+      viteOptimizeDeps: true,
+      dts: './auto-imports.d.ts',
+      resolvers: [ElementPlusResolver()],
+      imports: ['vue', 'vue-router', 'pinia'],
+      eslintrc: {
+        enabled: false,
+        globalsPropValue: true,
+        filepath: './auto-import.json'
+      }
+    }),
+    Components({
+      dts: true,
+      deep: true,
+      extensions: ['vue'],
+      dirs: ['src/components'],
+      include: [/\.vue$/, /\.vue\?vue/],
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
+  resolve: {
+    alias: [
+      {
+        find: '@',
+        replacement: resolve(__dirname, 'src')
+      }
+    ]
+  },
+  esbuild: {
+    drop: ['debugger', 'console']
+  },
+  build: {
+    outDir: 'dist',
+    minify: 'esbuild',
+    sourcemap: false,
+    cssCodeSplit: false,
+    assetsInlineLimit: 0,
+    chunkSizeWarningLimit: 512,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue': ['vue'],
+          'axios': ['axios'],
+          'pinia': ['pinia'],
+          'vue-router': ['vue-router']
+        }
+      }
+    }
+  }
 })

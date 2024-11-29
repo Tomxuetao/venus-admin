@@ -182,8 +182,10 @@ onBeforeUnmount(() => {
                 <el-row :gutter="20">
                   <el-col :span="14">
                     <el-input
+                      style="width: 100%"
                       v-model="dataForm.captcha"
                       placeholder="验证码"
+                      size="large"
                     ></el-input>
                   </el-col>
                   <el-col :span="10" class="login-captcha">
@@ -223,6 +225,7 @@ onBeforeUnmount(() => {
                     <el-input
                       v-model="dataForm.captcha"
                       placeholder="图片验证码"
+                      size="large"
                     ></el-input>
                   </el-col>
                   <el-col :span="10" class="login-captcha">

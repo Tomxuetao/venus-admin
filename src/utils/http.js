@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from '@/router/index'
+import { executeOnce } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { executeOnce } from '@/utils/index'
 import { ElMessageBox } from 'element-plus'
 
 /**

@@ -1,5 +1,5 @@
 <script setup>
-import { isAuth } from '@/utils'
+import { isAuth } from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
 import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
@@ -32,7 +32,7 @@ let dataForm = reactive({
   minioEndPoint: '',
   minioAccessKey: '',
   minioSecretKey: '',
-  minioBucketName: ''
+  minioBucketName: '',
 })
 
 const dataRule = {
@@ -40,107 +40,107 @@ const dataRule = {
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qiniuAccessKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qiniuSecretKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qiniuBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   aliyunDomain: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   aliyunEndPoint: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   aliyunAccessKeyId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   aliyunAccessKeySecret: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   aliyunBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudDomain: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudAppId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudSecretId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudSecretKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   qcloudRegion: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur'
-    }
-  ]
+      trigger: 'blur',
+    },
+  ],
 }
 
 let visible = ref(false)
@@ -154,8 +154,8 @@ const initDialogHandle = () => {
         ? data
         : {
             ...data,
-            type: 4
-          }
+            type: 4,
+          },
     )
   })
 }
@@ -172,7 +172,7 @@ const dataFormSubmit = () => {
           onClose: () => {
             visible.value = false
             emit('refresh-data-list')
-          }
+          },
         })
       })
     }
@@ -180,12 +180,12 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  initDialogHandle
+  initDialogHandle,
 })
 </script>
 
 <template>
-  <el-dialog title="云存储配置" v-model="visible">
+  <el-dialog title="云存储配置" v-model="visible" :destroy-on-close="true">
     <el-form
       :model="dataForm"
       :rules="dataRule"
@@ -355,8 +355,8 @@ defineExpose({
           v-if="isAuth('oss:config:update')"
           type="primary"
           @click="dataFormSubmit()"
-          >确定</el-button
-        >
+          >确定
+        </el-button>
       </div>
     </template>
   </el-dialog>

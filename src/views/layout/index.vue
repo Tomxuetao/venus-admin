@@ -1,5 +1,6 @@
 <script setup>
 import { useCommonStore } from '@/store'
+import { commonApi } from '@/api/common-api'
 import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
 import { Layout as EvLayout } from 'layout-vue3'
@@ -9,7 +10,7 @@ defineOptions({
   name: 'main-layout'
 })
 
-const commonStore = useCommonStore()
+const { userData, menuTree, updateToken } = useCommonStore()
 
 const collapse = ref(false)
 
@@ -22,7 +23,7 @@ const router = useRouter()
 
 const routes = router.getRoutes()
 
-const activeId = ref(route.meta.id)
+const activeId = ref(route.meta?.id)
 
 const changeRoute = (id) => {
   if (activeId.value !== id) {
@@ -34,8 +35,36 @@ const changeRoute = (id) => {
   }
 }
 
+const navMode = ref('aside')
+const commandMap = new Map([
+  [''],
+  [
+    'layout',
+    () => {
+      navMode.value = navMode.value === 'aside' ? 'header' : 'aside'
+    }
+  ],
+  [
+    'logout',
+    async () => {
+      await commonApi('/logout', {}, { method: 'post' })
+      updateToken('')
+      await router.push({
+        name: 'login'
+      })
+    }
+  ]
+])
+
+const commandHandle = (command) => {
+  const commandFn = commandMap.get(command)
+  if (commandFn) {
+    commandFn()
+  }
+}
+
 watch(
-  () => route.meta.id,
+  () => route.meta?.id,
   (id) => {
     activeId.value = id
   }
@@ -46,11 +75,12 @@ watch(
   <ev-layout
     class="layout-wrap"
     :img-bg="imgBg"
+    :nav-mode="navMode"
     :show-crumb="true"
     :collapse="collapse"
+    :menu-list="menuTree"
     :unique-opened="true"
     :model-value="activeId"
-    :menu-list="commonStore.menuTree"
     @update:model-value="changeRoute"
   >
     <template #logo>
@@ -73,6 +103,29 @@ watch(
     </template>
     <template #menuIcon="menu">
       <svg-icon :name="menu.icon" class="menu-svg" />
+    </template>
+    <template #avatar>
+      <div class="avatar-wrap">
+        <el-dropdown
+          placement="bottom"
+          trigger="click"
+          @command="commandHandle"
+        >
+          <div class="avatar-inner">
+            <img class="inner-img" src="@/assets/img/avatar.webp" alt="" />
+            <div class="inner-name">{{ userData.username }}</div>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="user">个人信息</el-dropdown-item>
+              <el-dropdown-item command="layout">布局设置</el-dropdown-item>
+              <el-dropdown-item divided command="logout"
+                >退出登录</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
     </template>
   </ev-layout>
 </template>
@@ -145,6 +198,31 @@ watch(
     .img-open {
       transform: rotate(0deg);
       animation: fold-rotate 0.5s ease-out;
+    }
+  }
+
+  .avatar-wrap {
+    display: grid;
+    cursor: pointer;
+
+    .avatar-inner {
+      display: grid;
+      margin: 0 12px;
+      grid-gap: 0 12px;
+      align-items: center;
+      grid-auto-flow: column;
+
+      .inner-name {
+        font-size: 18px;
+        font-weight: 400;
+      }
+
+      .inner-img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: contain;
+      }
     }
   }
 }

@@ -1,17 +1,16 @@
 <script setup>
-import { isAuth } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 import AddOrUpdate from './role-add-or-update.vue'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     deleteUrl: '/sys/role',
     dataListUrl: '/sys/role/page',
     dataForm: {
-      name: undefined
-    }
-  })
+      name: undefined,
+    },
+  }),
 })
 
 let addOrUpdateRef = ref()
@@ -40,14 +39,14 @@ const addOrUpdateHandle = (id = undefined) => {
       <el-form-item>
         <el-button @click="commonView.getDataList()">查询</el-button>
         <el-button
-          v-if="isAuth('sys:role:save')"
+          v-if="commonView.isAuth('sys:role:save')"
           type="primary"
           @click="addOrUpdateHandle()"
         >
           新增
         </el-button>
         <el-button
-          v-if="isAuth('sys:role:delete')"
+          v-if="commonView.isAuth('sys:role:delete')"
           type="danger"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections.length <= 0"
@@ -94,7 +93,7 @@ const addOrUpdateHandle = (id = undefined) => {
         <el-table-column fixed="right" align="center" width="150" label="操作">
           <template v-slot="scope">
             <el-button
-              v-if="isAuth('sys:role:update')"
+              v-if="commonView.isAuth('sys:role:update')"
               link
               size="small"
               type="primary"
@@ -103,7 +102,7 @@ const addOrUpdateHandle = (id = undefined) => {
               修改
             </el-button>
             <el-button
-              v-if="isAuth('sys:role:delete')"
+              v-if="commonView.isAuth('sys:role:delete')"
               link
               size="small"
               type="danger"

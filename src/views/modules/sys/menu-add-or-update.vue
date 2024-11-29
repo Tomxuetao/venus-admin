@@ -1,16 +1,13 @@
 <script setup>
-import {
-  sysMenuDetailApi,
-  saveSysMenuApi,
-  sysMenuSelectApi,
-  updateSysMenuApi
-} from '@/api/menu-api'
 import { treeDataTranslate } from '@/utils'
 import Icon from '@/assets/icons/index'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
+import { useCommonStore } from '@/store'
 
 const emit = defineEmits(['refresh-data-list'])
+
+const { menuList } = useCommonStore()
 
 const menuTypeMap = new Map([
   [0, '菜单'],
@@ -45,7 +42,7 @@ const dataRule = {
       trigger: 'blur'
     }
   ],
-  parentName: [
+  pid: [
     {
       required: true,
       message: '上级菜单不能为空',
@@ -61,7 +58,9 @@ const dataRule = {
 }
 
 const iconList = Icon.getNameList()
-let menuListTree = ref([])
+let menuListTree = treeDataTranslate([
+  ...menuList.filter((item) => item.type === 0)
+])
 
 let visible = ref(false)
 
@@ -69,39 +68,12 @@ let dataFormRef = ref()
 
 const initDialogHandle = (id) => {
   dataForm.id = id
-  sysMenuSelectApi({ id: id })
-    .then((data) => {
-      const tempMenuList = data || [].filter((item) => item.type === 0)
-      const menuList = []
-      tempMenuList.forEach((item) => {
-        menuList.push({
-          ...item,
-          label: item.name,
-          value: item.id
-        })
-      })
-      menuListTree.value = treeDataTranslate(menuList)
-      console.log(menuListTree.value)
+  if (id) {
+    commonApi(`/sys/menu/${id}`).then((data) => {
+      Object.assign(dataForm, data)
     })
-    .then(() => {
-      visible.value = true
-      nextTick(() => {
-        if (dataFormRef.value) {
-          dataFormRef.value.resetFields()
-        }
-      })
-    })
-    .then(() => {
-      if (!dataForm.id) {
-        // 新增
-        // menuListTreeSetCurrentNode()
-      } else {
-        // 修改
-        sysMenuDetailApi(dataForm).then((data) => {
-          dataForm = Object.assign(dataForm, data)
-        })
-      }
-    })
+  }
+  visible.value = true
 }
 
 // 图标选中
@@ -111,20 +83,19 @@ const iconActiveHandle = (iconName) => {
 
 // 表单提交
 const dataFormSubmit = () => {
-  dataFormRef.value.validate((valid) => {
+  dataFormRef.value.validate(async (valid) => {
     if (valid) {
-      commonApi()
-      const tempSysMenuApi = dataForm.id ? updateSysMenuApi : saveSysMenuApi
-      tempSysMenuApi(dataForm).then(() => {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            visible.value = false
-            emit('refresh-data-list')
-          }
-        })
+      await commonApi('/sys/menu', dataForm, {
+        method: dataForm.id ? 'put' : 'post'
+      })
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          visible.value = false
+          emit('refresh-data-list')
+        }
       })
     }
   })
@@ -136,7 +107,11 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog :title="!dataForm.menuId ? '新增' : '修改'" v-model="visible">
+  <el-dialog
+    v-model="visible"
+    :title="!dataForm.id ? '新增' : '修改'"
+    :destroy-on-close="true"
+  >
     <el-form
       :model="dataForm"
       :rules="dataRule"
@@ -161,10 +136,11 @@ defineExpose({
         <el-tree-select
           v-model="dataForm.pid"
           :data="menuListTree"
+          node-key="id"
           check-strictly
-          show-checkbox
           check-on-click-node
           :render-after-expand="false"
+          :props="{ label: 'name', children: 'children' }"
         >
         </el-tree-select>
       </el-form-item>

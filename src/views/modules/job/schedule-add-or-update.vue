@@ -40,7 +40,7 @@ const initDialogHandle = (id) => {
       dataFormRef.value.resetFields()
     }
     if (dataForm.id) {
-      const data = await commonApi(`/sys/schedule/info/${dataForm.id}`, {}, {})
+      const data = await commonApi(`/sys/schedule/${dataForm.id}`, {}, {})
       dataForm = Object.assign(dataForm, data)
     }
   })

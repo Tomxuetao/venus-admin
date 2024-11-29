@@ -1,5 +1,5 @@
 <script setup>
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const statusMap = new Map([
   [0, '失败'],
@@ -7,7 +7,7 @@ const statusMap = new Map([
 ])
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     deleteIsBatch: false,
     dataListUrl: '/msg/mail/page',

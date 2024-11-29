@@ -1,27 +1,27 @@
 <script setup>
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const operationMap = new Map([
   [0, '登录'],
-  [1, '退出']
+  [1, '退出'],
 ])
 
 const statusMap = new Map([
   [0, '失败'],
   [1, '成功'],
-  [2, '账号锁定']
+  [2, '账号锁定'],
 ])
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     dataListUrl: '/sys/log/login/page',
     exportUrl: '/sys/log/login/export',
     dataForm: {
       status: undefined,
-      creatorName: undefined
-    }
-  })
+      creatorName: undefined,
+    },
+  }),
 })
 </script>
 
