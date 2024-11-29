@@ -1,17 +1,16 @@
 <script setup>
-import { isAuth } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 import AddOrUpdate from '@/views/modules/sys/params-add-or-update.vue'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     deleteIsBatch: false,
     deleteUrl: '/sys/params',
     dataListUrl: '/sys/params/page',
     dataForm: {
-      paramCode: undefined
-    }
-  })
+      paramCode: undefined,
+    },
+  }),
 })
 
 const addOrUpdateRef = ref()
@@ -39,7 +38,7 @@ const addOrUpdateHandle = (id = undefined) => {
       </el-form-item>
       <el-form-item>
         <el-button
-          v-if="isAuth('sys:params:save')"
+          v-if="commonView.isAuth('sys:params:save')"
           type="primary"
           @click="addOrUpdateHandle()"
           >新增
@@ -47,7 +46,7 @@ const addOrUpdateHandle = (id = undefined) => {
       </el-form-item>
       <el-form-item>
         <el-button
-          v-if="isAuth('sys:params:delete')"
+          v-if="commonView.isAuth('sys:params:delete')"
           type="danger"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections.length <= 0"
@@ -97,7 +96,7 @@ const addOrUpdateHandle = (id = undefined) => {
         >
           <template v-slot="scope">
             <el-button
-              v-if="isAuth('sys:params:update')"
+              v-if="commonView.isAuth('sys:params:update')"
               type="primary"
               link
               @click="addOrUpdateHandle(scope.row.id)"
@@ -105,8 +104,8 @@ const addOrUpdateHandle = (id = undefined) => {
               修改
             </el-button>
             <el-button
-              v-if="isAuth('sys:params:delete')"
-              type="primary"
+              v-if="commonView.isAuth('sys:params:delete')"
+              type="danger"
               link
               @click="commonView.deleteHandle(scope.row.id)"
             >

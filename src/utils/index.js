@@ -1,14 +1,11 @@
 import { ElMessage } from 'element-plus'
-import { useCommonStore } from '@/store'
 
 /**
  * 获取uuid
  */
 export const getUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    return (c === 'x' ? (Math.random() * 16) | 0 : 'r&0x3' | '0x8').toString(
-      16
-    )
+    return (c === 'x' ? (Math.random() * 16) | 0 : 'r&0x3' | '0x8').toString(16)
   })
 }
 
@@ -18,20 +15,6 @@ export const getUUID = () => {
  */
 export const isURL = (s) => {
   return /^http[s]?:\/\/.*/.test(s)
-}
-
-/**
- * 是否有权限
- * @param {*} key
- */
-export const isAuth = (key) => {
-  const { authList = [] } = useCommonStore()
-  return authList.includes(key) || false
-}
-
-export const clearLoginData = () => {
-  localStorage.clear()
-  sessionStorage.clear()
 }
 
 /**
@@ -89,9 +72,7 @@ export const downloadExport = (fileData) => {
     const aDom = document.createElement('a')
     const tempArray = downloadMethod.split('=')
     aDom.download = decodeURI(tempArray[tempArray.length - 1])
-    aDom.href = URL.createObjectURL(
-      new Blob([data], { type: 'charset=utf-8' })
-    )
+    aDom.href = URL.createObjectURL(new Blob([data], { type: 'charset=utf-8' }))
     aDom.click()
   } else {
     ElMessage.error('下载文件失败')
@@ -100,7 +81,7 @@ export const downloadExport = (fileData) => {
 
 /**
  * 执行一次
- * @param {Function} fn
+ * @param fn
  * @returns {(function(): void)|*}
  */
 export const executeOnce = (fn) => {
@@ -111,4 +92,49 @@ export const executeOnce = (fn) => {
       fn.apply(this, arguments)
     }
   }
+}
+
+/**
+ * 函数节流
+ * @param {Function} fn
+ * @param {number} delay
+ * @returns {(function(...[*]): void)|*}
+ */
+export const throttle = (fn, delay) => {
+  let timer
+  return (...args) => {
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn(...args)
+        timer = null
+      }, delay)
+    }
+  }
+}
+
+/**
+ * 函数防抖
+ * @param {Function} fn
+ * @param {number} delay
+ * @returns {(function(...[*]): void)|*}
+ */
+export const debounce = (fn, delay = 100) => {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn(...args)
+      timer = null
+    }, delay)
+  }
+}
+
+/**
+ * 设置跟字体大小
+ * @param {number} designHeight
+ */
+export const setRootFontSize = (designHeight = 1080) => {
+  let docEl = document.documentElement
+  let height = docEl.clientHeight
+  docEl.style.fontSize = `${height / designHeight}px`
 }

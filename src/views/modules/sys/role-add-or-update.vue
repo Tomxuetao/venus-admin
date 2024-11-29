@@ -3,52 +3,42 @@ import { treeDataTranslate } from '@/utils'
 
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
+import { useCommonStore } from '@/store'
 
 const emit = defineEmits(['refresh-data-list'])
 
 let btnLoading = ref(false)
 let visible = ref(false)
-let menuList = ref([])
 let expandedKeys = ref([1])
 let dataForm = reactive({
   id: undefined,
   name: '',
   remark: '',
 })
+const { menuList } = useCommonStore()
 
 const dataFormRef = ref()
 const menuListTreeRef = ref()
 
+let menuListTree = treeDataTranslate([...menuList])
+
 const tempKey = ref(-666666)
 
 const initDialogHandle = (id) => {
+  visible.value = true
   btnLoading.value = false
-  dataForm.id = id || undefined
-  commonApi('/sys/menu/list')
-    .then((data) => {
-      visible.value = true
-      console.log(data)
-      menuList.value = treeDataTranslate(data)
-      nextTick(() => {
-        if (dataFormRef.value && menuListTreeRef.value) {
-          dataFormRef.value.resetFields()
-          menuListTreeRef.value.setCheckedKeys([])
-        }
-      })
-    })
-    .then(() => {
-      if (dataForm.id) {
-        commonApi(`/sys/role/${dataForm.id}`).then((data) => {
-          dataForm.name = data.name
-          dataForm.remark = data.remark
-          const idx = data.menuIdList.indexOf(tempKey)
-          if (idx !== -1) {
-            data.menuIdList.splice(idx, data.menuIdList.length - idx)
-          }
-          menuListTreeRef.value.setCheckedKeys(data.menuIdList)
-        })
+  dataForm.id = id
+  if (id) {
+    commonApi(`/sys/role/${id}`).then((data) => {
+      dataForm.name = data.name
+      dataForm.remark = data.remark
+      const idx = data.menuIdList.indexOf(tempKey)
+      if (idx !== -1) {
+        data.menuIdList.splice(idx, data.menuIdList.length - idx)
       }
+      menuListTreeRef.value.setCheckedKeys(data.menuIdList)
     })
+  }
 }
 
 const dataFormSubmit = () => {
@@ -92,7 +82,11 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+  <el-dialog
+    :title="!dataForm.id ? '新增' : '修改'"
+    v-model="visible"
+    :destroy-on-close="true"
+  >
     <el-form :model="dataForm" ref="dataFormRef" label-width="80px">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="dataForm.name" placeholder="角色名称"></el-input>
@@ -105,7 +99,7 @@ defineExpose({
           ref="menuListTreeRef"
           node-key="id"
           show-checkbox
-          :data="menuList"
+          :data="menuListTree"
           :default-expanded-keys="expandedKeys"
           :props="{ label: 'name', children: 'children' }"
         ></el-tree>

@@ -1,14 +1,13 @@
 <script setup>
-import { isAuth } from '@/utils'
 import { commonApi } from '@/api/common-api'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 import AddOrUpdate from './schedule-add-or-update.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/schedule/page',
     dataForm: {
@@ -114,14 +113,14 @@ const runHandle = (id) => {
       <el-form-item>
         <el-button @click="commonView.getDataList()">查询</el-button>
         <el-button
-          v-if="isAuth('sys:schedule:save')"
+          v-if="commonView.isAuth('sys:schedule:save')"
           type="primary"
           @click="addOrUpdateHandle()"
         >
           新增
         </el-button>
         <el-button
-          v-if="isAuth('sys:schedule:delete')"
+          v-if="commonView.isAuth('sys:schedule:delete')"
           type="danger"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections <= 0"
@@ -129,28 +128,28 @@ const runHandle = (id) => {
           批量删除
         </el-button>
         <el-button
-          v-if="isAuth('sys:schedule:pause')"
+          v-if="commonView.isAuth('sys:schedule:pause')"
           type="danger"
           @click="pauseHandle()"
           :disabled="commonView.dataSelections.length <= 0"
           >批量暂停
         </el-button>
         <el-button
-          v-if="isAuth('sys:schedule:resume')"
+          v-if="commonView.isAuth('sys:schedule:resume')"
           type="danger"
           @click="resumeHandle()"
           :disabled="commonView.dataSelections.length <= 0"
           >批量恢复
         </el-button>
         <el-button
-          v-if="isAuth('sys:schedule:run')"
+          v-if="commonView.isAuth('sys:schedule:run')"
           type="danger"
           @click="runHandle()"
           :disabled="commonView.dataSelections.length <= 0"
           >批量立即执行
         </el-button>
         <el-button
-          v-if="isAuth('sys:schedule:log')"
+          v-if="commonView.isAuth('sys:schedule:log')"
           type="success"
           @click="router.push({ name: 'sys-log-schedule' })"
           >日志列表
@@ -205,7 +204,7 @@ const runHandle = (id) => {
         <el-table-column fixed="right" align="center" width="320" label="操作">
           <template v-slot="scope">
             <el-button
-              v-if="isAuth('sys:schedule:update')"
+              v-if="commonView.isAuth('sys:schedule:update')"
               link
               size="small"
               @click="addOrUpdateHandle(scope.row.id)"
@@ -213,7 +212,7 @@ const runHandle = (id) => {
               修改
             </el-button>
             <el-button
-              v-if="isAuth('sys:schedule:delete')"
+              v-if="commonView.isAuth('sys:schedule:delete')"
               link
               size="small"
               type="danger"
@@ -222,7 +221,7 @@ const runHandle = (id) => {
               删除
             </el-button>
             <el-button
-              v-if="isAuth('sys:schedule:pause')"
+              v-if="commonView.isAuth('sys:schedule:pause')"
               link
               size="small"
               @click="pauseHandle(scope.row.id)"
@@ -230,7 +229,7 @@ const runHandle = (id) => {
               暂停
             </el-button>
             <el-button
-              v-if="isAuth('sys:schedule:resume')"
+              v-if="commonView.isAuth('sys:schedule:resume')"
               link
               size="small"
               @click="resumeHandle(scope.row.id)"
@@ -238,7 +237,7 @@ const runHandle = (id) => {
               恢复
             </el-button>
             <el-button
-              v-if="isAuth('sys:schedule:run')"
+              v-if="commonView.isAuth('sys:schedule:run')"
               link
               size="small"
               @click="runHandle(scope.row.id)"

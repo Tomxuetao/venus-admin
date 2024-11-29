@@ -12,7 +12,7 @@ const dataForm = reactive({
   account: '',
   uuid: '',
   captcha: '',
-  secretKey: '',
+  secretKey: ''
 })
 
 const dataRule = {
@@ -20,23 +20,23 @@ const dataRule = {
     {
       required: true,
       message: '帐号不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   secretKey: [
     {
       required: true,
       message: '密钥不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   captcha: [
     {
       required: true,
       message: '图片验证码不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const captchaPath = ref('')
@@ -57,7 +57,7 @@ const dataFormSubmit = () => {
         .then(async ({ token }) => {
           commonStore.updateToken(token)
           await router.push({
-            name: 'main-dynamic',
+            name: 'main-dynamic'
           })
         })
         .catch(() => {
@@ -74,7 +74,7 @@ const msgCodeLogin = () => {
         .then(async ({ token }) => {
           commonStore.updateToken(token)
           await router.push({
-            name: 'main-dynamic',
+            name: 'main-dynamic'
           })
         })
         .catch(() => {
@@ -182,8 +182,10 @@ onBeforeUnmount(() => {
                 <el-row :gutter="20">
                   <el-col :span="14">
                     <el-input
+                      style="width: 100%"
                       v-model="dataForm.captcha"
                       placeholder="验证码"
+                      size="large"
                     ></el-input>
                   </el-col>
                   <el-col :span="10" class="login-captcha">
@@ -223,6 +225,7 @@ onBeforeUnmount(() => {
                     <el-input
                       v-model="dataForm.captcha"
                       placeholder="图片验证码"
+                      size="large"
                     ></el-input>
                   </el-col>
                   <el-col :span="10" class="login-captcha">

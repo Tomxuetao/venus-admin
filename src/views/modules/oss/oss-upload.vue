@@ -60,9 +60,10 @@ defineExpose({
 <template>
   <el-dialog
     title="上传文件"
-    :close-on-click-modal="false"
-    @close="closeHandle"
     v-model="visible"
+    :close-on-click-modal="false"
+    :destroy-on-close="true"
+    @close="closeHandle"
   >
     <el-upload
       drag

@@ -1,12 +1,11 @@
 <script setup>
-import { isAuth } from '@/utils'
 import Config from './oss-config.vue'
 import Upload from './oss-upload.vue'
 
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/oss/page',
     dataForm: {},
@@ -38,14 +37,14 @@ const uploadHandle = () => {
     <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-button
-          v-if="isAuth('oss:config:info')"
+          v-if="commonView.isAuth('oss:config:info')"
           type="primary"
           @click="configHandle()"
         >
           云存储配置
         </el-button>
         <el-button
-          v-if="isAuth('sys:oss:upload')"
+          v-if="commonView.isAuth('sys:oss:upload')"
           type="primary"
           @click="uploadHandle()"
         >
@@ -124,7 +123,7 @@ const uploadHandle = () => {
     <upload
       v-if="uploadVisible"
       ref="uploadRef"
-      @refreshDataList="getDataListHandle"
+      @refreshDataList="commonView.getDataList()"
     ></upload>
   </div>
 </template>

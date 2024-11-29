@@ -1,8 +1,8 @@
 <script setup>
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     dataListUrl: '/sys/log/error/page',
     exportUrl: '/sys/log/error/export',

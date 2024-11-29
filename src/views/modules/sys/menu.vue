@@ -1,6 +1,6 @@
 <script setup>
 import { buildTree } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 import AddOrUpdate from './menu-add-or-update.vue'
 
 const menuTypeMap = new Map([
@@ -13,7 +13,7 @@ const tagTypeMap = new Map([
   [1, 'success'],
 ])
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: false,
     deleteIsBatch: false,
     dataListUrl: '/sys/menu/list',

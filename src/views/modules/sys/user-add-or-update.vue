@@ -144,7 +144,11 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+  <el-dialog
+    :title="!dataForm.id ? '新增' : '修改'"
+    v-model="visible"
+    :destroy-on-close="true"
+  >
     <el-form
       :model="dataForm"
       :rules="dataRule"
@@ -184,7 +188,7 @@ defineExpose({
       </el-form-item>
       <el-form-item label="角色" prop="roleIdList">
         <el-checkbox-group v-model="dataForm.roleIdList">
-          <el-checkbox v-for="role in roleList" :key="role.id" :label="role.id">
+          <el-checkbox v-for="role in roleList" :key="role.id" :value="role.id">
             {{ role.name }}
           </el-checkbox>
         </el-checkbox-group>

@@ -1,9 +1,8 @@
 <script setup>
-import { isAuth } from '@/utils'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     deleteUrl: '/sys/gen/delete',
     dataListUrl: '/sys/gen/list',
@@ -28,7 +27,7 @@ const commonView = reactive({
       <el-form-item>
         <el-button @click="commonView.getDataList()">查询</el-button>
         <el-button
-          v-if="isAuth('sys:user:delete')"
+          v-if="commonView.isAuth('sys:user:delete')"
           type="danger"
           @click="commonView.deleteHandle(undefined)"
           :disabled="commonView.dataSelections.length <= 0"
@@ -67,7 +66,7 @@ const commonView = reactive({
       <el-table-column fixed="right" align="center" width="280" label="操作">
         <template v-slot="scope">
           <el-button
-            v-if="isAuth('sys:user:update')"
+            v-if="commonView.isAuth('sys:user:update')"
             link
             size="small"
             @click="addOrUpdateHandle(scope.row.id)"

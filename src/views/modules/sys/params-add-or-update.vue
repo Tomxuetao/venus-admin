@@ -33,12 +33,7 @@ const rules = ref({
 
 const init = (id) => {
   visible.value = true
-  dataForm.id = ''
-
-  // 重置表单数据
-  if (dataFormRef.value) {
-    dataFormRef.value.resetFields()
-  }
+  dataForm.id = id
 
   if (id) {
     commonApi(`/sys/params/${id}`).then((data) => {
@@ -76,9 +71,10 @@ defineExpose({
 <template>
   <el-dialog
     v-model="visible"
-    :title="!dataForm.id ? '新增' : '修改'"
+    :destroy-on-close="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :title="!dataForm.id ? '新增' : '修改'"
   >
     <el-form
       :model="dataForm"

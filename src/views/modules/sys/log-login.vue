@@ -1,5 +1,5 @@
 <script setup>
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const operationMap = new Map([
   [0, '登录'],
@@ -13,7 +13,7 @@ const statusMap = new Map([
 ])
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     dataListUrl: '/sys/log/login/page',
     exportUrl: '/sys/log/login/export',

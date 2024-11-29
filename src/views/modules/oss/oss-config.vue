@@ -1,5 +1,5 @@
 <script setup>
-import { isAuth } from '@/utils'
+import { isAuth } from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
 import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
 
@@ -185,7 +185,7 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog title="云存储配置" v-model="visible">
+  <el-dialog title="云存储配置" v-model="visible" :destroy-on-close="true">
     <el-form
       :model="dataForm"
       :rules="dataRule"
@@ -355,8 +355,8 @@ defineExpose({
           v-if="isAuth('oss:config:update')"
           type="primary"
           @click="dataFormSubmit()"
-          >确定</el-button
-        >
+          >确定
+        </el-button>
       </div>
     </template>
   </el-dialog>

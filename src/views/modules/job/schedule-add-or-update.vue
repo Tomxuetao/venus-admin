@@ -10,7 +10,7 @@ let dataForm = reactive({
   params: '',
   cronExpression: '',
   remark: '',
-  status: 0,
+  status: 0
 })
 
 const dataRule = {
@@ -18,16 +18,16 @@ const dataRule = {
     {
       required: true,
       message: '用户名不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   cronExpression: [
     {
       required: true,
       message: 'cron表达式不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const dataFormRef = ref()
@@ -40,7 +40,7 @@ const initDialogHandle = (id) => {
       dataFormRef.value.resetFields()
     }
     if (dataForm.id) {
-      const data = await commonApi(`/sys/schedule/info/${dataForm.id}`, {}, {})
+      const data = await commonApi(`/sys/schedule/${dataForm.id}`, {}, {})
       dataForm = Object.assign(dataForm, data)
     }
   })
@@ -58,14 +58,14 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  initDialogHandle,
+  initDialogHandle
 })
 </script>
 

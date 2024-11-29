@@ -14,6 +14,7 @@ export const useCommonStore = defineStore('common', {
   }),
   getters: {
     token: (state) => state.tokenState || sessionStorage.getItem('token'),
+    userData: (state) => state.userDataState,
     authList: (state) => state.authListState,
     menuList: (state) => state.menuListState,
     menuTree: (state) => state.menuTreeState
@@ -21,7 +22,11 @@ export const useCommonStore = defineStore('common', {
   actions: {
     updateToken(token) {
       this.tokenState = token
-      sessionStorage.setItem('token', token)
+      if (token) {
+        sessionStorage.setItem('token', token)
+      } else {
+        sessionStorage.removeItem('token')
+      }
     },
     updateUserData(data) {
       this.userDataState = data
@@ -51,7 +56,6 @@ export const useCommonStore = defineStore('common', {
           if (permissions) {
             authList.push(...permissions.split(','))
           }
-
           return {
             id: id,
             pid: pid,
@@ -64,8 +68,8 @@ export const useCommonStore = defineStore('common', {
           }
         })
         this.updateAuthList(authList)
-        this.updateMenuTree(buildTree(tempMenuList, '0'))
-        return menuList
+        this.updateMenuTree(buildTree([...tempMenuList], '0'))
+        return menuList.filter((item) => item.url)
       }
       return []
     }

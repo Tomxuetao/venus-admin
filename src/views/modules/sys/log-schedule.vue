@@ -1,10 +1,10 @@
 <script setup>
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
-import useCommonView from '@/hooks/useCommonView'
+import useView from '@/hooks/useView'
 
 const commonView = reactive({
-  ...useCommonView({
+  ...useView({
     isPage: true,
     dataListUrl: '/sys/scheduleLog/page',
     exportUrl: '/sys/log/error/export',

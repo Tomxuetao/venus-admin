@@ -15,33 +15,34 @@ const mainRoutes = [
     meta: { title: '主入口整体布局' },
     children: [],
     beforeEnter: (to, from, next) => {
+      const { menuTree } = useCommonStore()
       if (to.name === 'main-dynamic') {
         next({
           replace: true,
-          ...router.getRoutes()[0],
+          path: menuTree[0].children[0].url
         })
       } else {
         next()
       }
-    },
+    }
   },
   {
     path: '/login',
     component: commonModules['../views/common/login.vue'],
     name: 'login',
-    meta: { title: '登录' },
+    meta: { title: '登录' }
   },
   {
     path: '/:pathMatch(.*)*',
     name: '404',
-    component: commonModules['../views/common/404.vue'],
-  },
+    component: commonModules['../views/common/404.vue']
+  }
 ]
 
 const router = createRouter({
   routes: mainRoutes,
   history: createWebHistory('/venus-admin'),
-  scrollBehavior: () => ({ top: 0 }),
+  scrollBehavior: () => ({ top: 0 })
 })
 
 router.beforeEach(async (to) => {
@@ -59,13 +60,13 @@ router.beforeEach(async (to) => {
         return {
           ...to,
           replace: true,
-          name: undefined,
+          name: undefined
         }
       }
     } else {
       return {
         name: 'login',
-        replace: true,
+        replace: true
       }
     }
   }
@@ -82,8 +83,8 @@ export const addDynamicRoutes = (routeList = []) => {
         name: item.url.replaceAll('/', '-').replace('-', ''),
         meta: {
           id: item.id,
-          title: item.name,
-        },
+          title: item.name
+        }
       }
       router.addRoute('main-dynamic', route)
     }
