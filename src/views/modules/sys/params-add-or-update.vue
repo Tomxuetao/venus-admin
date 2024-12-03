@@ -11,7 +11,7 @@ const dataForm = reactive({
   id: '',
   paramCode: '',
   paramValue: '',
-  remark: '',
+  remark: ''
 })
 
 const rules = ref({
@@ -19,19 +19,19 @@ const rules = ref({
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   paramValue: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 })
 
-const init = (id) => {
+const initDialogHandle = (id) => {
   visible.value = true
   dataForm.id = id
 
@@ -49,7 +49,7 @@ const dataFormSubmitHandle = () => {
       return false
     }
     commonApi('/sys/params', dataForm, {
-      method: dataForm.id ? 'put' : 'post',
+      method: dataForm.id ? 'put' : 'post'
     }).then(() => {
       ElMessage.success({
         message: '成功',
@@ -57,14 +57,14 @@ const dataFormSubmitHandle = () => {
         onClose: () => {
           visible.value = false
           emit('refreshDataList')
-        },
+        }
       })
     })
   })
 }
 
 defineExpose({
-  init,
+  init: initDialogHandle
 })
 </script>
 

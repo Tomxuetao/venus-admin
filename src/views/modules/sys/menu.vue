@@ -5,12 +5,12 @@ import AddOrUpdate from './menu-add-or-update.vue'
 
 const menuTypeMap = new Map([
   [0, '菜单'],
-  [1, '按钮'],
+  [1, '按钮']
 ])
 
 const tagTypeMap = new Map([
   [0, 'primary'],
-  [1, 'success'],
+  [1, 'success']
 ])
 const commonView = reactive({
   ...useView({
@@ -20,9 +20,9 @@ const commonView = reactive({
     deleteUrl: '/sys/menu',
     dataForm: {
       status: undefined,
-      creatorName: undefined,
-    },
-  }),
+      creatorName: undefined
+    }
+  })
 })
 
 const addOrUpdateRef = ref()
@@ -30,7 +30,7 @@ let addOrUpdateVisible = ref(false)
 const addOrUpdateHandle = (id) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
+    addOrUpdateRef.value.init(id)
   })
 }
 </script>

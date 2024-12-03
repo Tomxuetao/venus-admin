@@ -11,9 +11,9 @@ const commonView = reactive({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/schedule/page',
     dataForm: {
-      beanName: undefined,
-    },
-  }),
+      beanName: undefined
+    }
+  })
 })
 
 const addOrUpdateVisible = ref(false)
@@ -23,7 +23,7 @@ let addOrUpdateRef = ref()
 const addOrUpdateHandle = (id) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
+    addOrUpdateRef.value.init(id)
   })
 }
 
@@ -36,8 +36,8 @@ const pauseHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/pause', ids, { method: 'put' })
     ElMessage({
@@ -46,7 +46,7 @@ const pauseHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }
@@ -60,8 +60,8 @@ const resumeHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/resume', ids, { method: 'put' })
     ElMessage({
@@ -70,7 +70,7 @@ const resumeHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }
@@ -84,8 +84,8 @@ const runHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/run', ids, { method: 'put' })
     ElMessage({
@@ -94,7 +94,7 @@ const runHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }

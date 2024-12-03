@@ -65,7 +65,7 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  initDialogHandle
+  init: initDialogHandle
 })
 </script>
 

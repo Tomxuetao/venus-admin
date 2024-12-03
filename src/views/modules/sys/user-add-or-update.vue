@@ -42,14 +42,15 @@ let roleList = ref([])
 
 let dataForm = reactive({
   id: undefined,
+  status: 1,
   username: '',
   password: '',
   confirmPassword: '',
-  salt: '',
+  realName: '',
   email: '',
   mobile: '',
-  roleIdList: [],
-  status: 1,
+  gender: 0,
+  roleIdList: []
 })
 
 const dataFormRef = ref()
@@ -58,43 +59,49 @@ const dataRule = {
   username: [
     {
       required: true,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
+  ],
+  realName: [
+    {
+      required: true,
+      trigger: 'blur'
+    }
   ],
   password: [
     {
       validator: validatePassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   confirmPassword: [
     {
       validator: validateConfirmPassword,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   email: [
     {
       required: true,
       message: '邮箱不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateEmail,
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   mobile: [
     {
       required: true,
       message: '手机号不能为空',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     {
       validator: validateMobile,
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const initDialogHandle = async (id) => {
@@ -123,7 +130,7 @@ const dataFormSubmit = () => {
       await commonApi(
         `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
         dataForm,
-        { method: 'post' },
+        { method: 'post' }
       )
       visible.value = false
       ElMessage({
@@ -132,14 +139,14 @@ const dataFormSubmit = () => {
         duration: 1500,
         onClose: () => {
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  initDialogHandle,
+  init: initDialogHandle
 })
 </script>
 
@@ -179,6 +186,16 @@ defineExpose({
           type="password"
           placeholder="确认密码"
         ></el-input>
+      </el-form-item>
+      <el-form-item label="真实姓名" prop="realName">
+        <el-input v-model="dataForm.realName" placeholder="真实姓名"></el-input>
+      </el-form-item>
+      <el-form-item label="性别">
+        <el-radio-group v-model="dataForm.gender">
+          <el-radio :label="0">男</el-radio>
+          <el-radio :label="1">女</el-radio>
+          <el-radio :label="2">保密</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>

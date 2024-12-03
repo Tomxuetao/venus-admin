@@ -1,7 +1,7 @@
 <script setup>
 import { isAuth } from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
-import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
+import { commonApi } from '@/api/common-api'
 
 const emit = defineEmits(['refresh-data-list'])
 
@@ -32,7 +32,7 @@ let dataForm = reactive({
   minioEndPoint: '',
   minioAccessKey: '',
   minioSecretKey: '',
-  minioBucketName: '',
+  minioBucketName: ''
 })
 
 const dataRule = {
@@ -40,122 +40,122 @@ const dataRule = {
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qiniuAccessKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qiniuSecretKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qiniuBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   aliyunDomain: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   aliyunEndPoint: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   aliyunAccessKeyId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   aliyunAccessKeySecret: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   aliyunBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudDomain: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudAppId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudSecretId: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudSecretKey: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudBucketName: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   qcloudRegion: [
     {
       required: true,
       message: '必填项不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 let visible = ref(false)
 const initDialogHandle = () => {
   visible.value = true
 
-  ossConfigDetailApi().then((data) => {
+  commonApi('/sys/oss/info').then((data) => {
     dataForm = Object.assign(
       dataForm,
       data.type
         ? data
         : {
             ...data,
-            type: 4,
-          },
+            type: 4
+          }
     )
   })
 }
@@ -164,7 +164,7 @@ const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      savaOssConfigApi(dataForm).then(() => {
+      commonApi('/sys/oss', dataForm, { method: 'post' }).then(() => {
         ElMessage({
           message: '操作成功',
           type: 'success',
@@ -172,7 +172,7 @@ const dataFormSubmit = () => {
           onClose: () => {
             visible.value = false
             emit('refresh-data-list')
-          },
+          }
         })
       })
     }
@@ -180,7 +180,7 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  initDialogHandle,
+  initDialogHandle
 })
 </script>
 

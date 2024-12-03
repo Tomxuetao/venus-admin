@@ -1,7 +1,7 @@
 <script setup>
 import { ElMessage } from 'element-plus'
-import { commonApi } from '@/api/common-api'
 import { treeDataTranslate } from '@/utils'
+import { commonApi } from '@/api/common-api'
 
 const emit = defineEmits(['refresh-data-list'])
 
@@ -10,7 +10,7 @@ let dataForm = reactive({
   name: '',
   pid: 0,
   sort: 0,
-  parentName: '',
+  parentName: ''
 })
 
 const dataRule = {
@@ -18,16 +18,16 @@ const dataRule = {
     {
       required: true,
       message: '部门名称不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   pid: [
     {
       required: true,
       message: '上级部门不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 let dataFormRef = ref()
@@ -58,7 +58,7 @@ const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
     if (valid) {
       await commonApi('/sys/dept', dataForm, {
-        method: dataForm.id ? 'put' : 'post',
+        method: dataForm.id ? 'put' : 'post'
       })
       ElMessage({
         message: '操作成功',
@@ -67,14 +67,14 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  init: initDialogHandle,
+  init: initDialogHandle
 })
 </script>
 

@@ -8,9 +8,9 @@ const commonView = reactive({
     deleteUrl: '/sys/role',
     dataListUrl: '/sys/role/page',
     dataForm: {
-      name: undefined,
-    },
-  }),
+      name: undefined
+    }
+  })
 })
 
 let addOrUpdateRef = ref()
@@ -19,7 +19,7 @@ let addOrUpdateVisible = ref(false)
 const addOrUpdateHandle = (id = undefined) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initDialogHandle(id)
+    addOrUpdateRef.value.init(id)
   })
 }
 </script>
