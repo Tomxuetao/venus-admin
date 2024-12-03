@@ -42,20 +42,27 @@ let roleList = ref([])
 
 let dataForm = reactive({
   id: undefined,
+  status: 1,
   username: '',
   password: '',
   confirmPassword: '',
-  salt: '',
+  realName: '',
   email: '',
   mobile: '',
+  gender: 0,
   roleIdList: [],
-  status: 1,
 })
 
 const dataFormRef = ref()
 
 const dataRule = {
   username: [
+    {
+      required: true,
+      trigger: 'blur',
+    },
+  ],
+  realName: [
     {
       required: true,
       trigger: 'blur',
@@ -139,7 +146,7 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  initDialogHandle,
+  init: initDialogHandle,
 })
 </script>
 
@@ -179,6 +186,16 @@ defineExpose({
           type="password"
           placeholder="确认密码"
         ></el-input>
+      </el-form-item>
+      <el-form-item label="真实姓名" prop="realName">
+        <el-input v-model="dataForm.realName" placeholder="真实姓名"></el-input>
+      </el-form-item>
+      <el-form-item label="性别">
+        <el-radio-group v-model="dataForm.gender">
+          <el-radio :label="0">男</el-radio>
+          <el-radio :label="1">女</el-radio>
+          <el-radio :label="2">保密</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>

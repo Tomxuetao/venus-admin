@@ -1,7 +1,7 @@
 <script setup>
 import { isAuth } from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
-import { ossConfigDetailApi, savaOssConfigApi } from '@/api/oss-api'
+import { commonApi } from '@/api/common-api'
 
 const emit = defineEmits(['refresh-data-list'])
 
@@ -147,7 +147,7 @@ let visible = ref(false)
 const initDialogHandle = () => {
   visible.value = true
 
-  ossConfigDetailApi().then((data) => {
+  commonApi('/sys/oss/info').then((data) => {
     dataForm = Object.assign(
       dataForm,
       data.type
@@ -164,7 +164,7 @@ const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      savaOssConfigApi(dataForm).then(() => {
+      commonApi('/sys/oss', dataForm, { method: 'post' }).then(() => {
         ElMessage({
           message: '操作成功',
           type: 'success',

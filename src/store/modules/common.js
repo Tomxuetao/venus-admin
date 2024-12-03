@@ -1,12 +1,11 @@
-import { defineStore } from 'pinia'
 import { buildTree } from '@/utils'
-
-import { sysMenuListApi } from '@/api/menu-api'
-import { sysUserDataApi } from '@/api/login-api'
+import { defineStore } from 'pinia'
+import { commonApi } from '@/api/common-api'
 
 export const useCommonStore = defineStore('common', {
   state: () => ({
     tokenState: '',
+    dictListState: [],
     userDataState: {},
     authListState: [],
     menuListState: [],
@@ -41,13 +40,18 @@ export const useCommonStore = defineStore('common', {
       this.menuTreeState = tree
     },
 
+    async initDictAction() {
+      const dictList = await commonApi('/sys/dict/list')
+      console.log(dictList)
+    },
+
     async initUserAction() {
-      const userData = await sysUserDataApi()
+      const userData = await commonApi('/sys/user/info')
       this.updateUserData(userData)
     },
 
     async initMenuAction() {
-      const menuList = await sysMenuListApi()
+      const menuList = await commonApi('/sys/menu/list')
       if (Array.isArray(menuList)) {
         this.updateMenuList(menuList)
         const authList = []

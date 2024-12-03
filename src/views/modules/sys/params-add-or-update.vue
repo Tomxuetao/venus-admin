@@ -31,7 +31,7 @@ const rules = ref({
   ],
 })
 
-const init = (id) => {
+const initDialogHandle = (id) => {
   visible.value = true
   dataForm.id = id
 
@@ -64,7 +64,7 @@ const dataFormSubmitHandle = () => {
 }
 
 defineExpose({
-  init,
+  init: initDialogHandle,
 })
 </script>
 

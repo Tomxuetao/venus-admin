@@ -1,10 +1,9 @@
 <script setup>
 import { getUUID } from '@/utils'
+import { ElMessage } from 'element-plus'
 import { useCommonStore } from '@/store'
 import { venusServer } from '@/utils/http'
-import { loginApi } from '@/api/login-api'
 import { commonApi } from '@/api/common-api'
-import { ElMessage } from 'element-plus'
 
 const commonStore = useCommonStore()
 
@@ -53,7 +52,7 @@ const dataFormRef = ref()
 const dataFormSubmit = () => {
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      loginApi(dataForm)
+      commonApi('/login', dataForm, { method: 'post' })
         .then(async ({ token }) => {
           commonStore.updateToken(token)
           await router.push({

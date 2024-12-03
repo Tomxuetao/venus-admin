@@ -5,6 +5,7 @@ import imgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
 import { Layout as EvLayout } from 'layout-vue3'
 import { useRouter, useRoute } from 'vue-router'
+import LayouConfig from '@/views/layout/layou-config.vue'
 
 defineOptions({
   name: 'main-layout'
@@ -39,9 +40,10 @@ const navMode = ref('aside')
 const commandMap = new Map([
   [''],
   [
-    'layout',
+    'theme',
     () => {
-      navMode.value = navMode.value === 'aside' ? 'header' : 'aside'
+      showConfig.value = true
+      //      navMode.value = navMode.value === 'aside' ? 'header' : 'aside'
     }
   ],
   [
@@ -55,6 +57,8 @@ const commandMap = new Map([
     }
   ]
 ])
+
+const showConfig = ref(false)
 
 const commandHandle = (command) => {
   const commandFn = commandMap.get(command)
@@ -118,16 +122,17 @@ watch(
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="user">个人信息</el-dropdown-item>
-              <el-dropdown-item command="layout">布局设置</el-dropdown-item>
+              <el-dropdown-item command="theme">主题</el-dropdown-item>
               <el-dropdown-item divided command="logout"
-                >退出登录</el-dropdown-item
-              >
+                >退出登录
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
     </template>
   </ev-layout>
+  <layou-config v-model="showConfig"></layou-config>
 </template>
 
 <style scoped lang="scss">

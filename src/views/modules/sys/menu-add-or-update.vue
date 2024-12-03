@@ -11,7 +11,7 @@ const { menuList } = useCommonStore()
 
 const menuTypeMap = new Map([
   [0, '菜单'],
-  [1, '按钮']
+  [1, '按钮'],
 ])
 
 let dataForm = reactive({
@@ -23,7 +23,7 @@ let dataForm = reactive({
   url: '',
   sort: 0,
   icon: '',
-  permissions: ''
+  permissions: '',
 })
 
 const validateUrl = (rule, value, callback) => {
@@ -39,27 +39,27 @@ const dataRule = {
     {
       required: true,
       message: '名称不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   pid: [
     {
       required: true,
       message: '上级菜单不能为空',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   url: [
     {
       validator: validateUrl,
-      trigger: 'blur'
-    }
-  ]
+      trigger: 'blur',
+    },
+  ],
 }
 
 const iconList = Icon.getNameList()
 let menuListTree = treeDataTranslate([
-  ...menuList.filter((item) => item.type === 0)
+  ...menuList.filter((item) => item.type === 0),
 ])
 
 let visible = ref(false)
@@ -86,7 +86,7 @@ const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
     if (valid) {
       await commonApi('/sys/menu', dataForm, {
-        method: dataForm.id ? 'put' : 'post'
+        method: dataForm.id ? 'put' : 'post',
       })
       ElMessage({
         message: '操作成功',
@@ -95,14 +95,14 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        }
+        },
       })
     }
   })
 }
 
 defineExpose({
-  initDialogHandle
+  init: initDialogHandle,
 })
 </script>
 

@@ -77,7 +77,7 @@ const closeDialogHandle = () => {
 }
 
 defineExpose({
-  initDialogHandle,
+  init: initDialogHandle,
 })
 </script>
 
