@@ -5,7 +5,7 @@ import { commonApi } from '@/api/common-api'
 export const useCommonStore = defineStore('common', {
   state: () => ({
     tokenState: '',
-    dictListState: [],
+    dictMapState: new Map(),
     userDataState: {},
     authListState: [],
     menuListState: [],
@@ -13,6 +13,7 @@ export const useCommonStore = defineStore('common', {
   }),
   getters: {
     token: (state) => state.tokenState || sessionStorage.getItem('token'),
+    dictMap: (state) => state.dictMapState,
     userData: (state) => state.userDataState,
     authList: (state) => state.authListState,
     menuList: (state) => state.menuListState,
@@ -26,6 +27,17 @@ export const useCommonStore = defineStore('common', {
       } else {
         sessionStorage.removeItem('token')
       }
+    },
+    updateDictMap(list) {
+      const treeList = buildTree(list, '0')
+      const dictMap = new Map()
+      treeList.forEach((item) => {
+        dictMap.set(
+          item.value,
+          Object.freeze((item.children || []).sort((a, b) => a.sort - b.sort))
+        )
+      })
+      this.dictMapState = dictMap
     },
     updateUserData(data) {
       this.userDataState = data
@@ -42,7 +54,7 @@ export const useCommonStore = defineStore('common', {
 
     async initDictAction() {
       const dictList = await commonApi('/sys/dict/list')
-      console.log(dictList)
+      this.updateDictMap(dictList)
     },
 
     async initUserAction() {

@@ -228,7 +228,12 @@ onBeforeUnmount(() => {
                     ></el-input>
                   </el-col>
                   <el-col :span="10" class="login-captcha">
-                    <img :src="captchaPath" @click="getCaptcha()" alt="" />
+                    <img
+                      class="captcha-img"
+                      :src="captchaPath"
+                      @click="getCaptcha()"
+                      alt=""
+                    />
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -392,8 +397,10 @@ onBeforeUnmount(() => {
     overflow: hidden;
 
     > img {
-      width: 100%;
+      width: 136px;
+      height: 40px;
       cursor: pointer;
+      object-fit: contain;
     }
   }
 

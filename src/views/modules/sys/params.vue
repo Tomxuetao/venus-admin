@@ -105,8 +105,8 @@ const addOrUpdateHandle = (id = undefined) => {
             </el-button>
             <el-button
               v-if="commonView.isAuth('sys:params:delete')"
-              type="danger"
               link
+              type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
             >
               删除

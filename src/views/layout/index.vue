@@ -1,26 +1,22 @@
 <script setup>
-import { useCommonStore } from '@/store'
+import { useCommonStore, useThemeState } from '@/store'
 import { commonApi } from '@/api/common-api'
-import imgBg from '@/assets/img/img-bg.webp'
+import ImgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
 import { Layout as EvLayout } from 'layout-vue3'
 import { useRouter, useRoute } from 'vue-router'
-import LayouConfig from '@/views/layout/layou-config.vue'
+import LayoutConfig from '@/views/layout/layout-config.vue'
 
 defineOptions({
   name: 'main-layout'
 })
 
-const { userData, menuTree, updateToken } = useCommonStore()
-
-const collapse = ref(false)
-
-const toggleCollapse = () => {
-  collapse.value = !collapse.value
-}
-
 const route = useRoute()
 const router = useRouter()
+
+const themeState = useThemeState()
+
+const { userData, menuTree, updateToken } = useCommonStore()
 
 const routes = router.getRoutes()
 
@@ -36,14 +32,12 @@ const changeRoute = (id) => {
   }
 }
 
-const navMode = ref('aside')
 const commandMap = new Map([
   [''],
   [
     'theme',
     () => {
       showConfig.value = true
-      //      navMode.value = navMode.value === 'aside' ? 'header' : 'aside'
     }
   ],
   [
@@ -78,14 +72,14 @@ watch(
 <template>
   <ev-layout
     class="layout-wrap"
-    :img-bg="imgBg"
-    :nav-mode="navMode"
-    :show-crumb="true"
-    :collapse="collapse"
+    :img-bg="ImgBg"
     :menu-list="menuTree"
-    :unique-opened="true"
     :model-value="activeId"
+    :collapse="themeState.collapse"
+    :nav-mode="themeState.navLayout"
     @update:model-value="changeRoute"
+    :show-crumb="themeState.showCrumb"
+    :unique-opened="themeState.uniqueOpened"
   >
     <template #logo>
       <div class="logo-wrap">
@@ -94,11 +88,14 @@ watch(
       </div>
     </template>
     <template #fold>
-      <div class="fold-wrap" @click="toggleCollapse()">
+      <div
+        class="fold-wrap"
+        @click="themeState.updateCollapse(!themeState.collapse)"
+      >
         <img
-          :class="['fold-img', collapse ? 'img-fold' : 'img-open']"
-          src="@/assets/img/img-fold.webp"
           alt=""
+          src="@/assets/img/img-fold.webp"
+          :class="['fold-img', themeState.collapse ? 'img-fold' : 'img-open']"
         />
       </div>
     </template>
@@ -122,7 +119,7 @@ watch(
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="user">个人信息</el-dropdown-item>
-              <el-dropdown-item command="theme">主题</el-dropdown-item>
+              <el-dropdown-item command="theme">主题设置</el-dropdown-item>
               <el-dropdown-item divided command="logout"
                 >退出登录
               </el-dropdown-item>
@@ -132,23 +129,24 @@ watch(
       </div>
     </template>
   </ev-layout>
-  <layou-config v-model="showConfig"></layou-config>
+  <layout-config v-model="showConfig"></layout-config>
 </template>
 
 <style scoped lang="scss">
 :root {
+  --ev-header-height: 54px;
   --ev-primary-color: #ffffff;
 }
 
 .layout-wrap {
   .logo-wrap {
-    cursor: pointer;
     display: flex;
+    cursor: pointer;
     align-items: center;
 
     .logo-img {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       object-fit: contain;
     }
 
@@ -220,6 +218,7 @@ watch(
       .inner-name {
         font-size: 18px;
         font-weight: 400;
+        white-space: nowrap;
       }
 
       .inner-img {

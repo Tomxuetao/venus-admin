@@ -1,10 +1,12 @@
 <script setup>
+import { useCommonStore } from '@/store'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import { isEmail, isMobile } from '@/utils/validate'
 
 const emit = defineEmits(['refresh-data-list'])
 
+const { dictMap } = useCommonStore()
 const validatePassword = (rule, value, callback) => {
   if (!dataForm.id && !/\S/.test(value)) {
     callback(new Error('密码不能为空'))
@@ -49,8 +51,8 @@ let dataForm = reactive({
   realName: '',
   email: '',
   mobile: '',
-  gender: 0,
-  roleIdList: []
+  gender: '0',
+  roleIdList: [],
 })
 
 const dataFormRef = ref()
@@ -59,49 +61,49 @@ const dataRule = {
   username: [
     {
       required: true,
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   realName: [
     {
       required: true,
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   password: [
     {
       validator: validatePassword,
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   confirmPassword: [
     {
       validator: validateConfirmPassword,
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   email: [
     {
       required: true,
       message: '邮箱不能为空',
-      trigger: 'blur'
+      trigger: 'blur',
     },
     {
       validator: validateEmail,
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   mobile: [
     {
       required: true,
       message: '手机号不能为空',
-      trigger: 'blur'
+      trigger: 'blur',
     },
     {
       validator: validateMobile,
-      trigger: 'blur'
-    }
-  ]
+      trigger: 'blur',
+    },
+  ],
 }
 
 const initDialogHandle = async (id) => {
@@ -130,7 +132,7 @@ const dataFormSubmit = () => {
       await commonApi(
         `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
         dataForm,
-        { method: 'post' }
+        { method: 'post' },
       )
       visible.value = false
       ElMessage({
@@ -139,14 +141,14 @@ const dataFormSubmit = () => {
         duration: 1500,
         onClose: () => {
           emit('refresh-data-list')
-        }
+        },
       })
     }
   })
 }
 
 defineExpose({
-  init: initDialogHandle
+  init: initDialogHandle,
 })
 </script>
 
@@ -192,9 +194,13 @@ defineExpose({
       </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="dataForm.gender">
-          <el-radio :label="0">男</el-radio>
-          <el-radio :label="1">女</el-radio>
-          <el-radio :label="2">保密</el-radio>
+          <el-radio
+            v-for="(item, index) in dictMap.get('gender')"
+            :label="item.label"
+            :value="item.value"
+            :key="index"
+          >
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">

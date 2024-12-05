@@ -55,6 +55,7 @@ router.beforeEach(async (to) => {
         return true
       } else {
         await commonState.initUserAction()
+        await commonState.initDictAction()
         const menuList = await commonState.initMenuAction()
         addDynamicRoutes(menuList)
         return {

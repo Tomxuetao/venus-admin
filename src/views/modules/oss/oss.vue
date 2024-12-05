@@ -8,8 +8,8 @@ const commonView = reactive({
   ...useView({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/oss/page',
-    dataForm: {},
-  }),
+    dataForm: {}
+  })
 })
 
 let configVisible = ref(false)
@@ -99,8 +99,8 @@ const uploadHandle = () => {
             <el-button
               link
               size="small"
+              type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
-              style="color: #f56c6c"
               >删除
             </el-button>
           </template>

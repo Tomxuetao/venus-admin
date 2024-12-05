@@ -74,3 +74,15 @@ img {
     }
   }
 }
+
+.custom-drawer {
+  .el-drawer__header {
+    padding: 16px 18px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #f4f4f4;
+  }
+}
+
+:root {
+  --ev-header-height: 54px;
+}
