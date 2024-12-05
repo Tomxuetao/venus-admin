@@ -61,7 +61,8 @@ export default [
       '*.d.ts',
       '.husky',
       'build',
-      'stats.html'
+      'stats.html',
+      'venus-admin'
     ]
   }
 ]

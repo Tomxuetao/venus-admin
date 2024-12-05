@@ -10,9 +10,9 @@ const commonView = reactive({
     deleteUrl: '/sys/user/delete',
     dataListUrl: '/sys/user/list',
     dataForm: {
-      username: undefined,
-    },
-  }),
+      username: undefined
+    }
+  })
 })
 const addOrUpdateVisible = ref(false)
 
@@ -108,8 +108,8 @@ const addOrUpdateHandle = (id) => {
             v-if="commonView.isAuth('sys:user:delete')"
             link
             size="small"
+            type="danger"
             @click="commonView.deleteHandle(scope.row.id)"
-            style="color: #f56c6c"
           >
             删除
           </el-button>

@@ -8,8 +8,8 @@ const commonView = reactive({
     deleteIsBatch: false,
     deleteUrl: '/sys/dept',
     dataListUrl: '/sys/dept/list',
-    dataForm: {}
-  })
+    dataForm: {},
+  }),
 })
 
 let addOrUpdateVisible = ref(false)
@@ -47,8 +47,8 @@ const addOrUpdateHandle = (id) => {
           <el-button
             link
             size="small"
+            type="danger"
             @click="commonView.deleteHandle(scope.row.id)"
-            style="color: #f56c6c"
           >
             删除
           </el-button>

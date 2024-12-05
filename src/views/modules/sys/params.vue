@@ -8,9 +8,9 @@ const commonView = reactive({
     deleteUrl: '/sys/params',
     dataListUrl: '/sys/params/page',
     dataForm: {
-      paramCode: undefined
-    }
-  })
+      paramCode: undefined,
+    },
+  }),
 })
 
 const addOrUpdateRef = ref()
@@ -105,8 +105,8 @@ const addOrUpdateHandle = (id = undefined) => {
             </el-button>
             <el-button
               v-if="commonView.isAuth('sys:params:delete')"
-              type="danger"
               link
+              type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
             >
               删除
