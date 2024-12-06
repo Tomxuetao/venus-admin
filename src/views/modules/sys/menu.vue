@@ -5,12 +5,12 @@ import AddOrUpdate from './menu-add-or-update.vue'
 
 const menuTypeMap = new Map([
   [0, '菜单'],
-  [1, '按钮'],
+  [1, '按钮']
 ])
 
 const tagTypeMap = new Map([
   [0, 'primary'],
-  [1, 'success'],
+  [1, 'success']
 ])
 const commonView = reactive({
   ...useView({
@@ -20,9 +20,9 @@ const commonView = reactive({
     dataListUrl: '/sys/menu/list',
     dataForm: {
       status: undefined,
-      creatorName: undefined,
-    },
-  }),
+      creatorName: undefined
+    }
+  })
 })
 
 const addOrUpdateRef = ref()

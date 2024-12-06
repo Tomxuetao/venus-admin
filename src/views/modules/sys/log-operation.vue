@@ -3,7 +3,7 @@ import useView from '@/hooks/useView'
 
 const statusMap = new Map([
   [0, '失败'],
-  [1, '成功'],
+  [1, '成功']
 ])
 
 const commonView = reactive({
@@ -12,9 +12,9 @@ const commonView = reactive({
     dataListUrl: '/sys/log/operation/page',
     exportUrl: '/sys/log/operation/export',
     dataForm: {
-      status: undefined,
-    },
-  }),
+      status: undefined
+    }
+  })
 })
 </script>
 

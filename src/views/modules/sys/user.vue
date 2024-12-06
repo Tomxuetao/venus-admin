@@ -10,9 +10,9 @@ const commonView = reactive({
     deleteUrl: '/sys/user/delete',
     dataListUrl: '/sys/user/list',
     dataForm: {
-      username: undefined,
-    },
-  }),
+      username: undefined
+    }
+  })
 })
 const addOrUpdateVisible = ref(false)
 
