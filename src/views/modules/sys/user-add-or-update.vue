@@ -47,12 +47,13 @@ let dataForm = reactive({
   status: 1,
   username: '',
   password: '',
-  confirmPassword: '',
   realName: '',
   email: '',
   mobile: '',
   gender: '0',
-  roleIdList: []
+  deptId: '',
+  roleIdList: [],
+  confirmPassword: ''
 })
 
 const dataFormRef = ref()
@@ -61,13 +62,15 @@ const dataRule = {
   username: [
     {
       required: true,
-      trigger: 'blur'
+      trigger: 'blur',
+      message: '账号名不能为空'
     }
   ],
   realName: [
     {
       required: true,
-      trigger: 'blur'
+      trigger: 'blur',
+      message: '真实姓名不能为空'
     }
   ],
   password: [
@@ -106,23 +109,26 @@ const dataRule = {
   ]
 }
 
+const deptList = ref([])
+
 const initDialogHandle = async (id) => {
   dataForm.id = id
   visible.value = true
 
-  roleList.value = await commonApi('/sys/role/list')
+  const tempDeptList = await commonApi('/sys/dept/list')
+  if (Array.isArray(tempDeptList)) {
+    deptList.value = tempDeptList
+  }
+  const tempRoleList = await commonApi('/sys/role/list')
+  if (Array.isArray(tempRoleList)) {
+    roleList.value = tempRoleList
+  }
 
-  //  sysUserDetailApi({ id: id }).then((data) => {
-  //    roleList.value = data.roleIdList
-  //  }).then(() => {
-  //    visible.value = true
-  //  })
-  //  roleList.value = await commonApi('/sys/role/select')
-  //  visible.value = true
-
-  //  const tempData = commonApi(`/sys/user/info/${dataForm.id}`)
-
-  //  dataForm = Object.assign(dataForm, tempData)
+  if (id) {
+    commonApi(`/sys/user/${id}`).then((data) => {
+      Object.assign(dataForm, data)
+    })
+  }
 }
 
 // 表单提交
@@ -197,17 +203,29 @@ defineExpose({
           <el-radio
             v-for="(item, index) in dictMap.get('gender')"
             :label="item.label"
-            :value="item.value"
+            :value="+item.value"
             :key="index"
           >
           </el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="手机号" prop="mobile">
+        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
       </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+      <el-form-item prop="deptId" label="所属部门">
+        <el-tree-select
+          v-model="dataForm.deptId"
+          :data="deptList"
+          node-key="id"
+          check-strictly
+          check-on-click-node
+          :render-after-expand="false"
+          :props="{ label: 'name', children: 'children' }"
+        >
+        </el-tree-select>
       </el-form-item>
       <el-form-item label="角色" prop="roleIdList">
         <el-checkbox-group v-model="dataForm.roleIdList">

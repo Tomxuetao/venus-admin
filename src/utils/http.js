@@ -26,7 +26,7 @@ export const noAccessDialog = executeOnce(() => {
  */
 export const createHttp = () => {
   const http = axios.create({
-    timeout: 1000 * 3,
+    timeout: 1000 * 3000,
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json'
@@ -80,3 +80,5 @@ export const createHttp = () => {
 export const http = createHttp()
 
 export const venusServer = '/venus-api'
+
+export const venusOssServer = '/venus-data'

@@ -1,6 +1,7 @@
 <script setup>
 import useView from '@/hooks/useView'
 import AddOrUpdate from './user-add-or-update.vue'
+import { venusOssServer } from '@/utils/http'
 
 const addOrUpdateRef = ref()
 
@@ -9,6 +10,8 @@ const commonView = reactive({
     isPage: true,
     deleteUrl: '/sys/user/delete',
     dataListUrl: '/sys/user/list',
+    exportUrl: '/sys/user/export',
+    importUrl: '/sys/user/import',
     dataForm: {
       username: undefined
     }
@@ -22,6 +25,21 @@ const addOrUpdateHandle = (id) => {
   nextTick(() => {
     addOrUpdateRef.value.init(id)
   })
+}
+
+const showImportDialog = async () => {
+  const fileInput = document.getElementById('fileInput')
+  fileInput.click()
+  fileInput.onchange = async () => {
+    const file = fileInput.files[0]
+    if (file) {
+      commonView.importHandle(file)
+    }
+  }
+}
+
+const downloadHandle = () => {
+  location.href = `${venusOssServer}/upload/template/导入用户模版.xlsx`
 }
 </script>
 
@@ -52,6 +70,31 @@ const addOrUpdateHandle = (id) => {
         >
           批量删除
         </el-button>
+        <el-button type="primary" icon="Download" @click="downloadHandle">
+          导入模版
+        </el-button>
+        <el-button
+          v-if="commonView.isAuth('sys:user:export')"
+          type="warning"
+          icon="Document"
+          @click="commonView.exportHandle()"
+        >
+          导出Excel
+        </el-button>
+        <el-button
+          v-if="commonView.isAuth('sys:user:import')"
+          type="success"
+          icon="DocumentAdd"
+          @click="showImportDialog"
+        >
+          导入Excel
+          <input
+            style="display: none"
+            id="fileInput"
+            type="file"
+            accept=".xls,.xlsx"
+          />
+        </el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -79,6 +122,11 @@ const addOrUpdateHandle = (id) => {
         prop="mobile"
         align="center"
         label="手机号"
+      ></el-table-column>
+      <el-table-column
+        prop="deptName"
+        align="center"
+        label="所属部门"
       ></el-table-column>
       <el-table-column prop="status" align="center" label="状态">
         <template v-slot="scope">

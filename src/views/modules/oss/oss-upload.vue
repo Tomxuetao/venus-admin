@@ -18,12 +18,7 @@ const initDialogHandle = () => {
 }
 
 // 上传之前
-const beforeUploadHandle = (file) => {
-  const fileTypeArray = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
-  if (!fileTypeArray.includes(file.type)) {
-    ElMessage.error('只支持jpg、png、gif格式的图片！')
-    return false
-  }
+const beforeUploadHandle = () => {
   num.value++
 }
 
@@ -36,7 +31,7 @@ const successHandle = (response, file, list) => {
       ElMessageBox.confirm('操作成功, 是否继续操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).catch(() => {
         visible.value = false
       })
@@ -53,7 +48,7 @@ const closeHandle = () => {
 }
 
 defineExpose({
-  initDialogHandle,
+  initDialogHandle
 })
 </script>
 
@@ -76,7 +71,6 @@ defineExpose({
     >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-      <div class="el-upload__tip">只支持jpg、png、gif格式的图片！</div>
     </el-upload>
   </el-dialog>
 </template>
