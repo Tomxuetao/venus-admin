@@ -128,13 +128,3 @@ export const debounce = (fn, delay = 100) => {
     }, delay)
   }
 }
-
-/**
- * 设置跟字体大小
- * @param {number} designHeight
- */
-export const setRootFontSize = (designHeight = 1080) => {
-  let docEl = document.documentElement
-  let height = docEl.clientHeight
-  docEl.style.fontSize = `${height / designHeight}px`
-}

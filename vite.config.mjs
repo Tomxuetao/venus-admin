@@ -18,6 +18,11 @@ export default defineConfig({
         secure: false,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')
+      },
+      '/venus-data': {
+        target: 'https://tomxuetao.xyz',
+        secure: false,
+        changeOrigin: true
       }
     },
     host: '127.0.0.1'

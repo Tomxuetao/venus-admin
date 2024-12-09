@@ -10,6 +10,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Function} getDataList - 获取数据
  * @property {Function} deleteHandle - 删除数据
  * @property {Function} exportHandle - 导出数据
+ * @property {Function} importHandle - 导入数据
  * @property {Function} pageNumChange - 页码改变
  * @property {Function} pageSizeChange - 页数改变
  * @property {Function} selectionChange - 选择改变
@@ -26,6 +27,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Object} [dataForm] - 查询表单
  * @property {Boolean} [isPage] - 是否分页
  * @property {String} [exportUrl] - 导出接口
+ * @property {String} [importUrl] - 导入接口
  * @property {String} [deleteUrl] - 删除接口
  * @property {String} [dataListUrl] - 列表接口
  * @property {Boolean} [dataLoading] - 数据加载中
@@ -62,10 +64,6 @@ const useView = (config) => {
    */
   const mergeOptions = (options, config) => Object.assign(config, options)
 
-  /**
-   *
-   * @type {{total?: Number, pageNum?: Number, pageSize?: Number, dataList?: Array, dataForm?: Object, isPage: Boolean, exportUrl?: String, deleteUrl?: String, dataListUrl?: String, dataLoading?: Boolean, dataSelections?: Array, deleteIsBatch?: Boolean}}
-   */
   const state = mergeOptions(config, defaultConfig)
 
   const queryDataList = () => {
@@ -126,6 +124,24 @@ const useView = (config) => {
     })}`
   }
 
+  const importHandle = (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    commonApi(state.importUrl, formData, {
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500,
+        onClose: () => {
+          getDataList()
+        }
+      })
+    })
+  }
+
   const pageNumChange = (value) => {
     state.pageNum = value
     queryDataList()
@@ -146,6 +162,7 @@ const useView = (config) => {
   return {
     ...toRefs(state),
     isAuth,
+    importHandle,
     getDataList,
     deleteHandle,
     exportHandle,
