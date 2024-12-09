@@ -8,8 +8,8 @@ const commonView = reactive({
     deleteIsBatch: false,
     deleteUrl: '/sys/dept',
     dataListUrl: '/sys/dept/list',
-    dataForm: {},
-  }),
+    dataForm: {}
+  })
 })
 
 let addOrUpdateVisible = ref(false)
@@ -28,33 +28,39 @@ const addOrUpdateHandle = (id) => {
     <el-form :inline="true">
       <el-form-item>
         <el-button type="primary" @click="addOrUpdateHandle(undefined)"
-          >新增</el-button
-        >
+          >新增
+        </el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="commonView.dataList" row-key="id" border>
-      <el-table-column prop="name" min-width="150" label="名称">
-      </el-table-column>
-      <el-table-column prop="parentName" align="center" label="上级部门">
-      </el-table-column>
-      <el-table-column width="120" prop="sort" align="center" label="排序号">
-      </el-table-column>
-      <el-table-column fixed="right" align="center" width="150" label="操作">
-        <template v-slot="scope">
-          <el-button link size="small" @click="addOrUpdateHandle(scope.row.id)">
-            修改
-          </el-button>
-          <el-button
-            link
-            size="small"
-            type="danger"
-            @click="commonView.deleteHandle(scope.row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-wrap">
+      <el-table :data="commonView.dataList" row-key="id" border>
+        <el-table-column prop="name" min-width="150" label="名称">
+        </el-table-column>
+        <el-table-column prop="parentName" align="center" label="上级部门">
+        </el-table-column>
+        <el-table-column width="120" prop="sort" align="center" label="排序号">
+        </el-table-column>
+        <el-table-column fixed="right" align="center" width="150" label="操作">
+          <template v-slot="scope">
+            <el-button
+              link
+              size="small"
+              @click="addOrUpdateHandle(scope.row.id)"
+            >
+              修改
+            </el-button>
+            <el-button
+              link
+              size="small"
+              type="danger"
+              @click="commonView.deleteHandle(scope.row.id)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="addOrUpdateVisible"
