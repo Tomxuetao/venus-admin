@@ -97,73 +97,75 @@ const downloadHandle = () => {
         </el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="commonView.dataList"
-      border
-      v-loading="commonView.dataLoading"
-      @selection-change="commonView.selectionChange"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="50"
-      ></el-table-column>
-      <el-table-column
-        prop="username"
-        align="center"
-        label="用户名"
-      ></el-table-column>
-      <el-table-column
-        prop="email"
-        align="center"
-        label="邮箱"
-      ></el-table-column>
-      <el-table-column
-        prop="mobile"
-        align="center"
-        label="手机号"
-      ></el-table-column>
-      <el-table-column
-        prop="deptName"
-        align="center"
-        label="所属部门"
-      ></el-table-column>
-      <el-table-column prop="status" align="center" label="状态">
-        <template v-slot="scope">
-          <el-tag v-if="scope.row.status === 0" size="small" type="danger"
-            >禁用
-          </el-tag>
-          <el-tag v-else size="small">正常</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="createDate"
-        align="center"
-        width="180"
-        label="创建时间"
-      ></el-table-column>
-      <el-table-column fixed="right" align="center" width="150" label="操作">
-        <template v-slot="scope">
-          <el-button
-            v-if="commonView.isAuth('sys:user:update')"
-            link
-            size="small"
-            @click="addOrUpdateHandle(scope.row.id)"
-          >
-            修改
-          </el-button>
-          <el-button
-            v-if="commonView.isAuth('sys:user:delete')"
-            link
-            size="small"
-            type="danger"
-            @click="commonView.deleteHandle(scope.row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-wrap">
+      <el-table
+        :data="commonView.dataList"
+        border
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.selectionChange"
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          prop="username"
+          align="center"
+          label="用户名"
+        ></el-table-column>
+        <el-table-column
+          prop="email"
+          align="center"
+          label="邮箱"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          align="center"
+          label="手机号"
+        ></el-table-column>
+        <el-table-column
+          prop="deptName"
+          align="center"
+          label="所属部门"
+        ></el-table-column>
+        <el-table-column prop="status" align="center" label="状态">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.status === 0" size="small" type="danger"
+              >禁用
+            </el-tag>
+            <el-tag v-else size="small">正常</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="createDate"
+          align="center"
+          width="180"
+          label="创建时间"
+        ></el-table-column>
+        <el-table-column fixed="right" align="center" width="150" label="操作">
+          <template v-slot="scope">
+            <el-button
+              v-if="commonView.isAuth('sys:user:update')"
+              link
+              size="small"
+              @click="addOrUpdateHandle(scope.row.id)"
+            >
+              修改
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('sys:user:delete')"
+              link
+              size="small"
+              type="danger"
+              @click="commonView.deleteHandle(scope.row.id)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-pagination
       @size-change="commonView.pageSizeChange"
       @current-change="commonView.pageNumChange"

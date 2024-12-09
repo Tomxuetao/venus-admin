@@ -36,46 +36,48 @@ const commonView = reactive({
         </el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="commonView.dataList"
-      border
-      v-loading="commonView.dataLoading"
-      @selection-change="commonView.selectionChange"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="50"
-      ></el-table-column>
-      <el-table-column
-        prop="tableName"
-        align="center"
-        label="表名"
-      ></el-table-column>
-      <el-table-column
-        prop="tableComment"
-        align="center"
-        label="表说明"
-      ></el-table-column>
-      <el-table-column
-        prop="createDate"
-        align="center"
-        width="180"
-        label="创建时间"
-      ></el-table-column>
-      <el-table-column fixed="right" align="center" width="280" label="操作">
-        <template v-slot="scope">
-          <el-button
-            v-if="commonView.isAuth('sys:user:update')"
-            link
-            size="small"
-            @click="addOrUpdateHandle(scope.row.id)"
-          >
-            修改
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-wrap">
+      <el-table
+        :data="commonView.dataList"
+        border
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.selectionChange"
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          prop="tableName"
+          align="center"
+          label="表名"
+        ></el-table-column>
+        <el-table-column
+          prop="tableComment"
+          align="center"
+          label="表说明"
+        ></el-table-column>
+        <el-table-column
+          prop="createDate"
+          align="center"
+          width="180"
+          label="创建时间"
+        ></el-table-column>
+        <el-table-column fixed="right" align="center" width="280" label="操作">
+          <template v-slot="scope">
+            <el-button
+              v-if="commonView.isAuth('sys:user:update')"
+              link
+              size="small"
+              @click="addOrUpdateHandle(scope.row.id)"
+            >
+              修改
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-pagination
       @size-change="commonView.pageSizeChange"
       @current-change="commonView.pageNumChange"
