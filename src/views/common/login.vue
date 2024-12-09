@@ -91,7 +91,7 @@ const changeLoginWay = (way) => {
   }
 }
 
-const timer = ref(0)
+const timer = ref(60)
 const timerId = ref(null)
 
 const getMsgCode = () => {
@@ -160,6 +160,7 @@ onBeforeUnmount(() => {
               :model="dataForm"
               :rules="dataRule"
               ref="dataFormRef"
+              size="large"
               @keyup.enter="dataFormSubmit()"
             >
               <el-form-item prop="account">
@@ -206,6 +207,7 @@ onBeforeUnmount(() => {
           </template>
           <template v-if="activeWay === 1">
             <el-form
+              size="large"
               :model="dataForm"
               :rules="dataRule"
               ref="dataFormRef"
@@ -242,6 +244,7 @@ onBeforeUnmount(() => {
                   v-model="dataForm.secretKey"
                   placeholder="手机号/邮箱验证码"
                   autocomplete="off"
+                  size="large"
                 />
                 <div
                   :class="['captcha-wrapper', timerId ? 'captcha-disable' : '']"
