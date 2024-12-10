@@ -13,7 +13,7 @@ let expandedKeys = ref([1])
 let dataForm = reactive({
   id: undefined,
   name: '',
-  remark: '',
+  remark: ''
 })
 const { menuList } = useCommonStore()
 
@@ -51,10 +51,10 @@ const dataFormSubmit = () => {
           ...dataForm,
           menuIdList: [
             ...menuListTreeRef.value.getCheckedKeys(),
-            ...menuListTreeRef.value.getHalfCheckedKeys(),
-          ],
+            ...menuListTreeRef.value.getHalfCheckedKeys()
+          ]
         },
-        { method: dataForm.id ? 'put' : 'post' },
+        { method: dataForm.id ? 'put' : 'post' }
       )
       ElMessage({
         message: '操作成功',
@@ -63,7 +63,7 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     } else {
       btnLoading.value = false
@@ -77,7 +77,7 @@ const closeDialogHandle = () => {
 }
 
 defineExpose({
-  init: initDialogHandle,
+  init: initDialogHandle
 })
 </script>
 

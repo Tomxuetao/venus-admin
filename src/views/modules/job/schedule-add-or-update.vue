@@ -10,7 +10,7 @@ let dataForm = reactive({
   params: '',
   cronExpression: '',
   remark: '',
-  status: 0,
+  status: 0
 })
 
 const dataRule = {
@@ -18,16 +18,16 @@ const dataRule = {
     {
       required: true,
       message: '用户名不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   cronExpression: [
     {
       required: true,
       message: 'cron表达式不能为空',
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const dataFormRef = ref()
@@ -58,14 +58,14 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  init: initDialogHandle,
+  init: initDialogHandle
 })
 </script>
 

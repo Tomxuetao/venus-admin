@@ -1,22 +1,20 @@
 <script setup>
 import useView from '@/hooks/useView'
 
-const statusMap = new Map([
-  [0, '失败'],
-  [1, '成功']
-])
-
 const commonView = reactive({
   ...useView({
     isPage: true,
     deleteIsBatch: false,
     dataListUrl: '/msg/mail/page',
     dataForm: {
+      tempId: undefined,
       status: undefined,
       creatorName: undefined
     }
   })
 })
+
+const statusMap = commonView.dictMap.get('common_status')
 </script>
 
 <template>
@@ -86,18 +84,12 @@ const commonView = reactive({
           label="邮件内容"
         ></el-table-column>
         <el-table-column prop="status" align="center" label="状态">
-          <template #default="{ row }">
+          <template #default="scope">
             <el-tag
-              disable-transitions
-              :type="
-                row.status > 0
-                  ? row.status === 1
-                    ? 'success'
-                    : 'warning'
-                  : 'danger'
-              "
+              size="small"
+              :type="commonView.tagTypeMap.get(scope.row.status)"
             >
-              {{ statusMap.get(row.status) }}
+              {{ statusMap.get(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -110,17 +102,7 @@ const commonView = reactive({
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-size="commonView.pageSize"
-      :page-sizes="[10, 20, 50, 100]"
-      :total="commonView.total"
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
   </div>
 </template>
 

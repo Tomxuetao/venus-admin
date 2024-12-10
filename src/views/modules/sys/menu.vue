@@ -3,15 +3,11 @@ import { buildTree } from '@/utils'
 import useView from '@/hooks/useView'
 import AddOrUpdate from './menu-add-or-update.vue'
 
-const menuTypeMap = new Map([
-  [0, '菜单'],
-  [1, '按钮']
-])
-
 const tagTypeMap = new Map([
   [0, 'primary'],
   [1, 'success']
 ])
+
 const commonView = reactive({
   ...useView({
     isPage: false,
@@ -24,6 +20,8 @@ const commonView = reactive({
     }
   })
 })
+
+const menuTypeMap = commonView.dictMap.get('menu_type')
 
 const addOrUpdateRef = ref()
 let addOrUpdateVisible = ref(false)

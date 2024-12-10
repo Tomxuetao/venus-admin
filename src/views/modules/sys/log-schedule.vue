@@ -1,7 +1,7 @@
 <script setup>
+import useView from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
-import useView from '@/hooks/useView'
 
 const commonView = reactive({
   ...useView({
@@ -14,6 +14,8 @@ const commonView = reactive({
     }
   })
 })
+
+const statusMap = commonView.dictMap.get('log_status')
 
 // 失败信息
 const showErrorHandle = async (id) => {
@@ -74,15 +76,12 @@ const showErrorHandle = async (id) => {
         ></el-table-column>
         <el-table-column prop="status" align="center" label="状态">
           <template v-slot="scope">
-            <el-tag v-if="scope.row.status === 1" size="small">成功</el-tag>
             <el-tag
-              v-else
-              @click="showErrorHandle(scope.row.id)"
-              size="small"
-              type="danger"
               style="cursor: pointer"
+              :type="commonView.tagTypeMap.get(scope.row.status)"
+              @click="showErrorHandle(scope.row.id)"
             >
-              失败
+              {{ statusMap.get(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -99,15 +98,6 @@ const showErrorHandle = async (id) => {
         ></el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="commonView.pageSize"
-      :total="commonView.total"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
   </div>
 </template>

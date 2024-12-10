@@ -7,12 +7,9 @@ import { useCommonStore } from '@/store'
 
 const emit = defineEmits(['refresh-data-list'])
 
-const { menuList } = useCommonStore()
+const { menuList, dictMap } = useCommonStore()
 
-const menuTypeMap = new Map([
-  [0, '菜单'],
-  [1, '按钮'],
-])
+const menuTypeMap = dictMap.get('menu_type')
 
 let dataForm = reactive({
   id: undefined,
@@ -23,7 +20,7 @@ let dataForm = reactive({
   url: '',
   sort: 0,
   icon: '',
-  permissions: '',
+  permissions: ''
 })
 
 const validateUrl = (rule, value, callback) => {
@@ -39,27 +36,27 @@ const dataRule = {
     {
       required: true,
       message: '名称不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   pid: [
     {
       required: true,
       message: '上级菜单不能为空',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   ],
   url: [
     {
       validator: validateUrl,
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const iconList = Icon.getNameList()
 let menuListTree = treeDataTranslate([
-  ...menuList.filter((item) => item.type === 0),
+  ...menuList.filter((item) => item.type === 0)
 ])
 
 let visible = ref(false)
@@ -86,7 +83,7 @@ const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
     if (valid) {
       await commonApi('/sys/menu', dataForm, {
-        method: dataForm.id ? 'put' : 'post',
+        method: dataForm.id ? 'put' : 'post'
       })
       ElMessage({
         message: '操作成功',
@@ -95,14 +92,14 @@ const dataFormSubmit = () => {
         onClose: () => {
           visible.value = false
           emit('refresh-data-list')
-        },
+        }
       })
     }
   })
 }
 
 defineExpose({
-  init: initDialogHandle,
+  init: initDialogHandle
 })
 </script>
 
@@ -121,11 +118,11 @@ defineExpose({
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
           <el-radio
-            v-for="(key, index) in menuTypeMap.keys()"
-            :value="index"
+            v-for="([key, value], index) in menuTypeMap"
+            :value="key"
             :key="index"
+            :label="value"
           >
-            {{ menuTypeMap.get(key) }}
           </el-radio>
         </el-radio-group>
       </el-form-item>
@@ -144,14 +141,15 @@ defineExpose({
         >
         </el-tree-select>
       </el-form-item>
-      <el-form-item v-if="dataForm.type === 0" label="路由" prop="url">
+      <el-form-item label="路由" prop="url">
         <el-input v-model="dataForm.url" placeholder="路由"></el-input>
       </el-form-item>
       <el-form-item label="授权标识" prop="perms">
         <el-input
           v-model="dataForm.permissions"
           placeholder="多个用逗号分隔, 如: user:list,user:create"
-        ></el-input>
+        >
+        </el-input>
       </el-form-item>
       <el-form-item label="排序号" prop="orderNum">
         <el-input-number
@@ -159,7 +157,8 @@ defineExpose({
           controls-position="right"
           :min="0"
           label="排序号"
-        ></el-input-number>
+        >
+        </el-input-number>
       </el-form-item>
       <el-form-item v-if="dataForm.type !== 1" label="菜单图标" prop="icon">
         <el-row>

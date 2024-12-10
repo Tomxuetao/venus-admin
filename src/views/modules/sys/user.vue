@@ -1,7 +1,7 @@
 <script setup>
 import useView from '@/hooks/useView'
-import AddOrUpdate from './user-add-or-update.vue'
 import { venusOssServer } from '@/utils/http'
+import AddOrUpdate from './user-add-or-update.vue'
 
 const addOrUpdateRef = ref()
 
@@ -17,6 +17,9 @@ const commonView = reactive({
     }
   })
 })
+
+const statusMap = commonView.dictMap.get('user_status')
+
 const addOrUpdateVisible = ref(false)
 
 // 新增 / 修改
@@ -104,11 +107,8 @@ const downloadHandle = () => {
         v-loading="commonView.dataLoading"
         @selection-change="commonView.selectionChange"
       >
-        <el-table-column
-          type="selection"
-          align="center"
-          width="50"
-        ></el-table-column>
+        <el-table-column type="selection" align="center" width="50">
+        </el-table-column>
         <el-table-column
           prop="username"
           align="center"
@@ -131,10 +131,12 @@ const downloadHandle = () => {
         ></el-table-column>
         <el-table-column prop="status" align="center" label="状态">
           <template v-slot="scope">
-            <el-tag v-if="scope.row.status === 0" size="small" type="danger"
-              >禁用
+            <el-tag
+              size="small"
+              :type="commonView.tagTypeMap.get(scope.row.status)"
+            >
+              {{ statusMap.get(scope.row.status) }}
             </el-tag>
-            <el-tag v-else size="small">正常</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -166,16 +168,7 @@ const downloadHandle = () => {
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="commonView.pageSize"
-      :total="commonView.total"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="addOrUpdateVisible"

@@ -50,7 +50,7 @@ let dataForm = reactive({
   realName: '',
   email: '',
   mobile: '',
-  gender: '0',
+  gender: 0,
   deptId: '',
   roleIdList: [],
   confirmPassword: ''
@@ -201,9 +201,9 @@ defineExpose({
       <el-form-item label="性别">
         <el-radio-group v-model="dataForm.gender">
           <el-radio
-            v-for="(item, index) in dictMap.get('gender')"
-            :label="item.label"
-            :value="+item.value"
+            v-for="([key, value], index) in dictMap.get('gender')"
+            :value="key"
+            :label="value"
             :key="index"
           >
           </el-radio>
@@ -236,8 +236,13 @@ defineExpose({
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="dataForm.status">
-          <el-radio :value="0">禁用</el-radio>
-          <el-radio :value="1">正常</el-radio>
+          <el-radio
+            v-for="([key, value], index) in dictMap.get('user_status')"
+            :value="key"
+            :label="value"
+            :key="index"
+          >
+          </el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>

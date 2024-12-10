@@ -1,35 +1,38 @@
 <script setup>
-import { buildTree } from '@/utils'
 import useView from '@/hooks/useView'
 import AddOrUpdate from './dict-add-or-update.vue'
+
+const route = useRoute()
 
 const commonView = reactive({
   ...useView({
     isPage: false,
     deleteUrl: '/sys/dict',
-    dataListUrl: '/sys/dict/list'
+    dataListUrl: '/sys/dict/list',
+    dataForm: {
+      pid: route.params.id
+    }
   })
 })
 
-const router = useRouter()
+const statusMap = commonView.dictMap.get('dict_status')
 
 const addOrUpdateRef = ref()
 
 const addOrUpdateVisible = ref(false)
 
-const statusMap = commonView.dictMap.get('dict_status')
+const addHandle = (id = undefined) => {
+  addOrUpdateVisible.value = true
+  nextTick(() => {
+    addOrUpdateRef.value.initByPid(id)
+  })
+}
 
-const addOrUpdateHandle = (id = undefined) => {
+const updateHandle = (id = undefined) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
     addOrUpdateRef.value.init(id)
   })
-}
-
-const gotoDictData = (data) => {
-  if (commonView.isAuth('sys:dict:data')) {
-    router.push({ name: 'sys-dict-data', params: { id: data.id } })
-  }
 }
 </script>
 
@@ -40,7 +43,7 @@ const gotoDictData = (data) => {
         <el-button
           v-if="commonView.isAuth('sys:dict:save')"
           type="primary"
-          @click="addOrUpdateHandle(undefined)"
+          @click="addHandle(route.params.id)"
         >
           新增
         </el-button>
@@ -48,11 +51,13 @@ const gotoDictData = (data) => {
     </el-form>
     <div class="table-wrap">
       <el-table
-        v-loading="commonView.dataLoading"
         border
-        row-key="id"
-        :data="buildTree(commonView.dataList, '0')"
+        :data="commonView.dataList"
+        v-loading="commonView.dataLoading"
+        @selection-change="commonView.selectionChange"
       >
+        <el-table-column type="selection" align="center" width="50">
+        </el-table-column>
         <el-table-column prop="label" label="字典标签"></el-table-column>
         <el-table-column
           prop="value"
@@ -60,17 +65,6 @@ const gotoDictData = (data) => {
           header-align="center"
           align="center"
         >
-          <template v-slot="scope">
-            <el-text
-              v-if="scope.row.pid === '0'"
-              type="primary"
-              style="cursor: pointer"
-              @click="gotoDictData(scope.row)"
-            >
-              {{ scope.row.value }}
-            </el-text>
-            <template v-else>{{ scope.row.value }}</template>
-          </template>
         </el-table-column>
         <el-table-column
           prop="sort"
@@ -123,7 +117,7 @@ const gotoDictData = (data) => {
               v-if="commonView.isAuth('sys:dict:update')"
               link
               type="primary"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="updateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -141,10 +135,8 @@ const gotoDictData = (data) => {
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList"
-    >
-    </add-or-update>
+    ></add-or-update>
   </div>
 </template>

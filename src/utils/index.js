@@ -128,3 +128,22 @@ export const debounce = (fn, delay = 100) => {
     }, delay)
   }
 }
+
+/**
+ * 获取标签类型
+ * @param {number} type
+ * @returns {'primary' | 'success' | 'info' | 'warning' | 'danger'}
+ */
+export const tagTypeMap = new Map([
+  [0, 'danger'],
+  [1, 'primary'],
+  [2, 'warning'],
+  [3, 'info'],
+  [4, 'success']
+])
+
+export const createMapByList = (list) =>
+  list.reduce((acc, cur) => {
+    acc.add(cur.value, cur.label)
+    return acc
+  }, new Map())

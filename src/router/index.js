@@ -1,6 +1,7 @@
 import { useCommonStore } from '@/store'
 
 import { createRouter, createWebHistory } from 'vue-router'
+import { commonApi } from '@/api/common-api'
 
 const commonModules = import.meta.glob(['../views/common/*.vue'])
 const layoutModules = import.meta.glob(['../views/layout/*.vue'])
@@ -52,6 +53,13 @@ router.beforeEach(async (to) => {
   } else {
     if (commonState.token) {
       if (router.options.isDynamic) {
+        commonApi('/checkToken', {}, { method: 'post' })
+          .then(() => {
+            return true
+          })
+          .catch(() => {
+            return false
+          })
         return true
       } else {
         await commonState.initUserAction()
@@ -77,7 +85,7 @@ export const addDynamicRoutes = (routeList = []) => {
   routeList.forEach((item) => {
     if (item.url) {
       const route = {
-        path: item.url,
+        path: item.type === 0 ? `${item.url}` : `${item.url}/:id`,
         component:
           dynamicModules[`../views/modules${item.url}.vue`] ||
           commonModules['../views/common/404.vue'],
@@ -85,7 +93,8 @@ export const addDynamicRoutes = (routeList = []) => {
         meta: {
           id: item.id,
           title: item.name
-        }
+        },
+        props: (route) => ({ ...route.query })
       }
       router.addRoute('main-dynamic', route)
     }

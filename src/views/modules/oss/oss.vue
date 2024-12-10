@@ -8,8 +8,8 @@ const commonView = reactive({
   ...useView({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/oss/page',
-    dataForm: {},
-  }),
+    dataForm: {}
+  })
 })
 
 let configVisible = ref(false)
@@ -107,16 +107,7 @@ const uploadHandle = () => {
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      :total="commonView.total"
-      :page-sizes="[10, 20, 50, 100]"
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :page-size="commonView.dataForm.pageSize"
-      :current-page="commonView.dataForm.pageNum"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 云存储配置 -->
     <config v-if="configVisible" ref="configRef"></config>
     <!-- 弹窗, 上传文件 -->

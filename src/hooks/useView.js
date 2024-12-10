@@ -1,12 +1,13 @@
 import qs from 'qs'
+import { tagTypeMap } from '@/utils'
 import { useCommonStore } from '@/store'
 import { venusServer } from '@/utils/http'
 import { commonApi } from '@/api/common-api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 /**
- * 通用表格方法
+ * 通用方法
  * @typedef {Object} CommonViewFns
- * @property {Boolean} isAuth - 权限校验
+ * @property {Function} isAuth - 权限校验
  * @property {Function} getDataList - 获取数据
  * @property {Function} deleteHandle - 删除数据
  * @property {Function} exportHandle - 导出数据
@@ -18,14 +19,14 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  */
 
 /**
- * 通用表格配置
+ * 通用配置
  * @typedef {Object} CommonViewConfig
- * @property {Number} [total] - 总数
- * @property {Number} [pageNum] - 当前页
- * @property {Number} [pageSize] - 每页数量
- * @property {Array} [dataList] - 数据列表
- * @property {Object} [dataForm] - 查询表单
- * @property {Boolean} [isPage] - 是否分页
+ * @property {Number} total - 总数
+ * @property {Number} pageNum - 当前页
+ * @property {Number} pageSize - 每页数量
+ * @property {Array} dataList - 数据列表
+ * @property {Object} dataForm - 查询表单
+ * @property {Boolean} isPage - 是否分页
  * @property {String} [exportUrl] - 导出接口
  * @property {String} [importUrl] - 导入接口
  * @property {String} [deleteUrl] - 删除接口
@@ -33,10 +34,17 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Boolean} [dataLoading] - 数据加载中
  * @property {Array} [dataSelections] - 选择的数据
  * @property {Boolean} [deleteIsBatch] - 是否批量删除
+ * @property {Map<string, Map<number, string>>} dictMap - 字典数据
+ * @property {Map<string, "primary" | "success" | "info" | "warning" | "danger">} tagTypeMap - tag 类型
  */
 
 const commonState = useCommonStore()
 
+/**
+ * 权限校验
+ * @param {String} key
+ * @returns {Boolean}
+ */
 export const isAuth = (key) => commonState.authList.includes(key)
 /**
  * 通用表格配置
@@ -53,7 +61,9 @@ const useView = (config) => {
     isPage: true,
     dataLoading: true,
     dataSelections: [],
-    deleteIsBatch: true
+    deleteIsBatch: true,
+    tagTypeMap: tagTypeMap || new Map(),
+    dictMap: commonState.dictMap || new Map()
   })
 
   /**

@@ -1,17 +1,6 @@
 <script setup>
 import useView from '@/hooks/useView'
 
-const operationMap = new Map([
-  [0, '登录'],
-  [1, '退出']
-])
-
-const statusMap = new Map([
-  [0, '失败'],
-  [1, '成功'],
-  [2, '账号锁定']
-])
-
 const commonView = reactive({
   ...useView({
     isPage: true,
@@ -23,6 +12,9 @@ const commonView = reactive({
     }
   })
 })
+const operationMap = commonView.dictMap.get('login_logout')
+
+const statusMap = commonView.dictMap.get('login_log_status')
 </script>
 
 <template>
@@ -44,10 +36,10 @@ const commonView = reactive({
           @change="commonView.getDataList()"
         >
           <el-option
-            v-for="(key, index) in statusMap.keys()"
+            v-for="([key, value], index) in statusMap"
             :key="index"
-            :label="statusMap.get(key)"
             :value="key"
+            :label="value"
           >
           </el-option>
         </el-select>
@@ -69,23 +61,14 @@ const commonView = reactive({
         <el-table-column prop="creatorName" align="center" label="用户名">
         </el-table-column>
         <el-table-column prop="operation" align="center" label="操作类型">
-          <template #default="{ row }">
-            {{ operationMap.get(row.operation) }}
+          <template #default="scope">
+            {{ operationMap.get(scope.row.operation) }}
           </template>
         </el-table-column>
         <el-table-column prop="status" align="center" label="状态">
-          <template #default="{ row }">
-            <el-tag
-              disable-transitions
-              :type="
-                row.status > 0
-                  ? row.status === 1
-                    ? 'success'
-                    : 'warning'
-                  : 'danger'
-              "
-            >
-              {{ statusMap.get(row.status) }}
+          <template #default="scope">
+            <el-tag :type="commonView.tagTypeMap.get(scope.row.status)">
+              {{ statusMap.get(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -108,16 +91,6 @@ const commonView = reactive({
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-size="commonView.pageSize"
-      :page-sizes="[10, 20, 50, 100]"
-      :total="commonView.total"
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
   </div>
 </template>

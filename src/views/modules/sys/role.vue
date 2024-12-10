@@ -8,9 +8,9 @@ const commonView = reactive({
     deleteUrl: '/sys/role',
     dataListUrl: '/sys/role/page',
     dataForm: {
-      name: undefined,
-    },
-  }),
+      name: undefined
+    }
+  })
 })
 
 let addOrUpdateRef = ref()
@@ -114,16 +114,7 @@ const addOrUpdateHandle = (id = undefined) => {
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="commonView.pageSize"
-      :total="commonView.total"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="addOrUpdateVisible"

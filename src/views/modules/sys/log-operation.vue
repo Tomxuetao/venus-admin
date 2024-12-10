@@ -16,6 +16,8 @@ const commonView = reactive({
     }
   })
 })
+
+const logStatusMap = commonView.dictMap.get('log_status')
 </script>
 
 <template>
@@ -73,12 +75,9 @@ const commonView = reactive({
         <el-table-column prop="requestTime" align="center" label="请求时长">
         </el-table-column>
         <el-table-column prop="status" align="center" label="状态">
-          <template #default="{ row }">
-            <el-tag
-              disable-transitions
-              :type="row.status === 1 ? 'success' : 'danger'"
-            >
-              {{ statusMap.get(row.status) }}
+          <template #default="scope">
+            <el-tag :type="commonView.tagTypeMap.get(scope.row.status)">
+              {{ logStatusMap.get(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -100,16 +99,6 @@ const commonView = reactive({
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :current-page="commonView.pageNum"
-      :page-size="commonView.pageSize"
-      :page-sizes="[10, 20, 50, 100]"
-      :total="commonView.total"
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
   </div>
 </template>

@@ -115,16 +115,7 @@ const addOrUpdateHandle = (id = undefined) => {
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      :total="commonView.total"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="commonView.pageSize"
-      :current-page="commonView.pageNum"
-      layout="total, sizes, prev, pager, next, jumper"
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       ref="addOrUpdateRef"

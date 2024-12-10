@@ -34,7 +34,14 @@ export const useCommonStore = defineStore('common', {
       treeList.forEach((item) => {
         dictMap.set(
           item.value,
-          Object.freeze((item.children || []).sort((a, b) => a.sort - b.sort))
+          Object.freeze(
+            (item.children || [])
+              .sort((a, b) => a.sort - b.sort)
+              .reduce((acc, cur) => {
+                acc.set(+cur.value, cur.label)
+                return acc
+              }, new Map())
+          )
         )
       })
       this.dictMapState = dictMap
@@ -53,7 +60,7 @@ export const useCommonStore = defineStore('common', {
     },
 
     async initDictAction() {
-      const dictList = await commonApi('/sys/dict/list')
+      const dictList = await commonApi('/sys/dict/list', { status: 1 })
       this.updateDictMap(dictList)
     },
 

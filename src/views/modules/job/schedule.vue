@@ -11,10 +11,12 @@ const commonView = reactive({
     deleteUrl: '/sys/oss',
     dataListUrl: '/sys/schedule/page',
     dataForm: {
-      beanName: undefined,
-    },
-  }),
+      beanName: undefined
+    }
+  })
 })
+
+const statusMap = commonView.dictMap.get('job_status')
 
 const addOrUpdateVisible = ref(false)
 
@@ -36,8 +38,8 @@ const pauseHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/pause', ids, { method: 'put' })
     ElMessage({
@@ -46,7 +48,7 @@ const pauseHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }
@@ -60,8 +62,8 @@ const resumeHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/resume', ids, { method: 'put' })
     ElMessage({
@@ -70,7 +72,7 @@ const resumeHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }
@@ -84,8 +86,8 @@ const runHandle = (id) => {
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning',
-    },
+      type: 'warning'
+    }
   ).then(async () => {
     await commonApi('/sys/schedule/run', ids, { method: 'put' })
     ElMessage({
@@ -94,7 +96,7 @@ const runHandle = (id) => {
       duration: 1500,
       onClose: () => {
         commonView.getDataList()
-      },
+      }
     })
   })
 }
@@ -197,8 +199,12 @@ const runHandle = (id) => {
         ></el-table-column>
         <el-table-column prop="status" align="center" label="状态">
           <template v-slot="scope">
-            <el-tag v-if="scope.row.status === 1" size="small">正常</el-tag>
-            <el-tag v-else size="small" type="danger">暂停</el-tag>
+            <el-tag
+              size="small"
+              :type="commonView.tagTypeMap.get(scope.row.status)"
+            >
+              {{ statusMap.get(scope.row.status) }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column fixed="right" align="center" width="320" label="操作">
@@ -248,21 +254,12 @@ const runHandle = (id) => {
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      :total="commonView.total"
-      :page-sizes="[10, 20, 50, 100]"
-      @size-change="commonView.pageSizeChange"
-      @current-change="commonView.pageNumChange"
-      :page-size="commonView.dataForm.pageSize"
-      :current-page="commonView.dataForm.pageNum"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
-    </el-pagination>
+    <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="addOrUpdateVisible"
       ref="addOrUpdateRef"
-      @refreshDataList="getDataListHandle"
+      @refreshDataList="commonView.getDataList"
     ></add-or-update>
   </div>
 </template>
