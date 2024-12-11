@@ -21,17 +21,10 @@ const addOrUpdateRef = ref()
 
 const addOrUpdateVisible = ref(false)
 
-const addHandle = (id = undefined) => {
+const addOrUpdateHandle = (id, pid) => {
   addOrUpdateVisible.value = true
   nextTick(() => {
-    addOrUpdateRef.value.initByPid(id)
-  })
-}
-
-const updateHandle = (id = undefined) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
+    addOrUpdateRef.value.init(id, pid)
   })
 }
 </script>
@@ -42,10 +35,21 @@ const updateHandle = (id = undefined) => {
       <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:dict:save')"
+          icon="Plus"
           type="primary"
-          @click="addHandle(route.params.id)"
+          @click="addOrUpdateHandle(undefined, route.params.id)"
         >
           新增
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="danger"
+          icon="Delete"
+          @click="commonView.deleteHandle(undefined)"
+          :disabled="commonView.dataSelections.length <= 0"
+        >
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
@@ -116,8 +120,7 @@ const updateHandle = (id = undefined) => {
             <el-button
               v-if="commonView.isAuth('sys:dict:update')"
               link
-              type="primary"
-              @click="updateHandle(scope.row.id)"
+              @click="addOrUpdateHandle(scope.row.id, route.params.id)"
             >
               修改
             </el-button>

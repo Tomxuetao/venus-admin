@@ -39,6 +39,7 @@ const gotoDictData = (data) => {
       <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:dict:save')"
+          icon="Plus"
           type="primary"
           @click="addOrUpdateHandle(undefined)"
         >
@@ -122,7 +123,7 @@ const gotoDictData = (data) => {
             <el-button
               v-if="commonView.isAuth('sys:dict:update')"
               link
-              type="primary"
+              size="small"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改
@@ -130,6 +131,7 @@ const gotoDictData = (data) => {
             <el-button
               v-if="commonView.isAuth('sys:dict:delete')"
               link
+              size="small"
               type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
             >

@@ -38,7 +38,8 @@ const uploadHandle = () => {
       <el-form-item>
         <el-button
           v-if="commonView.isAuth('oss:config:info')"
-          type="primary"
+          type="success"
+          icon="Setting"
           @click="configHandle()"
         >
           云存储配置
@@ -46,12 +47,14 @@ const uploadHandle = () => {
         <el-button
           v-if="commonView.isAuth('sys:oss:upload')"
           type="primary"
+          icon="Upload"
           @click="uploadHandle()"
         >
           上传文件
         </el-button>
         <el-button
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle(undefined)"
           :disabled="commonView.dataSelections.length <= 0"
         >
@@ -64,7 +67,7 @@ const uploadHandle = () => {
         border
         :data="commonView.dataList"
         v-loading="commonView.dataLoading"
-        @selection-change="commonView.dataSelections"
+        @selection-change="commonView.selectionChange"
       >
         <el-table-column
           type="selection"

@@ -30,16 +30,19 @@ const addOrUpdateHandle = (id = undefined) => {
       <el-form-item>
         <el-input
           v-model="commonView.dataForm.name"
-          placeholder="角色名称"
           clearable
+          placeholder="角色名称"
           @clear="commonView.getDataList()"
         >
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('sys:role:save')"
+          icon="Plus"
           type="primary"
           @click="addOrUpdateHandle()"
         >
@@ -48,6 +51,7 @@ const addOrUpdateHandle = (id = undefined) => {
         <el-button
           v-if="commonView.isAuth('sys:role:delete')"
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections.length <= 0"
         >
@@ -96,7 +100,6 @@ const addOrUpdateHandle = (id = undefined) => {
               v-if="commonView.isAuth('sys:role:update')"
               link
               size="small"
-              type="primary"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改

@@ -37,8 +37,12 @@ const addOrUpdateHandle = (id) => {
   <div class="mod-menu mod-wrap">
     <el-form :inline="true">
       <el-form-item>
-        <el-button type="primary" @click="addOrUpdateHandle(undefined)"
-          >新增
+        <el-button
+          icon="Plus"
+          type="primary"
+          @click="addOrUpdateHandle(undefined)"
+        >
+          新增
         </el-button>
       </el-form-item>
     </el-form>
@@ -84,7 +88,6 @@ const addOrUpdateHandle = (id) => {
             <el-button
               link
               size="small"
-              type="primary"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改

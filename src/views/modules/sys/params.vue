@@ -31,27 +31,33 @@ const addOrUpdateHandle = (id = undefined) => {
           v-model="commonView.dataForm.paramCode"
           placeholder="编码"
           clearable
-        ></el-input>
+        >
+        </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
       </el-form-item>
       <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:params:save')"
+          icon="Plus"
           type="primary"
           @click="addOrUpdateHandle()"
-          >新增
+        >
+          新增
         </el-button>
       </el-form-item>
       <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:params:delete')"
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections.length <= 0"
         >
-          删除
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
@@ -61,7 +67,7 @@ const addOrUpdateHandle = (id = undefined) => {
         style="width: 100%"
         :data="commonView.dataList"
         v-loading="commonView.dataLoading"
-        @selection-change="commonView.dataSelections"
+        @selection-change="commonView.selectionChange"
       >
         <el-table-column
           type="selection"
@@ -97,8 +103,8 @@ const addOrUpdateHandle = (id = undefined) => {
           <template v-slot="scope">
             <el-button
               v-if="commonView.isAuth('sys:params:update')"
-              type="primary"
               link
+              size="small"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改

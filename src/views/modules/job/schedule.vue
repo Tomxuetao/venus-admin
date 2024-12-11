@@ -113,10 +113,13 @@ const runHandle = (id) => {
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('sys:schedule:save')"
           type="primary"
+          icon="Plus"
           @click="addOrUpdateHandle()"
         >
           新增
@@ -124,6 +127,7 @@ const runHandle = (id) => {
         <el-button
           v-if="commonView.isAuth('sys:schedule:delete')"
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle()"
           :disabled="commonView.dataSelections <= 0"
         >
@@ -131,30 +135,38 @@ const runHandle = (id) => {
         </el-button>
         <el-button
           v-if="commonView.isAuth('sys:schedule:pause')"
-          type="danger"
+          type="info"
+          icon="VideoPause"
           @click="pauseHandle()"
           :disabled="commonView.dataSelections.length <= 0"
-          >批量暂停
+        >
+          批量暂停
         </el-button>
         <el-button
           v-if="commonView.isAuth('sys:schedule:resume')"
           type="danger"
+          icon="VideoPlay"
           @click="resumeHandle()"
           :disabled="commonView.dataSelections.length <= 0"
-          >批量恢复
+        >
+          批量恢复
         </el-button>
         <el-button
           v-if="commonView.isAuth('sys:schedule:run')"
-          type="danger"
+          type="success"
+          icon="Aim"
           @click="runHandle()"
           :disabled="commonView.dataSelections.length <= 0"
-          >批量立即执行
+        >
+          批量立即执行
         </el-button>
         <el-button
           v-if="commonView.isAuth('sys:schedule:log')"
-          type="success"
+          type="primary"
+          icon="List"
           @click="router.push({ name: 'sys-log-schedule' })"
-          >日志列表
+        >
+          日志列表
         </el-button>
       </el-form-item>
     </el-form>

@@ -17,7 +17,12 @@ const commonView = reactive({
   <div class="mod-log mod-wrap">
     <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
-        <el-button @click="commonView.exportHandle()">导出</el-button>
+        <el-button
+          @click="commonView.exportHandle()"
+          icon="Download"
+          type="success"
+          >导出</el-button
+        >
       </el-form-item>
     </el-form>
     <div class="table-wrap">

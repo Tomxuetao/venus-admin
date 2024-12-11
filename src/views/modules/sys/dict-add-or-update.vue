@@ -41,20 +41,15 @@ const dataRule = {
   ]
 }
 
-const initDialogHandle = (id) => {
+const initDialogHandle = (id, pid = undefined) => {
   dataForm.id = id
   visible.value = true
+  dataForm.pid = pid ? pid : '0'
   if (id) {
     commonApi(`/sys/dict/${id}`).then((data) => {
       Object.assign(dataForm, data)
     })
   }
-}
-
-const initDialogByPidHandle = (pid) => {
-  dataForm.pid = pid
-  visible.value = true
-  dataForm.id = undefined
 }
 
 // 表单提交
@@ -78,8 +73,7 @@ const dataFormSubmit = () => {
 }
 
 defineExpose({
-  init: initDialogHandle,
-  initByPid: initDialogByPidHandle
+  init: initDialogHandle
 })
 </script>
 

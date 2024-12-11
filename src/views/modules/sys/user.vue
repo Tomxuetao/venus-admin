@@ -52,14 +52,18 @@ const downloadHandle = () => {
       <el-form-item>
         <el-input
           v-model="commonView.dataForm.username"
-          placeholder="用户名"
           clearable
-        ></el-input>
+          placeholder="用户名"
+        >
+        </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('sys:user:save')"
+          icon="Plus"
           type="primary"
           @click="addOrUpdateHandle(undefined)"
         >
@@ -68,6 +72,7 @@ const downloadHandle = () => {
         <el-button
           v-if="commonView.isAuth('sys:user:delete')"
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle(undefined)"
           :disabled="commonView.dataSelections.length <= 0"
         >

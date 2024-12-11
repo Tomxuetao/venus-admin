@@ -25,10 +25,13 @@ const commonView = reactive({
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('sys:user:delete')"
           type="danger"
+          icon="Delete"
           @click="commonView.deleteHandle(undefined)"
           :disabled="commonView.dataSelections.length <= 0"
         >

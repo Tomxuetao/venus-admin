@@ -27,8 +27,13 @@ const addOrUpdateHandle = (id) => {
   <div class="mod-menu mod-wrap">
     <el-form :inline="true">
       <el-form-item>
-        <el-button type="primary" @click="addOrUpdateHandle(undefined)"
-          >新增
+        <el-button
+          v-if="commonView.isAuth('sys:dept:save')"
+          icon="Plus"
+          type="primary"
+          @click="addOrUpdateHandle(undefined)"
+        >
+          新增
         </el-button>
       </el-form-item>
     </el-form>

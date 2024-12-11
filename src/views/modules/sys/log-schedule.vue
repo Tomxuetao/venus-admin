@@ -42,7 +42,9 @@ const showErrorHandle = async (id) => {
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
       </el-form-item>
     </el-form>
     <div class="table-wrap">

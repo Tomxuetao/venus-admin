@@ -25,7 +25,8 @@ const statusMap = commonView.dictMap.get('common_status')
           v-model="commonView.dataForm.tempId"
           placeholder="模版ID"
           clearable
-        ></el-input>
+        >
+        </el-input>
       </el-form-item>
       <el-form-item>
         <el-select
@@ -45,10 +46,17 @@ const statusMap = commonView.dictMap.get('common_status')
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()">查询</el-button>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.exportHandle()">导出</el-button>
+        <el-button
+          type="success"
+          @click="commonView.exportHandle()"
+          icon="Download"
+          >导出</el-button
+        >
       </el-form-item>
     </el-form>
     <div class="table-wrap">

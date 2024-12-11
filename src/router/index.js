@@ -92,7 +92,9 @@ export const addDynamicRoutes = (routeList = []) => {
         name: item.url.replaceAll('/', '-').replace('-', ''),
         meta: {
           id: item.id,
-          title: item.name
+          pid: item.pid,
+          title: item.name,
+          isMenu: item.type === 0
         },
         props: (route) => ({ ...route.query })
       }
