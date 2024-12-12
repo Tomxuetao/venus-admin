@@ -1,7 +1,7 @@
 import { useCommonStore } from '@/store'
+import { commonApi } from '@/api/common-api'
 
 import { createRouter, createWebHistory } from 'vue-router'
-import { commonApi } from '@/api/common-api'
 
 const commonModules = import.meta.glob(['../views/common/*.vue'])
 const layoutModules = import.meta.glob(['../views/layout/*.vue'])
@@ -64,8 +64,7 @@ router.beforeEach(async (to) => {
       } else {
         await commonState.initUserAction()
         await commonState.initDictAction()
-        const menuList = await commonState.initMenuAction()
-        addDynamicRoutes(menuList)
+        addDynamicRoutes(commonState.menuList.filter((item) => item.url))
         return {
           ...to,
           replace: true,

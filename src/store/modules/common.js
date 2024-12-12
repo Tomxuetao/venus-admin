@@ -59,42 +59,38 @@ export const useCommonStore = defineStore('common', {
       this.menuTreeState = tree
     },
 
+    initUserMenuList(menuList) {
+      this.updateMenuList(menuList)
+      const authList = []
+      const tempMenuList = menuList.map((item) => {
+        const { id, pid, name, icon, url, type, sort, permissions } = item
+        if (permissions) {
+          authList.push(...permissions.split(','))
+        }
+        return {
+          id: id,
+          pid: pid,
+          text: name,
+          icon: icon,
+          url: url,
+          sort: sort,
+          children: [],
+          isMenu: type === 0
+        }
+      })
+      this.updateAuthList(authList)
+      this.updateMenuTree(buildTree([...tempMenuList], '0'))
+    },
+
     async initDictAction() {
-      const dictList = await commonApi('/sys/dict/list', { status: 1 })
+      const dictList = await commonApi('/sys/dict/all')
       this.updateDictMap(dictList)
     },
 
     async initUserAction() {
       const userData = await commonApi('/sys/user/info')
       this.updateUserData(userData)
-    },
-
-    async initMenuAction() {
-      const menuList = await commonApi('/sys/menu/list')
-      if (Array.isArray(menuList)) {
-        this.updateMenuList(menuList)
-        const authList = []
-        const tempMenuList = menuList.map((item) => {
-          const { id, pid, name, icon, url, type, sort, permissions } = item
-          if (permissions) {
-            authList.push(...permissions.split(','))
-          }
-          return {
-            id: id,
-            pid: pid,
-            text: name,
-            icon: icon,
-            url: url,
-            sort: sort,
-            children: [],
-            isMenu: type === 0
-          }
-        })
-        this.updateAuthList(authList)
-        this.updateMenuTree(buildTree([...tempMenuList], '0'))
-        return menuList.filter((item) => item.url)
-      }
-      return []
+      this.initUserMenuList(userData.menuList)
     }
   }
 })

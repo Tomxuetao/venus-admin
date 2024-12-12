@@ -2,6 +2,8 @@
 import useView from '@/hooks/useView'
 import { venusOssServer } from '@/utils/http'
 import AddOrUpdate from './user-add-or-update.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { commonApi } from '@/api/common-api'
 
 const addOrUpdateRef = ref()
 
@@ -44,6 +46,23 @@ const showImportDialog = async () => {
 const downloadHandle = () => {
   location.href = `${venusOssServer}/upload/template/导入用户模版.xlsx`
 }
+
+const resetPwdHandle = (id) => {
+  ElMessageBox.confirm(`确定对[id=${id}]进行重置密码操作?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    commonApi('/sys/user/resetPwd', { id }, { method: 'put' }).then(() => {
+      ElMessage({
+        message: '操作成功',
+        type: 'success',
+        duration: 1500
+      })
+      commonView.getDataList()
+    })
+  })
+}
 </script>
 
 <template>
@@ -59,8 +78,8 @@ const downloadHandle = () => {
       </el-form-item>
       <el-form-item>
         <el-button @click="commonView.getDataList()" icon="Search"
-          >查询</el-button
-        >
+          >查询
+        </el-button>
         <el-button
           v-if="commonView.isAuth('sys:user:save')"
           icon="Plus"
@@ -150,15 +169,24 @@ const downloadHandle = () => {
           width="180"
           label="创建时间"
         ></el-table-column>
-        <el-table-column fixed="right" align="center" width="150" label="操作">
+        <el-table-column fixed="right" align="center" label="操作">
           <template v-slot="scope">
             <el-button
               v-if="commonView.isAuth('sys:user:update')"
               link
               size="small"
+              type="primary"
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('sys:user:reset')"
+              link
+              size="small"
+              @click="resetPwdHandle(scope.row.id)"
+            >
+              重置密码
             </el-button>
             <el-button
               v-if="commonView.isAuth('sys:user:delete')"

@@ -106,6 +106,21 @@ const dataRule = {
       validator: validateMobile,
       trigger: 'blur'
     }
+  ],
+  deptId: [
+    {
+      required: true,
+      message: '所属部门不能为空',
+      trigger: 'blur'
+    }
+  ],
+  roleIdList: [
+    {
+      type: 'array',
+      required: true,
+      message: '角色不能为空',
+      trigger: 'blur'
+    }
   ]
 }
 
@@ -138,7 +153,7 @@ const dataFormSubmit = () => {
       await commonApi(
         `/sys/user/${!dataForm.id ? 'save' : 'update'}`,
         dataForm,
-        { method: 'post' }
+        { method: dataForm.id ? 'put' : 'post' }
       )
       visible.value = false
       ElMessage({
@@ -173,28 +188,31 @@ defineExpose({
       <el-form-item label="用户名" prop="username">
         <el-input v-model="dataForm.username" placeholder="登录帐号"></el-input>
       </el-form-item>
-      <el-form-item
-        label="密码"
-        prop="password"
-        :class="{ 'is-required': !dataForm.id }"
-      >
-        <el-input
-          v-model="dataForm.password"
-          type="password"
-          placeholder="密码"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
-        label="确认密码"
-        prop="confirmPassword"
-        :class="{ 'is-required': !dataForm.id }"
-      >
-        <el-input
-          v-model="dataForm.confirmPassword"
-          type="password"
-          placeholder="确认密码"
-        ></el-input>
-      </el-form-item>
+      <template v-if="!dataForm.id">
+        <el-form-item
+          label="密码"
+          prop="password"
+          :class="{ 'is-required': !dataForm.id }"
+        >
+          <el-input
+            v-model="dataForm.password"
+            type="password"
+            placeholder="密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="确认密码"
+          prop="confirmPassword"
+          :class="{ 'is-required': !dataForm.id }"
+        >
+          <el-input
+            v-model="dataForm.confirmPassword"
+            type="password"
+            placeholder="确认密码"
+          >
+          </el-input>
+        </el-form-item>
+      </template>
       <el-form-item label="真实姓名" prop="realName">
         <el-input v-model="dataForm.realName" placeholder="真实姓名"></el-input>
       </el-form-item>
@@ -228,11 +246,15 @@ defineExpose({
         </el-tree-select>
       </el-form-item>
       <el-form-item label="角色" prop="roleIdList">
-        <el-checkbox-group v-model="dataForm.roleIdList">
-          <el-checkbox v-for="role in roleList" :key="role.id" :value="role.id">
-            {{ role.name }}
-          </el-checkbox>
-        </el-checkbox-group>
+        <el-select v-model="dataForm.roleIdList" multiple>
+          <el-option
+            v-for="role in roleList"
+            :key="role.id"
+            :value="role.id"
+            :label="role.name"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="dataForm.status">

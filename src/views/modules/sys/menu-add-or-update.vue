@@ -24,7 +24,7 @@ let dataForm = reactive({
 })
 
 const validateUrl = (rule, value, callback) => {
-  if (dataForm.type === 1 && !/\S/.test(value)) {
+  if (dataForm.type === 0 && !/\S/.test(value)) {
     callback(new Error('菜单URL不能为空'))
   } else {
     callback()
@@ -48,6 +48,7 @@ const dataRule = {
   ],
   url: [
     {
+      required: false,
       validator: validateUrl,
       trigger: 'blur'
     }
