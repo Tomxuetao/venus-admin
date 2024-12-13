@@ -26,6 +26,28 @@ img {
   vertical-align: middle;
 }
 
+:root {
+  --base-grid-gap: 12px;
+  --bsee-font-size: 16px;
+  --base-text-color: #606266;
+  --base-label-color: #606266;
+
+  // Font
+  --base-font-bold: 600;
+  --base-font-size-xs: 10px;
+  --base-font-size-sm: 12px;
+  --base-font-size-md: 14px;
+  --base-font-size-lg: 16px;
+  --base-font-size-max: 18px;
+
+  // line-height
+  --base-line-height-xs: 14px;
+  --base-line-height-sm: 16px;
+  --base-line-height-md: 18px;
+  --base-line-height-lg: 24px;
+  --base-line-height-max: 32px;
+}
+
 /* Utils
 ------------------------------ */
 .clearfix:before,

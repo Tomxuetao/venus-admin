@@ -1,9 +1,11 @@
 <script setup>
 import useView from '@/hooks/useView'
+import { commonApi } from '@/api/common-api'
 import { venusOssServer } from '@/utils/http'
 import AddOrUpdate from './user-add-or-update.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { commonApi } from '@/api/common-api'
+
+const router = useRouter()
 
 const addOrUpdateRef = ref()
 
@@ -126,34 +128,25 @@ const resetPwdHandle = (id) => {
     </el-form>
     <div class="table-wrap">
       <el-table
-        :data="commonView.dataList"
         border
+        :data="commonView.dataList"
         v-loading="commonView.dataLoading"
         @selection-change="commonView.selectionChange"
       >
-        <el-table-column type="selection" align="center" width="50">
+        <el-table-column
+          type="selection"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column prop="username" align="center" label="用户名">
         </el-table-column>
-        <el-table-column
-          prop="username"
-          align="center"
-          label="用户名"
-        ></el-table-column>
-        <el-table-column
-          prop="email"
-          align="center"
-          label="邮箱"
-        ></el-table-column>
-        <el-table-column
-          prop="mobile"
-          align="center"
-          label="手机号"
-        ></el-table-column>
-        <el-table-column
-          prop="deptName"
-          align="center"
-          label="所属部门"
-        ></el-table-column>
-        <el-table-column prop="status" align="center" label="状态">
+        <el-table-column prop="email" align="center" label="邮箱">
+        </el-table-column>
+        <el-table-column prop="mobile" align="center" label="手机号">
+        </el-table-column>
+        <el-table-column prop="deptName" align="center" label="所属部门">
+        </el-table-column>
+        <el-table-column prop="status" align="center" label="状态" width="120">
           <template v-slot="scope">
             <el-tag
               size="small"
@@ -163,12 +156,8 @@ const resetPwdHandle = (id) => {
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="createDate"
-          align="center"
-          width="180"
-          label="创建时间"
-        ></el-table-column>
+        <el-table-column prop="createDate" align="center" label="创建时间">
+        </el-table-column>
         <el-table-column fixed="right" align="center" label="操作">
           <template v-slot="scope">
             <el-button
@@ -187,6 +176,20 @@ const resetPwdHandle = (id) => {
               @click="resetPwdHandle(scope.row.id)"
             >
               重置密码
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('sys:user:update')"
+              link
+              size="small"
+              type="success"
+              @click="
+                router.push({
+                  name: 'sys-user-role',
+                  params: { id: scope.row.id }
+                })
+              "
+            >
+              分配角色
             </el-button>
             <el-button
               v-if="commonView.isAuth('sys:user:delete')"

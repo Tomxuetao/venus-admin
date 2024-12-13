@@ -13,6 +13,8 @@ const commonView = reactive({
   })
 })
 
+const router = useRouter()
+
 let addOrUpdateRef = ref()
 let addOrUpdateVisible = ref(false)
 
@@ -94,7 +96,7 @@ const addOrUpdateHandle = (id = undefined) => {
           width="180"
           label="创建时间"
         ></el-table-column>
-        <el-table-column fixed="right" align="center" width="150" label="操作">
+        <el-table-column fixed="right" align="center" width="280" label="操作">
           <template v-slot="scope">
             <el-button
               v-if="commonView.isAuth('sys:role:update')"
@@ -103,6 +105,28 @@ const addOrUpdateHandle = (id = undefined) => {
               @click="addOrUpdateHandle(scope.row.id)"
             >
               修改
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('sys:role:data')"
+              link
+              size="small"
+              type="success"
+            >
+              数据权限
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('sys:role:user')"
+              link
+              size="small"
+              type="primary"
+              @click="
+                router.push({
+                  name: 'sys-role-user',
+                  params: { id: scope.row.id }
+                })
+              "
+            >
+              授权用户
             </el-button>
             <el-button
               v-if="commonView.isAuth('sys:role:delete')"
