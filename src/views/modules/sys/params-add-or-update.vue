@@ -2,9 +2,9 @@
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 
+const visible = defineModel()
 const emit = defineEmits(['refreshDataList'])
 
-const visible = ref(false)
 const dataFormRef = ref()
 
 const dataForm = reactive({

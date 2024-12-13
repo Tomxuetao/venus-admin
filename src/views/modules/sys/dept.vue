@@ -11,16 +11,6 @@ const commonView = reactive({
     dataForm: {}
   })
 })
-
-let addOrUpdateVisible = ref(false)
-
-const addOrUpdateRef = ref()
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
 </script>
 
 <template>
@@ -31,7 +21,7 @@ const addOrUpdateHandle = (id) => {
           v-if="commonView.isAuth('sys:dept:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle(undefined)"
+          @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
         </el-button>
@@ -50,7 +40,7 @@ const addOrUpdateHandle = (id) => {
             <el-button
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -68,7 +58,8 @@ const addOrUpdateHandle = (id) => {
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList()"
     >

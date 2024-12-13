@@ -8,6 +8,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * 通用方法
  * @typedef {Object} CommonViewFns
  * @property {Function} isAuth - 权限校验
+ * @property {Object} addOrUpdateRef - 组建引用
  * @property {Function} getDataList - 获取数据
  * @property {Function} deleteHandle - 删除数据
  * @property {Function} exportHandle - 导出数据
@@ -16,6 +17,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Function} pageSizeChange - 页数改变
  * @property {Function} selectionChange - 选择改变
  * @property {Function} sortChangeHandle - 排序改变
+ * @property {Function} addOrUpdateHandle - 新增/修改
+ * @property {Boolean} addOrUpdateVisible - 新增/修改弹窗显示
  */
 
 /**
@@ -35,7 +38,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Array} [dataSelections] - 选择的数据
  * @property {Boolean} [deleteIsBatch] - 是否批量删除
  * @property {Map<string, Map<number, string>>} dictMap - 字典数据
- * @property {Map<string, "primary" | "success" | "info" | "warning" | "danger">} tagTypeMap - tag 类型
+ * @property {Map<string, 'primary' | 'success' | 'info' | 'warning' | 'danger'>} tagTypeMap - tag 类型
  */
 
 const commonState = useCommonStore()
@@ -62,6 +65,8 @@ const useView = (config) => {
     dataLoading: true,
     dataSelections: [],
     deleteIsBatch: true,
+    addOrUpdateVisible: false,
+    addOrUpdateRefKey: 'addOrUpdateRef',
     tagTypeMap: tagTypeMap || new Map(),
     dictMap: commonState.dictMap || new Map()
   })
@@ -169,9 +174,18 @@ const useView = (config) => {
 
   const sortChangeHandle = () => {}
 
+  const addOrUpdateRef = useTemplateRef(state.addOrUpdateRefKey)
+  const addOrUpdateHandle = async (id = undefined) => {
+    state.addOrUpdateVisible = true
+    await nextTick(() => {
+      addOrUpdateRef.value.init(id)
+    })
+  }
+
   return {
     ...toRefs(state),
     isAuth,
+    addOrUpdateRef,
     importHandle,
     getDataList,
     deleteHandle,
@@ -179,7 +193,8 @@ const useView = (config) => {
     pageNumChange,
     pageSizeChange,
     selectionChange,
-    sortChangeHandle
+    sortChangeHandle,
+    addOrUpdateHandle
   }
 }
 

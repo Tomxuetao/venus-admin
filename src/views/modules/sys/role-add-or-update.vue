@@ -5,16 +5,17 @@ import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import { useCommonStore } from '@/store'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 let btnLoading = ref(false)
-let visible = ref(false)
 let expandedKeys = ref([1])
 let dataForm = reactive({
   id: undefined,
   name: '',
   remark: ''
 })
+
 const { menuList } = useCommonStore()
 
 const dataFormRef = ref()
@@ -71,11 +72,6 @@ const dataFormSubmit = () => {
   })
 }
 
-const closeDialogHandle = () => {
-  visible.value = false
-  dataFormRef.value.resetFields()
-}
-
 defineExpose({
   init: initDialogHandle
 })
@@ -94,7 +90,7 @@ defineExpose({
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
-      <el-form-item label="授权">
+      <el-form-item label="授权" prop="menuIdList">
         <el-tree
           ref="menuListTreeRef"
           node-key="id"
@@ -102,14 +98,15 @@ defineExpose({
           :data="menuListTree"
           :default-expanded-keys="expandedKeys"
           :props="{ label: 'name', children: 'children' }"
-        ></el-tree>
+        >
+        </el-tree>
       </el-form-item>
     </el-form>
     <span class="dialog-footer">
-      <el-button @click="closeDialogHandle">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()" :loading="btnLoading"
-        >确定</el-button
-      >
+      <el-button @click="visible = false">取消</el-button>
+      <el-button type="primary" :loading="btnLoading" @click="dataFormSubmit()">
+        确定
+      </el-button>
     </span>
   </el-dialog>
 </template>

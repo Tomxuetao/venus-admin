@@ -18,17 +18,6 @@ const commonView = reactive({
 
 const statusMap = commonView.dictMap.get('job_status')
 
-const addOrUpdateVisible = ref(false)
-
-// 新增 / 修改
-let addOrUpdateRef = ref()
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
-
 // 暂停
 const pauseHandle = (id) => {
   const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
@@ -55,7 +44,7 @@ const pauseHandle = (id) => {
 
 // 恢复
 const resumeHandle = (id) => {
-  const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
+  const ids = id ? [id] : commonView.dataSelections.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '恢复' : '批量恢复'}]操作?`,
     '提示',
@@ -79,7 +68,7 @@ const resumeHandle = (id) => {
 
 // 立即执行
 const runHandle = (id) => {
-  const ids = id ? [id] : commonView.dataSelections.value.map((item) => item.id)
+  const ids = id ? [id] : commonView.dataSelections.map((item) => item.id)
   ElMessageBox.confirm(
     `确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`,
     '提示',
@@ -120,7 +109,7 @@ const runHandle = (id) => {
           v-if="commonView.isAuth('sys:schedule:save')"
           type="primary"
           icon="Plus"
-          @click="addOrUpdateHandle()"
+          @click="commonView.addOrUpdateHandle()"
         >
           新增
         </el-button>
@@ -129,7 +118,7 @@ const runHandle = (id) => {
           type="danger"
           icon="Delete"
           @click="commonView.deleteHandle()"
-          :disabled="commonView.dataSelections <= 0"
+          :disabled="commonView.dataSelections.length <= 0"
         >
           批量删除
         </el-button>
@@ -225,7 +214,7 @@ const runHandle = (id) => {
               v-if="commonView.isAuth('sys:schedule:update')"
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -269,7 +258,8 @@ const runHandle = (id) => {
     <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList"
     ></add-or-update>

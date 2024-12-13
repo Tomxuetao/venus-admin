@@ -2,6 +2,7 @@
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 let dataForm = reactive({
@@ -31,7 +32,6 @@ const dataRule = {
 }
 
 const dataFormRef = ref()
-const visible = ref(false)
 const initDialogHandle = (id) => {
   dataForm.id = id
   visible.value = true

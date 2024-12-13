@@ -16,17 +16,6 @@ const commonView = reactive({
 })
 
 const statusMap = commonView.dictMap.get('dict_status')
-
-const addOrUpdateRef = ref()
-
-const addOrUpdateVisible = ref(false)
-
-const addOrUpdateHandle = (id, pid) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id, pid)
-  })
-}
 </script>
 
 <template>
@@ -37,7 +26,7 @@ const addOrUpdateHandle = (id, pid) => {
           v-if="commonView.isAuth('sys:dict:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle(undefined, route.params.id)"
+          @click="commonView.addOrUpdateHandle(undefined, route.params.id)"
         >
           新增
         </el-button>
@@ -120,7 +109,9 @@ const addOrUpdateHandle = (id, pid) => {
             <el-button
               v-if="commonView.isAuth('sys:dict:update')"
               link
-              @click="addOrUpdateHandle(scope.row.id, route.params.id)"
+              @click="
+                commonView.addOrUpdateHandle(scope.row.id, route.params.id)
+              "
             >
               修改
             </el-button>
@@ -139,6 +130,8 @@ const addOrUpdateHandle = (id, pid) => {
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       ref="addOrUpdateRef"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       @refreshDataList="commonView.getDataList"
     ></add-or-update>
   </div>

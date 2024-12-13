@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import { useCommonStore } from '@/store'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 const { menuList, dictMap } = useCommonStore()
@@ -59,8 +60,6 @@ const iconList = Icon.getNameList()
 let menuListTree = treeDataTranslate([
   ...menuList.filter((item) => item.type === 0)
 ])
-
-let visible = ref(false)
 
 let dataFormRef = ref()
 

@@ -2,6 +2,7 @@
 import { commonApi } from '@/api/common-api'
 import { ElMessage } from 'element-plus'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 const dataForm = reactive({
@@ -15,7 +16,6 @@ const dataForm = reactive({
 })
 
 let dataFormRef = ref()
-let visible = ref(false)
 
 const dataRule = {
   label: [
@@ -82,8 +82,6 @@ defineExpose({
     width="30%"
     v-model="visible"
     :destroy-on-close="true"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
     :title="!dataForm.id ? '新增' : '修改'"
   >
     <el-form

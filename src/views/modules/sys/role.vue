@@ -2,6 +2,8 @@
 import useView from '@/hooks/useView'
 import AddOrUpdate from './role-add-or-update.vue'
 
+const router = useRouter()
+
 const commonView = reactive({
   ...useView({
     isPage: true,
@@ -12,18 +14,6 @@ const commonView = reactive({
     }
   })
 })
-
-const router = useRouter()
-
-let addOrUpdateRef = ref()
-let addOrUpdateVisible = ref(false)
-
-const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
 </script>
 
 <template>
@@ -46,7 +36,7 @@ const addOrUpdateHandle = (id = undefined) => {
           v-if="commonView.isAuth('sys:role:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle()"
+          @click="commonView.addOrUpdateHandle()"
         >
           新增
         </el-button>
@@ -102,7 +92,7 @@ const addOrUpdateHandle = (id = undefined) => {
               v-if="commonView.isAuth('sys:role:update')"
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -144,9 +134,10 @@ const addOrUpdateHandle = (id = undefined) => {
     <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
-      @refreshDataList="commonView.getDataList"
+      @refreshDataList="commonView.getDataList()"
     >
     </add-or-update>
   </div>

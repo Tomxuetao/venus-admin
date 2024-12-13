@@ -22,15 +22,6 @@ const commonView = reactive({
 })
 
 const menuTypeMap = commonView.dictMap.get('menu_type')
-
-const addOrUpdateRef = ref()
-let addOrUpdateVisible = ref(false)
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
 </script>
 
 <template>
@@ -40,7 +31,7 @@ const addOrUpdateHandle = (id) => {
         <el-button
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle(undefined)"
+          @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
         </el-button>
@@ -88,7 +79,7 @@ const addOrUpdateHandle = (id) => {
             <el-button
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -106,7 +97,8 @@ const addOrUpdateHandle = (id) => {
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList()"
     >

@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 import { isEmail, isMobile } from '@/utils/validate'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 const { dictMap } = useCommonStore()
@@ -37,8 +38,6 @@ const validateMobile = (rule, value, callback) => {
     callback()
   }
 }
-
-const visible = ref(false)
 
 let roleList = ref([])
 

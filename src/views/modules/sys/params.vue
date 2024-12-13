@@ -12,11 +12,6 @@ const commonView = reactive({
     }
   })
 })
-
-const addOrUpdateRef = ref()
-const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateRef.value.init(id)
-}
 </script>
 
 <template>
@@ -44,7 +39,7 @@ const addOrUpdateHandle = (id = undefined) => {
           v-if="commonView.isAuth('sys:params:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle()"
+          @click="commonView.addOrUpdateHandle()"
         >
           新增
         </el-button>
@@ -105,7 +100,7 @@ const addOrUpdateHandle = (id = undefined) => {
               v-if="commonView.isAuth('sys:params:update')"
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -124,6 +119,8 @@ const addOrUpdateHandle = (id = undefined) => {
     <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList()"
     ></add-or-update>

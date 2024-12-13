@@ -24,16 +24,6 @@ const commonView = reactive({
 
 const statusMap = commonView.dictMap.get('user_status')
 
-const addOrUpdateVisible = ref(false)
-
-// 新增 / 修改
-const addOrUpdateHandle = (id) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
-
 const showImportDialog = async () => {
   const fileInput = document.getElementById('fileInput')
   fileInput.click()
@@ -86,7 +76,7 @@ const resetPwdHandle = (id) => {
           v-if="commonView.isAuth('sys:user:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle(undefined)"
+          @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
         </el-button>
@@ -165,7 +155,7 @@ const resetPwdHandle = (id) => {
               link
               size="small"
               type="primary"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -207,8 +197,9 @@ const resetPwdHandle = (id) => {
     <common-pagination v-model="commonView"></common-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
       ref="addOrUpdateRef"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       @refreshDataList="commonView.getDataList()"
     ></add-or-update>
   </div>

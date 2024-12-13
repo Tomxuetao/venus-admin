@@ -3,6 +3,8 @@ import { buildTree } from '@/utils'
 import useView from '@/hooks/useView'
 import AddOrUpdate from './dict-add-or-update.vue'
 
+const router = useRouter()
+
 const commonView = reactive({
   ...useView({
     isPage: false,
@@ -11,20 +13,7 @@ const commonView = reactive({
   })
 })
 
-const router = useRouter()
-
-const addOrUpdateRef = ref()
-
-const addOrUpdateVisible = ref(false)
-
 const statusMap = commonView.dictMap.get('dict_status')
-
-const addOrUpdateHandle = (id = undefined) => {
-  addOrUpdateVisible.value = true
-  nextTick(() => {
-    addOrUpdateRef.value.init(id)
-  })
-}
 
 const gotoDictData = (data) => {
   if (commonView.isAuth('sys:dict:data')) {
@@ -41,7 +30,7 @@ const gotoDictData = (data) => {
           v-if="commonView.isAuth('sys:dict:save')"
           icon="Plus"
           type="primary"
-          @click="addOrUpdateHandle(undefined)"
+          @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
         </el-button>
@@ -124,7 +113,7 @@ const gotoDictData = (data) => {
               v-if="commonView.isAuth('sys:dict:update')"
               link
               size="small"
-              @click="addOrUpdateHandle(scope.row.id)"
+              @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
             </el-button>
@@ -143,9 +132,10 @@ const gotoDictData = (data) => {
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
-      v-if="addOrUpdateVisible"
+      v-if="commonView.addOrUpdateVisible"
+      v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
-      @refreshDataList="commonView.getDataList"
+      @refreshDataList="commonView.getDataList()"
     >
     </add-or-update>
   </div>

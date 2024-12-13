@@ -3,6 +3,7 @@ import { ElMessage } from 'element-plus'
 import { treeDataTranslate } from '@/utils'
 import { commonApi } from '@/api/common-api'
 
+const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
 let dataForm = reactive({
@@ -31,7 +32,6 @@ const dataRule = {
 }
 
 let dataFormRef = ref()
-let visible = ref(false)
 
 let deptTreeList = ref([])
 
