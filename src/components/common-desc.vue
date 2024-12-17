@@ -25,7 +25,7 @@ const computedValue = (key = '', data = {}) => {
     })
     value = tempData === empty ? '' : tempData
   } else {
-    value = data[key] || ''
+    value = data[key] ?? ''
   }
   return value
 }

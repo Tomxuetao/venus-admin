@@ -18,7 +18,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Function} selectionChange - 选择改变
  * @property {Function} sortChangeHandle - 排序改变
  * @property {Function} addOrUpdateHandle - 新增/修改
- * @property {Boolean} addOrUpdateVisible - 新增/修改弹窗显示
  */
 
 /**
@@ -37,6 +36,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  * @property {Boolean} [dataLoading] - 数据加载中
  * @property {Array} [dataSelections] - 选择的数据
  * @property {Boolean} [deleteIsBatch] - 是否批量删除
+ * @property {Boolean} addOrUpdateVisible - 新增/修改弹窗显示
  * @property {Map<string, Map<number, string>>} dictMap - 字典数据
  * @property {Map<string, 'primary' | 'success' | 'info' | 'warning' | 'danger'>} tagTypeMap - tag 类型
  */
@@ -186,10 +186,10 @@ const useView = (config) => {
     ...toRefs(state),
     isAuth,
     addOrUpdateRef,
-    importHandle,
     getDataList,
     deleteHandle,
     exportHandle,
+    importHandle,
     pageNumChange,
     pageSizeChange,
     selectionChange,
