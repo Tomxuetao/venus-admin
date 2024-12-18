@@ -119,8 +119,6 @@ watch(
           >
             添加角色
           </el-button>
-        </el-form-item>
-        <el-form-item>
           <el-button
             type="danger"
             icon="Delete"

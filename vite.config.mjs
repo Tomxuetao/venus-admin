@@ -17,7 +17,7 @@ export default defineConfig({
         target: 'http://localhost:8888',
         secure: false,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/venus-api/, '/venus-admin')
+        rewrite: (path) => path.replace(/^\/venus-api/, '')
       },
       '/venus-data': {
         target: 'https://tomxuetao.xyz',

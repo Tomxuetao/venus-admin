@@ -70,8 +70,8 @@ const resetPwdHandle = (id) => {
       </el-form-item>
       <el-form-item>
         <el-button @click="commonView.getDataList()" icon="Search"
-          >查询
-        </el-button>
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('sys:user:save')"
           icon="Plus"

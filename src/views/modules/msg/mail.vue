@@ -46,15 +46,13 @@ const statusMap = commonView.dictMap.get('common_status')
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()" icon="Search"
+        <el-button icon="Search" @click="commonView.getDataList()"
           >查询</el-button
         >
-      </el-form-item>
-      <el-form-item>
         <el-button
+          icon="Download"
           type="success"
           @click="commonView.exportHandle()"
-          icon="Download"
           >导出</el-button
         >
       </el-form-item>

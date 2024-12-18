@@ -1,6 +1,7 @@
 <script setup>
 import useView from '@/hooks/useView'
 import AddOrUpdate from './role-add-or-update.vue'
+import RoleDataUpdate from './role-data-update.vue'
 
 const router = useRouter()
 
@@ -14,6 +15,8 @@ const commonView = reactive({
     }
   })
 })
+
+const roleDataVisible = ref(false)
 </script>
 
 <template>
@@ -140,5 +143,11 @@ const commonView = reactive({
       @refreshDataList="commonView.getDataList()"
     >
     </add-or-update>
+    <role-data-update
+      ref="roleDataRef"
+      v-if="roleDataVisible"
+      v-model="roleDataVisible"
+    >
+    </role-data-update>
   </div>
 </template>

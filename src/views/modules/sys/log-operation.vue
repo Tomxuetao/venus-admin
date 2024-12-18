@@ -42,14 +42,13 @@ const logStatusMap = commonView.dictMap.get('log_status')
         <el-button @click="commonView.getDataList()" icon="Search"
           >查询</el-button
         >
-      </el-form-item>
-      <el-form-item>
         <el-button
-          @click="commonView.exportHandle()"
           icon="Download"
           type="success"
-          >导出</el-button
+          @click="commonView.exportHandle()"
         >
+          导出
+        </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">

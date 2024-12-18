@@ -28,7 +28,12 @@ const commonView = reactive({
       </el-form-item>
     </el-form>
     <div class="table-wrap">
-      <el-table :data="commonView.dataList" row-key="id" border>
+      <el-table
+        :data="commonView.dataList"
+        row-key="id"
+        border
+        :default-expand-all="true"
+      >
         <el-table-column prop="name" min-width="150" label="名称">
         </el-table-column>
         <el-table-column prop="parentName" align="center" label="上级部门">
@@ -58,9 +63,9 @@ const commonView = reactive({
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
+      ref="addOrUpdateRef"
       v-if="commonView.addOrUpdateVisible"
       v-model="commonView.addOrUpdateVisible"
-      ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList()"
     >
     </add-or-update>

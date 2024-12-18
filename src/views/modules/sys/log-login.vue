@@ -22,18 +22,19 @@ const statusMap = commonView.dictMap.get('login_log_status')
     <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-input
-          v-model="commonView.dataForm.creatorName"
-          placeholder="用户名"
           clearable
-        ></el-input>
+          placeholder="用户名"
+          v-model="commonView.dataForm.creatorName"
+        >
+        </el-input>
       </el-form-item>
       <el-form-item>
         <el-select
-          v-model="commonView.dataForm.status"
           clearable
           placeholder="状态"
           style="width: 186px"
           @change="commonView.getDataList()"
+          v-model="commonView.dataForm.status"
         >
           <el-option
             v-for="([key, value], index) in statusMap"
@@ -45,17 +46,16 @@ const statusMap = commonView.dictMap.get('login_log_status')
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()" icon="Search"
+        <el-button icon="Search" @click="commonView.getDataList()"
           >查询</el-button
         >
-      </el-form-item>
-      <el-form-item>
         <el-button
-          @click="commonView.exportHandle()"
           icon="Download"
           type="success"
-          >导出</el-button
+          @click="commonView.exportHandle()"
         >
+          导出
+        </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">

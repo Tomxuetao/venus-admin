@@ -33,8 +33,6 @@ const commonView = reactive({
         <el-button @click="commonView.getDataList()" icon="Search"
           >查询</el-button
         >
-      </el-form-item>
-      <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:params:save')"
           icon="Plus"
@@ -43,8 +41,6 @@ const commonView = reactive({
         >
           新增
         </el-button>
-      </el-form-item>
-      <el-form-item>
         <el-button
           v-if="commonView.isAuth('sys:params:delete')"
           type="danger"
