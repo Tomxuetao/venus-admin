@@ -38,7 +38,7 @@ export default defineConfig({
       viteOptimizeDeps: true,
       dts: './auto-imports.d.ts',
       resolvers: [ElementPlusResolver()],
-      imports: ['vue', 'vue-router', 'pinia'],
+      imports: ['vue', 'pinia', 'vue-router'],
       eslintrc: {
         enabled: false,
         globalsPropValue: true,

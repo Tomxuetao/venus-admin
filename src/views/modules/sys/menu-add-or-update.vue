@@ -1,9 +1,9 @@
 <script setup>
-import { treeDataTranslate } from '@/utils'
+import { buildTree } from '@/utils'
 import Icon from '@/assets/icons/index'
 import { ElMessage } from 'element-plus'
-import { commonApi } from '@/api/common-api'
 import { useCommonStore } from '@/store'
+import { commonApi } from '@/api/common-api'
 
 const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
@@ -17,11 +17,11 @@ let dataForm = reactive({
   type: 0,
   name: '',
   pid: 0,
-  parentName: '顶级菜单',
   url: '',
   sort: 0,
   icon: '',
-  permissions: ''
+  permissions: '',
+  parentName: '顶级菜单'
 })
 
 const validateUrl = (rule, value, callback) => {
@@ -50,26 +50,22 @@ const dataRule = {
   url: [
     {
       required: false,
-      validator: validateUrl,
-      trigger: 'blur'
+      trigger: 'blur',
+      validator: validateUrl
     }
   ]
 }
-
+const dataFormRef = ref()
 const iconList = Icon.getNameList()
-let menuListTree = treeDataTranslate([
-  ...menuList.filter((item) => item.type === 0)
-])
 
-let dataFormRef = ref()
-
-const initDialogHandle = (id) => {
+const initDialogHandle = (id, pid = 0) => {
   dataForm.id = id
   if (id) {
     commonApi(`/sys/menu/${id}`).then((data) => {
       Object.assign(dataForm, data)
     })
   }
+  dataForm.pid = pid
   visible.value = true
 }
 
@@ -106,8 +102,8 @@ defineExpose({
 <template>
   <el-dialog
     v-model="visible"
-    :title="!dataForm.id ? '新增' : '修改'"
     :destroy-on-close="true"
+    :title="!dataForm.id ? '新增' : '修改'"
   >
     <el-form
       :model="dataForm"
@@ -115,6 +111,23 @@ defineExpose({
       ref="dataFormRef"
       label-width="80px"
     >
+      <el-form-item label="上级菜单" prop="pid">
+        <el-tree-select
+          v-model="dataForm.pid"
+          node-key="id"
+          check-strictly
+          check-on-click-node
+          :render-after-expand="false"
+          :props="{ label: 'name', children: 'children' }"
+          :data="
+            buildTree(
+              menuList.filter((item) => item.type === 0),
+              '0'
+            )
+          "
+        >
+        </el-tree-select>
+      </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="dataForm.type">
           <el-radio
@@ -128,18 +141,6 @@ defineExpose({
       </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input v-model="dataForm.name" placeholder="名称"></el-input>
-      </el-form-item>
-      <el-form-item label="上级菜单" prop="pid">
-        <el-tree-select
-          v-model="dataForm.pid"
-          :data="menuListTree"
-          node-key="id"
-          check-strictly
-          check-on-click-node
-          :render-after-expand="false"
-          :props="{ label: 'name', children: 'children' }"
-        >
-        </el-tree-select>
       </el-form-item>
       <el-form-item label="路由" prop="url">
         <el-input v-model="dataForm.url" placeholder="路由"></el-input>

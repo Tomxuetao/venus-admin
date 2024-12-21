@@ -133,10 +133,7 @@ const useView = (config) => {
   }
 
   const exportHandle = () => {
-    location.href = `${venusServer}${state.exportUrl}?${qs.stringify({
-      ...state.dataForm,
-      token: sessionStorage.getItem('token')
-    })}`
+    location.href = `${venusServer}${state.exportUrl}?${qs.stringify({ ...state.dataForm, token: sessionStorage.getItem('token') })}`
   }
 
   const importHandle = (file) => {
@@ -175,10 +172,10 @@ const useView = (config) => {
   const sortChangeHandle = () => {}
 
   const addOrUpdateRef = useTemplateRef(state.addOrUpdateRefKey)
-  const addOrUpdateHandle = async (id = undefined) => {
+  const addOrUpdateHandle = async (id = undefined, pid = undefined) => {
     state.addOrUpdateVisible = true
     await nextTick(() => {
-      addOrUpdateRef.value.init(id)
+      addOrUpdateRef.value.init(id, pid)
     })
   }
 

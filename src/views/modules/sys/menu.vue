@@ -31,6 +31,7 @@ const menuTypeMap = commonView.dictMap.get('menu_type')
         <el-button
           icon="Plus"
           type="primary"
+          v-if="commonView.isAuth('sys:menu:save')"
           @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
@@ -39,11 +40,8 @@ const menuTypeMap = commonView.dictMap.get('menu_type')
     </el-form>
     <div class="table-wrap">
       <el-table :data="buildTree(commonView.dataList, '0')" row-key="id" border>
-        <el-table-column
-          prop="name"
-          min-width="80"
-          label="名称"
-        ></el-table-column>
+        <el-table-column prop="name" min-width="80" label="名称">
+        </el-table-column>
         <el-table-column align="center" label="图标">
           <template v-slot="scope">
             <icon-svg :name="scope.row.icon || ''"></icon-svg>
@@ -79,6 +77,7 @@ const menuTypeMap = commonView.dictMap.get('menu_type')
             <el-button
               link
               size="small"
+              v-if="commonView.isAuth('sys:menu:update')"
               @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
@@ -86,7 +85,17 @@ const menuTypeMap = commonView.dictMap.get('menu_type')
             <el-button
               link
               size="small"
+              type="primary"
+              v-if="commonView.isAuth('sys:menu:save')"
+              @click="commonView.addOrUpdateHandle(undefined, scope.row.id)"
+            >
+              新增
+            </el-button>
+            <el-button
+              link
+              size="small"
               type="danger"
+              v-if="commonView.isAuth('sys:menu:delete')"
               @click="commonView.deleteHandle(scope.row.id)"
             >
               删除

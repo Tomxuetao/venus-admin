@@ -85,10 +85,10 @@ export const addDynamicRoutes = (routeList = []) => {
     if (item.url) {
       const route = {
         path: item.type === 0 ? `${item.url}` : `${item.url}/:id`,
+        name: item.url.replaceAll('/', '-').replace('-', ''),
         component:
           dynamicModules[`../views/modules${item.url}.vue`] ||
           commonModules['../views/common/404.vue'],
-        name: item.url.replaceAll('/', '-').replace('-', ''),
         meta: {
           id: item.id,
           pid: item.pid,
