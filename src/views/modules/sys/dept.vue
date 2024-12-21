@@ -18,9 +18,9 @@ const commonView = reactive({
     <el-form :inline="true">
       <el-form-item>
         <el-button
-          v-if="commonView.isAuth('sys:dept:save')"
           icon="Plus"
           type="primary"
+          v-if="commonView.isAuth('sys:dept:save')"
           @click="commonView.addOrUpdateHandle(undefined)"
         >
           新增
@@ -45,6 +45,7 @@ const commonView = reactive({
             <el-button
               link
               size="small"
+              v-if="commonView.isAuth('sys:dept:update')"
               @click="commonView.addOrUpdateHandle(scope.row.id)"
             >
               修改
@@ -52,7 +53,17 @@ const commonView = reactive({
             <el-button
               link
               size="small"
+              type="primary"
+              v-if="commonView.isAuth('sys:dept:save')"
+              @click="commonView.addOrUpdateHandle(undefined, scope.row.id)"
+            >
+              新增
+            </el-button>
+            <el-button
+              link
+              size="small"
               type="danger"
+              v-if="commonView.isAuth('sys:dept:delete')"
               @click="commonView.deleteHandle(scope.row.id)"
             >
               删除

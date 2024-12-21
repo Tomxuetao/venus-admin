@@ -43,8 +43,9 @@ const getDataList = async () => {
 
 getDataList()
 
-const initDialogHandle = (id) => {
+const initDialogHandle = (id, pid) => {
   dataForm.id = id
+  dataForm.pid = pid
   visible.value = true
   if (id) {
     commonApi(`/sys/dept/${id}`).then((data) => {
