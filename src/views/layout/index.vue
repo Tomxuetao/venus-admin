@@ -121,8 +121,8 @@ watch(
               <el-dropdown-item command="user">个人信息</el-dropdown-item>
               <el-dropdown-item command="theme">主题设置</el-dropdown-item>
               <el-dropdown-item divided command="logout"
-                >退出登录
-              </el-dropdown-item>
+                >退出登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
