@@ -185,7 +185,14 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog title="云存储配置" v-model="visible" :destroy-on-close="true">
+  <el-dialog
+    width="40%"
+    v-model="visible"
+    title="云存储配置"
+    :destroy-on-close="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form
       :model="dataForm"
       :rules="dataRule"

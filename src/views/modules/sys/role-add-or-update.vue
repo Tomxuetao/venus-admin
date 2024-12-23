@@ -1,9 +1,8 @@
 <script setup>
-import { treeDataTranslate } from '@/utils'
-
+import { buildTree } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { commonApi } from '@/api/common-api'
 import { useCommonStore } from '@/store'
+import { commonApi } from '@/api/common-api'
 
 const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
@@ -21,9 +20,7 @@ const { menuList } = useCommonStore()
 const dataFormRef = ref()
 const menuListTreeRef = ref()
 
-let menuListTree = treeDataTranslate([...menuList])
-
-const tempKey = ref(-666666)
+let menuListTree = buildTree([...menuList], '0')
 
 const initDialogHandle = (id) => {
   visible.value = true
@@ -33,10 +30,6 @@ const initDialogHandle = (id) => {
     commonApi(`/sys/role/${id}`).then((data) => {
       dataForm.name = data.name
       dataForm.remark = data.remark
-      const idx = data.menuIdList.indexOf(tempKey)
-      if (idx !== -1) {
-        data.menuIdList.splice(idx, data.menuIdList.length - idx)
-      }
       menuListTreeRef.value.setCheckedKeys(data.menuIdList)
     })
   }
@@ -79,9 +72,12 @@ defineExpose({
 
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
     v-model="visible"
+    width="40%"
     :destroy-on-close="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :title="!dataForm.id ? '新增' : '修改'"
   >
     <el-form :model="dataForm" ref="dataFormRef" label-width="80px">
       <el-form-item label="角色名称" prop="name">
@@ -102,11 +98,16 @@ defineExpose({
         </el-tree>
       </el-form-item>
     </el-form>
-    <span class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" :loading="btnLoading" @click="dataFormSubmit()">
-        确定
-      </el-button>
-    </span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="visible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="btnLoading"
+          @click="dataFormSubmit()"
+          >确定</el-button
+        >
+      </span>
+    </template>
   </el-dialog>
 </template>

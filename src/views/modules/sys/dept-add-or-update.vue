@@ -1,6 +1,6 @@
 <script setup>
+import { buildTree } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { treeDataTranslate } from '@/utils'
 import { commonApi } from '@/api/common-api'
 
 const visible = defineModel()
@@ -38,7 +38,7 @@ let deptTreeList = ref([])
 const getDataList = async () => {
   const dataList = await commonApi('/sys/dept/list')
 
-  deptTreeList.value = treeDataTranslate(dataList)
+  deptTreeList.value = buildTree(dataList, '0')
 }
 
 getDataList()
@@ -82,6 +82,7 @@ defineExpose({
 <template>
   <el-dialog
     v-model="visible"
+    width="40%"
     :destroy-on-close="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"

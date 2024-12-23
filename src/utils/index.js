@@ -18,34 +18,11 @@ export const isURL = (s) => {
 }
 
 /**
- * 树形数据转换
- * @param {*} data
- * @param {*} id
- * @param {*} pid
+ * 构建树形结构
+ * @param nodes
+ * @param parentId
+ * @returns {*[]}
  */
-export const treeDataTranslate = (data, id = 'id', pid = 'pid') => {
-  const res = []
-  const temp = {}
-  for (let i = 0; i < data.length; i++) {
-    temp[data[i][id]] = data[i]
-  }
-  for (let k = 0; k < data.length; k++) {
-    if (temp[data[k][pid]] && data[k][id] !== data[k][pid]) {
-      if (!temp[data[k][pid]].children) {
-        temp[data[k][pid]].children = []
-      }
-      if (!temp[data[k][pid]]._level) {
-        temp[data[k][pid]]._level = 1
-      }
-      data[k]._level = temp[data[k][pid]]._level + 1
-      temp[data[k][pid]].children.push(data[k])
-    } else {
-      res.push(data[k])
-    }
-  }
-  return res
-}
-
 export const buildTree = (nodes, parentId) => {
   const tree = []
 
@@ -142,6 +119,11 @@ export const tagTypeMap = new Map([
   [4, 'success']
 ])
 
+/**
+ * 创建Map
+ * @param list
+ * @returns {*}
+ */
 export const createMapByList = (list) =>
   list.reduce((acc, cur) => {
     acc.add(cur.value, cur.label)

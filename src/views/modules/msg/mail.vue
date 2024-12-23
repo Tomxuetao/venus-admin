@@ -22,9 +22,9 @@ const statusMap = commonView.dictMap.get('common_status')
     <el-form :inline="true" :model="commonView.dataForm">
       <el-form-item>
         <el-input
-          v-model="commonView.dataForm.tempId"
-          placeholder="模版ID"
           clearable
+          placeholder="模版ID"
+          v-model="commonView.dataForm.tempId"
         >
         </el-input>
       </el-form-item>

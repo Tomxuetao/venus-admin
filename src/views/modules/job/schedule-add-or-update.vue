@@ -70,7 +70,14 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog :title="!dataForm.id ? '新增' : '修改'" v-model="visible">
+  <el-dialog
+    v-model="visible"
+    width="40%"
+    :destroy-on-close="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :title="!dataForm.id ? '新增' : '修改'"
+  >
     <el-form
       :model="dataForm"
       :rules="dataRule"
