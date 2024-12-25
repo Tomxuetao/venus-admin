@@ -9,7 +9,8 @@ export const useCommonStore = defineStore('common', {
     userDataState: {},
     authListState: [],
     menuListState: [],
-    menuTreeState: []
+    menuTreeState: [],
+    deptTreeState: []
   }),
   getters: {
     token: (state) => state.tokenState || sessionStorage.getItem('token'),
@@ -17,7 +18,11 @@ export const useCommonStore = defineStore('common', {
     userData: (state) => state.userDataState,
     authList: (state) => state.authListState,
     menuList: (state) => state.menuListState,
-    menuTree: (state) => state.menuTreeState
+    menuTree: (state) => state.menuTreeState,
+    deptTree: async (state) =>
+      state.deptTreeState.length > 0
+        ? state.deptTreeState
+        : await commonApi('/sys/dept/list')
   },
   actions: {
     updateToken(token) {
@@ -28,6 +33,7 @@ export const useCommonStore = defineStore('common', {
         sessionStorage.removeItem('token')
       }
     },
+
     updateDictMap(list) {
       const treeList = buildTree(list, '0')
       const dictMap = new Map()
@@ -46,6 +52,7 @@ export const useCommonStore = defineStore('common', {
       })
       this.dictMapState = dictMap
     },
+
     updateUserData(data) {
       this.userDataState = data
     },

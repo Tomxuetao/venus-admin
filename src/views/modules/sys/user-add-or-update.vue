@@ -7,7 +7,8 @@ import { isEmail, isMobile } from '@/utils/validate'
 const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
-const { dictMap } = useCommonStore()
+const commonState = useCommonStore()
+
 const validatePassword = (rule, value, callback) => {
   if (!dataForm.id && !/\S/.test(value)) {
     callback(new Error('密码不能为空'))
@@ -128,11 +129,8 @@ const deptList = ref([])
 const initDialogHandle = async (id) => {
   dataForm.id = id
   visible.value = true
+  deptList.value = await commonState.deptTree
 
-  const tempDeptList = await commonApi('/sys/dept/list')
-  if (Array.isArray(tempDeptList)) {
-    deptList.value = tempDeptList
-  }
   const tempRoleList = await commonApi('/sys/role/list')
   if (Array.isArray(tempRoleList)) {
     roleList.value = tempRoleList
@@ -221,7 +219,7 @@ defineExpose({
       <el-form-item label="性别">
         <el-radio-group v-model="dataForm.gender">
           <el-radio
-            v-for="([key, value], index) in dictMap.get('gender')"
+            v-for="([key, value], index) in commonState.dictMap.get('gender')"
             :value="key"
             :label="value"
             :key="index"
@@ -261,7 +259,9 @@ defineExpose({
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="dataForm.status">
           <el-radio
-            v-for="([key, value], index) in dictMap.get('user_status')"
+            v-for="([key, value], index) in commonState.dictMap.get(
+              'user_status'
+            )"
             :value="key"
             :label="value"
             :key="index"

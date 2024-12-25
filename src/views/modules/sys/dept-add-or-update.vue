@@ -1,10 +1,12 @@
 <script setup>
-import { buildTree } from '@/utils'
+import { useCommonStore } from '@/store'
 import { ElMessage } from 'element-plus'
 import { commonApi } from '@/api/common-api'
 
 const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
+
+const commonState = useCommonStore()
 
 let dataForm = reactive({
   id: undefined,
@@ -35,15 +37,8 @@ let dataFormRef = ref()
 
 let deptTreeList = ref([])
 
-const getDataList = async () => {
-  const dataList = await commonApi('/sys/dept/list')
-
-  deptTreeList.value = buildTree(dataList, '0')
-}
-
-getDataList()
-
-const initDialogHandle = (id, pid) => {
+const initDialogHandle = async (id, pid) => {
+  deptTreeList.value = await commonState.deptTree
   dataForm.id = id
   dataForm.pid = pid
   visible.value = true

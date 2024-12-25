@@ -1,7 +1,7 @@
 <script setup>
 import useView from '@/hooks/useView'
+import RoleDataScope from './role-data-scope.vue'
 import AddOrUpdate from './role-add-or-update.vue'
-import RoleDataUpdate from './role-data-update.vue'
 
 const router = useRouter()
 
@@ -16,7 +16,15 @@ const commonView = reactive({
   })
 })
 
-const roleDataVisible = ref(false)
+const dataScopeRef = ref()
+const dataScopeVisible = ref(false)
+
+const initDataScopeDialog = (id) => {
+  dataScopeVisible.value = true
+  nextTick(() => {
+    dataScopeRef.value.init(id)
+  })
+}
 </script>
 
 <template>
@@ -32,9 +40,9 @@ const roleDataVisible = ref(false)
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="commonView.getDataList()" icon="Search"
-          >查询</el-button
-        >
+        <el-button icon="Search" @click="commonView.getDataList()">
+          查询
+        </el-button>
         <el-button
           v-if="commonView.isAuth('sys:role:save')"
           icon="Plus"
@@ -100,10 +108,11 @@ const roleDataVisible = ref(false)
               修改
             </el-button>
             <el-button
-              v-if="commonView.isAuth('sys:role:data')"
+              v-if="commonView.isAuth('data:scope:save')"
               link
               size="small"
               type="success"
+              @click="initDataScopeDialog(scope.row.id)"
             >
               数据权限
             </el-button>
@@ -143,11 +152,11 @@ const roleDataVisible = ref(false)
       @refreshDataList="commonView.getDataList()"
     >
     </add-or-update>
-    <role-data-update
-      ref="roleDataRef"
-      v-if="roleDataVisible"
-      v-model="roleDataVisible"
+    <role-data-scope
+      ref="dataScopeRef"
+      v-if="dataScopeVisible"
+      v-model="dataScopeVisible"
     >
-    </role-data-update>
+    </role-data-scope>
   </div>
 </template>
