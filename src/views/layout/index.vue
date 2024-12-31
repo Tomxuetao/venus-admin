@@ -1,11 +1,13 @@
 <script setup>
-import { useCommonStore, useThemeState } from '@/store'
 import { commonApi } from '@/api/common-api'
 import ImgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
 import { Layout as EvLayout } from 'layout-vue3'
 import { useRouter, useRoute } from 'vue-router'
 import LayoutConfig from '@/views/layout/layout-config.vue'
+import {
+ resetStore, useCommonStore, useThemeState 
+} from '@/store'
 
 defineOptions({
   name: 'main-layout'
@@ -43,6 +45,7 @@ const commandMap = new Map([
   [
     'logout',
     async () => {
+      resetStore()
       await commonApi('/logout', {}, { method: 'post' })
       updateToken('')
       await router.push({

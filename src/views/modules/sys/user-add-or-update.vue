@@ -152,13 +152,13 @@ const dataFormSubmit = () => {
         dataForm,
         { method: dataForm.id ? 'put' : 'post' }
       )
-      visible.value = false
       ElMessage({
         message: '操作成功',
         type: 'success',
         duration: 1500,
         onClose: () => {
           emit('refresh-data-list')
+          visible.value = false
         }
       })
     }
