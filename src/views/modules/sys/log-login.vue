@@ -79,8 +79,7 @@ const statusMap = commonView.dictMap.get('login_log_status')
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="ip" label="操作IP" align="center">
-        </el-table-column>
+        <el-table-column prop="ip" label="IP" align="center"> </el-table-column>
         <el-table-column
           prop="userAgent"
           label="用户代理"

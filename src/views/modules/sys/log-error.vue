@@ -49,8 +49,7 @@ const commonView = reactive({
           :show-overflow-tooltip="true"
         >
         </el-table-column>
-        <el-table-column prop="ip" align="center" label="操作IP">
-        </el-table-column>
+        <el-table-column prop="ip" align="center" label="IP"> </el-table-column>
         <el-table-column
           prop="userAgent"
           align="center"
