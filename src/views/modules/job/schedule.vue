@@ -8,7 +8,8 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 const router = useRouter()
 const commonView = reactive({
   ...useView({
-    deleteUrl: '/sys/oss',
+    deleteIsBatch: true,
+    deleteUrl: '/sys/schedule/delete',
     dataListUrl: '/sys/schedule/page',
     dataForm: {
       beanName: undefined

@@ -32,25 +32,24 @@ const dataRule = {
 }
 
 const dataFormRef = ref()
-const initDialogHandle = (id) => {
+const initDialogHandle = async (id) => {
   dataForm.id = id
   visible.value = true
-  nextTick(async () => {
-    if (dataFormRef.value) {
-      dataFormRef.value.resetFields()
-    }
-    if (dataForm.id) {
-      const data = await commonApi(`/sys/schedule/${dataForm.id}`, {}, {})
-      dataForm = Object.assign(dataForm, data)
-    }
-  })
+  if (id) {
+    const data = await commonApi(`/sys/schedule/${id}`, {}, {})
+    dataForm = Object.assign(dataForm, data)
+  }
 }
 
 // 表单提交
 const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
     if (valid) {
-      await commonApi(`/sys/schedule/${!dataForm.id ? 'save' : 'update'}`)
+      await commonApi(
+        `/sys/schedule/${!dataForm.id ? 'save' : 'update'}`,
+        dataForm,
+        { method: dataForm.id ? 'put' : 'post' }
+      )
       ElMessage({
         message: '操作成功',
         type: 'success',

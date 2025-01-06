@@ -4,6 +4,8 @@ import { executeOnce } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 
+axios.defaults.withCredentials = true
+
 /**
  * 登录失效弹窗
  */

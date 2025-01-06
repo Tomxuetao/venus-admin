@@ -15,13 +15,13 @@ export default defineConfig({
     proxy: {
       '/venus-api': {
         target: 'http://localhost:8888',
-        secure: false,
+        secure: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/venus-api/, '')
       },
       '/venus-data': {
         target: 'https://tomxuetao.xyz',
-        secure: false,
+        secure: true,
         changeOrigin: true
       }
     },
