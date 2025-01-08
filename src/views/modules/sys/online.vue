@@ -32,7 +32,7 @@ const commonView = reactive({
           >查询</el-button
         >
         <el-button
-          v-if="commonView.isAuth('sys:online:exit')"
+          v-if="commonView.isAuth('sys:online:logout')"
           type="danger"
           icon="Delete"
           @click="commonView.deleteHandle(undefined)"

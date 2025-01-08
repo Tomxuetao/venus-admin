@@ -96,6 +96,7 @@ export const useCommonStore = defineStore('common', {
 
     async initUserAction() {
       const userData = await commonApi('/sys/user/info')
+
       this.updateUserData(userData)
       this.initUserMenuList(userData.menuList)
     }

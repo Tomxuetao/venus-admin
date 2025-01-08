@@ -1,6 +1,7 @@
 import { useCommonStore } from '@/store'
+import { venusServer } from '@/utils/http'
 import { commonApi } from '@/api/common-api'
-
+import { createEventSource } from '@/utils/emitter'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const commonModules = import.meta.glob(['../views/common/*.vue'])
@@ -65,6 +66,9 @@ router.beforeEach(async (to) => {
         await commonState.initUserAction()
         await commonState.initDictAction()
         addDynamicRoutes(commonState.menuList.filter((item) => item.url))
+        createEventSource(
+          `${venusServer}/sys/sse/create?token=${commonState.token}`
+        )
         return {
           ...to,
           replace: true,

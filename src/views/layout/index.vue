@@ -48,9 +48,7 @@ const commandMap = new Map([
       resetStore()
       await commonApi('/logout', {}, { method: 'post' })
       updateToken('')
-      await router.push({
-        name: 'login'
-      })
+      window.location.reload()
     }
   ]
 ])

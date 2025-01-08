@@ -1,26 +1,8 @@
 import axios from 'axios'
-import router from '@/router/index'
-import { executeOnce } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { ElMessageBox } from 'element-plus'
+import { emitter } from '@/utils/emitter'
 
 axios.defaults.withCredentials = true
-
-/**
- * 登录失效弹窗
- */
-export const noAccessDialog = executeOnce(() => {
-  ElMessageBox.confirm('登录已过期，请重新登录', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).finally(async () => {
-    sessionStorage.clear()
-    await router.push({
-      name: 'login'
-    })
-  })
-})
 
 /**
  * 创建axios实例
@@ -56,7 +38,7 @@ export const createHttp = () => {
       const { request, headers } = response
       const { code, data, msg } = response.data
       if ([401].includes(code)) {
-        noAccessDialog()
+        emitter.emit('no-access')
         return
       }
       if (request.responseType !== 'blob') {
