@@ -19,6 +19,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/venus-api/, '')
       },
+      '/event-stream': {
+        target: 'http://localhost:8888',
+        secure: true,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/event-stream/, '')
+      },
       '/venus-data': {
         target: 'https://tomxuetao.xyz',
         secure: true,
