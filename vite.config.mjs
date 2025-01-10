@@ -29,6 +29,11 @@ export default defineConfig({
         target: 'https://tomxuetao.xyz',
         secure: true,
         changeOrigin: true
+      },
+      '/geoserver': {
+        target: 'http://localhost:6350/geoserver',
+        secure: true,
+        changeOrigin: true
       }
     },
     host: '127.0.0.1'
@@ -80,7 +85,7 @@ export default defineConfig({
     outDir: 'venus-admin',
     minify: 'esbuild',
     sourcemap: false,
-    cssCodeSplit: false,
+    cssCodeSplit: true,
     assetsInlineLimit: 0,
     chunkSizeWarningLimit: 512,
     rollupOptions: {

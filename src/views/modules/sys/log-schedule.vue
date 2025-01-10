@@ -18,9 +18,11 @@ const commonView = reactive({
 const statusMap = commonView.dictMap.get('log_status')
 
 // 失败信息
-const showErrorHandle = async (id) => {
-  const data = await commonApi(`/sys/scheduleLog/${id}`)
-  ElMessage.error(data)
+const showErrorHandle = async (row) => {
+  if (row.status !== 1) {
+    const data = await commonApi(`/sys/scheduleLog/${row.id}`)
+    ElMessage.error(data.error)
+  }
 }
 </script>
 
@@ -45,8 +47,8 @@ const showErrorHandle = async (id) => {
       </el-form-item>
       <el-form-item>
         <el-button @click="commonView.getDataList()" icon="Search"
-          >查询</el-button
-        >
+          >查询
+        </el-button>
       </el-form-item>
     </el-form>
     <div class="table-wrap">
@@ -69,7 +71,7 @@ const showErrorHandle = async (id) => {
             <el-tag
               style="cursor: pointer"
               :type="commonView.tagTypeMap.get(scope.row.status)"
-              @click="showErrorHandle(scope.row.id)"
+              @click="showErrorHandle(scope.row)"
             >
               {{ statusMap.get(scope.row.status) }}
             </el-tag>
