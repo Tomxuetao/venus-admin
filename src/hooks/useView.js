@@ -132,8 +132,10 @@ const useView = (config) => {
     })
   }
 
-  const exportHandle = () => {
-    location.href = `${venusServer}${state.exportUrl}?${qs.stringify({ ...state.dataForm, token: sessionStorage.getItem('token') })}`
+  const exportHandle = (url, dataForm) => {
+    location.href = url
+      ? `${url}?${qs.stringify(Object.assign(dataForm || {}, { token: sessionStorage.getItem('token') }))}`
+      : `${venusServer}${state.exportUrl}?${qs.stringify({ ...state.dataForm, token: sessionStorage.getItem('token') })}`
   }
 
   const importHandle = (file) => {

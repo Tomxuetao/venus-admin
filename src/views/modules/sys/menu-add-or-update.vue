@@ -25,7 +25,11 @@ let dataForm = reactive({
 })
 
 const validateUrl = (rule, value, callback) => {
-  if (dataForm.type === 0 && !/\S/.test(value)) {
+  if (
+    dataForm.type === 0 &&
+    ![0, '0'].includes(dataForm.pid) &&
+    !/\S/.test(value)
+  ) {
     callback(new Error('菜单URL不能为空'))
   } else {
     callback()

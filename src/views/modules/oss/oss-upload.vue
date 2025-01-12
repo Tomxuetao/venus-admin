@@ -12,8 +12,8 @@ let url = ref(null)
 let num = ref(0)
 let successNum = ref(0)
 
-const initDialogHandle = () => {
-  url.value = `${venusServer}/sys/oss/upload?token=${sessionStorage.getItem('token')}`
+const initDialogHandle = (path = '/sys/oss/upload') => {
+  url.value = `${venusServer}${path}?token=${sessionStorage.getItem('token')}`
   visible.value = true
 }
 
