@@ -35,7 +35,7 @@ const uploadHandle = () => {
           icon="Upload"
           @click="uploadHandle()"
         >
-          上传文件
+          上传Shp
         </el-button>
         <el-button
           type="danger"
@@ -97,6 +97,7 @@ const uploadHandle = () => {
               link
               size="small"
               type="primary"
+              v-if="commonView.isAuth('geo:data:view')"
               @click="
                 router.push({
                   name: 'geo-view',
@@ -110,6 +111,7 @@ const uploadHandle = () => {
               link
               size="small"
               type="primary"
+              v-if="commonView.isAuth('geo:data:export')"
               @click="commonView.exportHandle(scope.row.url)"
             >
               下载
@@ -118,6 +120,7 @@ const uploadHandle = () => {
               link
               size="small"
               type="primary"
+              v-if="commonView.isAuth('geo:export:shp')"
               @click="
                 commonView.exportHandle(`${venusServer}/geo/data/toShp`, {
                   id: scope.row.id
@@ -130,6 +133,7 @@ const uploadHandle = () => {
               link
               size="small"
               type="primary"
+              v-if="commonView.isAuth('geo:export:json')"
               @click="
                 commonView.exportHandle(`${venusServer}/geo/data/toGeoJson`, {
                   id: scope.row.id

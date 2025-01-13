@@ -11,9 +11,9 @@ import { commonApi } from '@/api/common-api'
 
 const route = useRoute()
 const getDataList = async (mapInstance) => {
-  const dataList = await commonApi(`/geo/data/${route.params.id}`)
-
-  console.log(dataList)
+  const dataList = await commonApi(`/geo/data/${route.params.id}`, {
+    dilution: 0.0005
+  })
 
   const geojsonObject = {
     type: 'FeatureCollection',
