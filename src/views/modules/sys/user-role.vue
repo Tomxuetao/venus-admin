@@ -187,7 +187,7 @@ watch(
           </el-table-column>
         </el-table>
       </div>
-      <common-pagination v-model="commonView"></common-pagination>
+      <common-pager v-model="commonView"></common-pager>
       <add-user-role
         v-if="addRoleVisible"
         v-model="addRoleVisible"

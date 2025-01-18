@@ -256,13 +256,14 @@ const runHandle = (id) => {
         </el-table-column>
       </el-table>
     </div>
-    <common-pagination v-model="commonView"></common-pagination>
+    <common-pager v-model="commonView"></common-pager>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="commonView.addOrUpdateVisible"
       v-model="commonView.addOrUpdateVisible"
       ref="addOrUpdateRef"
       @refreshDataList="commonView.getDataList"
-    ></add-or-update>
+    >
+    </add-or-update>
   </div>
 </template>

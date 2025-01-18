@@ -14,13 +14,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/venus-api': {
-        target: 'http://localhost:8888',
+        target: 'http://127.0.0.1:8888',
         secure: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/venus-api/, '')
       },
       '/event-stream': {
-        target: 'http://localhost:8888',
+        target: 'http://127.0.0.1:8888',
         secure: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/event-stream/, '')
@@ -31,7 +31,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/geoserver': {
-        target: 'http://localhost:6350/geoserver',
+        target: 'http://127.0.0.1:6350',
         secure: true,
         changeOrigin: true
       }

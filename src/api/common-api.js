@@ -1,4 +1,6 @@
-import { http, venusServer } from '@/utils/http'
+import {
+ http, geoServer, venusServer 
+} from '@/utils/http'
 
 /**
  * 通用api
@@ -7,12 +9,41 @@ import { http, venusServer } from '@/utils/http'
  * @param {AxiosRequestConfig | Object} config
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const commonApi = (url, dataForm = {}, config = { method: 'get' }) =>
-  http({
-    ...(config || {}),
+export const commonApi = (url, dataForm = {}, config = { method: 'get' }) => {
+  const _innerConfig = Object.assign({ method: 'get' }, config || {})
+  return http({
+    ..._innerConfig,
     url: `${venusServer}${url}`,
-    method: config?.method || 'get',
-    ...(config?.method !== 'get'
+    method: _innerConfig?.method || 'get',
+    ...(_innerConfig?.method !== 'get'
       ? { data: dataForm || {} }
       : { params: dataForm || {} })
   })
+}
+
+/**
+ * geoServerApi
+ * @param url
+ * @param dataForm
+ * @param config
+ * @returns {Promise<axios.AxiosResponse<any>>}
+ */
+export const geoServerApi = (
+  url,
+  dataForm = {},
+  config = { method: 'get' }
+) => {
+  const _innerConfig = Object.assign({ method: 'get' }, config || {})
+  return http({
+    ..._innerConfig,
+    url: `${geoServer}${url}`,
+    headers: {
+      ...(config?.headers || {}),
+      Authorization: `Basic ${btoa('admin:Wang#645678')}`
+    },
+    method: _innerConfig?.method || 'get',
+    ...(_innerConfig?.method !== 'get'
+      ? { data: dataForm || {} }
+      : { params: dataForm || {} })
+  })
+}

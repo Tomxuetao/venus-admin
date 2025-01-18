@@ -33,7 +33,7 @@ export const createEventSource = executeOnce((url) => {
     }
   }
 
-  eventSource.onerror = ({ data }) => {
+  eventSource.onerror = (data) => {
     console.error(data)
   }
 })

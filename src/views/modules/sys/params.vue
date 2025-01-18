@@ -112,7 +112,7 @@ const commonView = reactive({
         </el-table-column>
       </el-table>
     </div>
-    <common-pagination v-model="commonView"></common-pagination>
+    <common-pager v-model="commonView"></common-pager>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
       v-if="commonView.addOrUpdateVisible"

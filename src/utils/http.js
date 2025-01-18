@@ -22,9 +22,15 @@ export const createHttp = () => {
    */
   http.interceptors.request.use(
     (config) => {
-      config.headers = Object.assign(config.headers, {
-        token: sessionStorage.getItem('token')
-      })
+      if (config.url.includes(geoServer)) {
+        config.headers = Object.assign(config.headers, {
+          Authorization: `Basic ${btoa('admin:Wang#645678')}`
+        })
+      } else {
+        config.headers = Object.assign(config.headers, {
+          token: sessionStorage.getItem('token')
+        })
+      }
       return config
     },
     (error) => Promise.reject(error)
@@ -35,18 +41,22 @@ export const createHttp = () => {
    */
   http.interceptors.response.use(
     (response) => {
-      const { request, headers } = response
+      const { request, headers, config } = response
       const { code, data, msg } = response.data
-      if ([401].includes(code)) {
+      if ([401, 403].includes(code)) {
         emitter.emit('no-access')
         return
       }
       if (request.responseType !== 'blob') {
-        if (code === 200) {
-          return data
+        if (config.url.includes(geoServer)) {
+          return response.data
         } else {
-          ElMessage.error(msg)
-          return Promise.reject(msg)
+          if (code === 200) {
+            return data
+          } else {
+            ElMessage.error(msg)
+            return Promise.reject(msg)
+          }
         }
       }
 
@@ -62,6 +72,8 @@ export const createHttp = () => {
 }
 
 export const http = createHttp()
+
+export const geoServer = '/geoserver'
 
 export const venusServer = '/venus-api'
 

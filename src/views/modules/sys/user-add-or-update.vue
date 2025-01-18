@@ -198,7 +198,8 @@ defineExpose({
             v-model="dataForm.password"
             type="password"
             placeholder="密码"
-          ></el-input>
+          >
+          </el-input>
         </el-form-item>
         <el-form-item
           label="确认密码"

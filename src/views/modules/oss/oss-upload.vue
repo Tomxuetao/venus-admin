@@ -7,9 +7,9 @@ const emit = defineEmits(['refresh-data-list'])
 
 let visible = ref(false)
 
-let fileList = ref([])
-let url = ref(null)
 let num = ref(0)
+let url = ref(null)
+let fileList = ref([])
 let successNum = ref(0)
 
 const initDialogHandle = (path = '/sys/oss/upload') => {

@@ -110,7 +110,7 @@ const uploadHandle = () => {
         </el-table-column>
       </el-table>
     </div>
-    <common-pagination v-model="commonView"></common-pagination>
+    <common-pager v-model="commonView"></common-pager>
     <!-- 弹窗, 云存储配置 -->
     <config v-if="configVisible" ref="configRef"></config>
     <!-- 弹窗, 上传文件 -->

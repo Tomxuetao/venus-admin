@@ -1,28 +1,34 @@
 <script setup>
 import useView from '@/hooks/useView'
+import { ElMessage } from 'element-plus'
 import { venusServer } from '@/utils/http'
 
-import Upload from './../oss/oss-upload.vue'
+import UploadShp from '@/views/modules/geo/upload-shp.vue'
+
+const router = useRouter()
 
 const commonView = reactive({
   ...useView({
-    deleteUrl: '/sys/oss',
+    deleteUrl: '/geo/data/delete',
     dataListUrl: '/geo/data/page',
     dataForm: {}
   })
 })
 
-const router = useRouter()
+const ossUrl = ref()
+const uploadVisible = ref(false)
+const uploadUrl = `${venusServer}/geo/data/create?token=${sessionStorage.getItem('token')}`
 
-// 上传文件
-let uploadVisible = ref(false)
-let uploadRef = ref()
-const uploadHandle = () => {
-  uploadVisible.value = true
-  nextTick(() => {
-    uploadRef.value.initDialogHandle('/geo/data/create')
-  })
-}
+watch(
+  () => ossUrl.value,
+  () => {
+    if (ossUrl.value) {
+      commonView.getDataList()
+      uploadVisible.value = false
+      ElMessage.success('上传成功')
+    }
+  }
+)
 </script>
 
 <template>
@@ -33,7 +39,7 @@ const uploadHandle = () => {
           v-if="commonView.isAuth('geo:shp:create')"
           type="primary"
           icon="Upload"
-          @click="uploadHandle()"
+          @click="uploadVisible = true"
         >
           上传Shp
         </el-button>
@@ -100,7 +106,7 @@ const uploadHandle = () => {
               v-if="commonView.isAuth('geo:data:view')"
               @click="
                 router.push({
-                  name: 'geo-view',
+                  name: 'geo-shp-view',
                   params: { id: scope.row.id }
                 })
               "
@@ -146,12 +152,20 @@ const uploadHandle = () => {
         </el-table-column>
       </el-table>
     </div>
-    <common-pagination v-model="commonView"></common-pagination>
+    <common-pager v-model="commonView"></common-pager>
     <!-- 弹窗, 上传文件 -->
-    <upload
+    <el-dialog
       v-if="uploadVisible"
+      width="40%"
+      title="上传文件"
       ref="uploadRef"
-      @refreshDataList="commonView.getDataList()"
-    ></upload>
+      v-model="uploadVisible"
+      :destroy-on-close="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      @close="() => (uploadVisible = false)"
+    >
+      <upload-shp v-model="ossUrl" :upload-url="uploadUrl"></upload-shp>
+    </el-dialog>
   </div>
 </template>

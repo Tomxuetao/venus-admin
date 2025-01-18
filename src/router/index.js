@@ -1,5 +1,4 @@
 import { useCommonStore } from '@/store'
-import { commonApi } from '@/api/common-api'
 import { createEventSource } from '@/utils/emitter'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -53,13 +52,6 @@ router.beforeEach(async (to) => {
   } else {
     if (commonState.token) {
       if (router.options.isDynamic) {
-        commonApi('/checkToken', {}, { method: 'post' })
-          .then(() => {
-            return true
-          })
-          .catch(() => {
-            return false
-          })
         return true
       } else {
         await commonState.initUserAction()
