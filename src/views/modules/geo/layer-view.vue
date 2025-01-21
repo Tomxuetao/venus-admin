@@ -45,10 +45,10 @@ const changeLayer = async (type) => {
     <div class="chang-type">
       <el-select v-model="activeType" @change="(value) => changeLayer(value)">
         <el-option
-          v-for="item in layerTypeMap.keys()"
-          :key="item"
-          :label="item"
-          :value="item"
+          v-for="([key], index) in layerTypeMap"
+          :key="index"
+          :label="key"
+          :value="key"
         >
         </el-option>
       </el-select>

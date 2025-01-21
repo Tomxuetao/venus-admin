@@ -1,5 +1,5 @@
 /**
- * 菜单配置数据类型
+ * 空间数据类型
  * @typedef {Object} GeoData
  * @property {String} id - 唯一标识
  * @property {String} geom - 空间几何

@@ -1,6 +1,6 @@
 <script setup>
 import useView from '@/hooks/useView'
-import AddOrUpdate from './layer-add-or-update.vue'
+import AddOrUpdate from './layer-add.vue'
 
 const commonView = reactive({
   ...useView({

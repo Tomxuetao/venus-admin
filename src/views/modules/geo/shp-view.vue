@@ -71,10 +71,10 @@ onUnmounted(() => {
     <div class="chang-type">
       <el-select v-model="activeType" @change="(value) => getDataList(value)">
         <el-option
-          v-for="item in dataTypeMap.keys()"
-          :key="item"
-          :label="item"
-          :value="item"
+          v-for="[key] in dataTypeMap"
+          :key="key"
+          :label="key"
+          :value="key"
         >
         </el-option>
       </el-select>

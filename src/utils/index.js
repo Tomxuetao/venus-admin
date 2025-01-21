@@ -1,3 +1,16 @@
+/**
+ * @typedef {Object} GeoLayer 图层信息
+ * @property {String} id - 图层ID
+ * @property {String} name - 图层名称
+ * @property {String} title - 图层标题
+ * @property {String} type - 图层类型
+ * @property {String} status - 图层状态
+ * @property {String} workspace - 图层工作区
+ * @property {String} datasource - 图层数据源
+ * @property {String} nativeSrs - 本地坐标系统
+ *
+ */
+
 import { ElMessage } from 'element-plus'
 
 /**
