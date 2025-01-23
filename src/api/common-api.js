@@ -41,7 +41,7 @@ export const geoServerApi = (url, dataForm = {}, config = { method: 'get' }) =>
       {
         headers: {
           ...(config.headers || {}),
-          Authorization: 'Basic YWRtaW46V2FuZyM2NDU2Nzg='
+          Authorization: `Basic ${btoa('admin:Wang#645678')}`
         }
       }
     )
