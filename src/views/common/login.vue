@@ -265,6 +265,11 @@ onBeforeUnmount(() => {
               </el-form-item>
             </el-form>
           </template>
+          <div class="ipc-wrap">
+            备案号：<a href="https://beian.miit.gov.cn" target="_blank"
+              >浙ICP备2023015674号-1</a
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -426,6 +431,20 @@ onBeforeUnmount(() => {
 
   .captcha-disable {
     color: #bcbcbc;
+  }
+
+  .ipc-wrap {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    color: #333333;
+    font-size: 14px;
+    transform: translateX(-50%);
+
+    a {
+      color: #333333;
+      text-decoration-line: none;
+    }
   }
 }
 </style>

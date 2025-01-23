@@ -9,17 +9,16 @@ import {
  * @param {AxiosRequestConfig | Object} config
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const commonApi = (url, dataForm = {}, config = { method: 'get' }) => {
-  const _innerConfig = Object.assign({ method: 'get' }, config || {})
-  return http({
-    ..._innerConfig,
-    url: `${venusServer}${url}`,
-    method: _innerConfig?.method || 'get',
-    ...(_innerConfig?.method !== 'get'
-      ? { data: dataForm || {} }
-      : { params: dataForm || {} })
-  })
-}
+export const commonApi = (url, dataForm = {}, config = { method: 'get' }) =>
+  http(
+    Object.assign(
+      { method: 'get', url: `${venusServer}${url}` },
+      config || {},
+      !config.method || config.method === 'get'
+        ? { params: dataForm || {} }
+        : { data: dataForm || {} }
+    )
+  )
 
 /**
  * geoServerApi
@@ -28,22 +27,22 @@ export const commonApi = (url, dataForm = {}, config = { method: 'get' }) => {
  * @param config
  * @returns {Promise<axios.AxiosResponse<any>>}
  */
-export const geoServerApi = (
-  url,
-  dataForm = {},
-  config = { method: 'get' }
-) => {
-  const _innerConfig = Object.assign({ method: 'get' }, config || {})
-  return http({
-    ..._innerConfig,
-    url: `${geoServer}${url}`,
-    headers: {
-      ...(config?.headers || {}),
-      Authorization: `Basic ${btoa('admin:Wang#645678')}`
-    },
-    method: _innerConfig?.method || 'get',
-    ...(_innerConfig?.method !== 'get'
-      ? { data: dataForm || {} }
-      : { params: dataForm || {} })
-  })
-}
+export const geoServerApi = (url, dataForm = {}, config = { method: 'get' }) =>
+  http(
+    Object.assign(
+      {
+        method: 'get',
+        url: `${geoServer}${url}`
+      },
+      config || {},
+      !config.method || config.method === 'get'
+        ? { params: dataForm || {} }
+        : { data: dataForm || {} },
+      {
+        headers: {
+          ...(config.headers || {}),
+          Authorization: 'Basic YWRtaW46V2FuZyM2NDU2Nzg='
+        }
+      }
+    )
+  )
