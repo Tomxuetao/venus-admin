@@ -4,6 +4,6 @@ RUN mkdir /data
 
 COPY dist/ /data/venus-admin
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY venus-admin.conf /etc/nginx/conf.d/venus-admin.conf
 
 CMD ["nginx", "-g", "daemon off;"]
