@@ -103,6 +103,7 @@ const commonView = reactive({
             <el-button
               v-if="commonView.isAuth('sys:params:delete')"
               link
+              size="small"
               type="danger"
               @click="commonView.deleteHandle(scope.row.id)"
             >

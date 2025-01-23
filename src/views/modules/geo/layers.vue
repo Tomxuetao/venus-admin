@@ -6,6 +6,7 @@ const commonView = reactive({
   ...useView({
     isPage: true,
     deleteIsBatch: false,
+    deleteUrl: '/geo/layer/delete',
     dataListUrl: '/geo/layer/page',
     dataForm: {}
   })
@@ -20,12 +21,21 @@ const statusMap = commonView.dictMap.get('user_status')
     <el-form :inline="true">
       <el-form-item>
         <el-button
-          v-if="commonView.isAuth('sys:user:save')"
+          v-if="commonView.isAuth('geo:layer:save')"
           icon="Plus"
           type="primary"
           @click="commonView.addOrUpdateHandle(undefined)"
         >
           发布图层
+        </el-button>
+        <el-button
+          v-if="commonView.isAuth('geo:layer:delete')"
+          icon="Delete"
+          type="danger"
+          :disabled="commonView.dataSelections.length <= 0"
+          @click="commonView.deleteHandle()"
+        >
+          批量删除
         </el-button>
       </el-form-item>
     </el-form>
@@ -80,8 +90,9 @@ const statusMap = commonView.dictMap.get('user_status')
         <el-table-column fixed="right" align="center" width="240" label="操作">
           <template v-slot="scope">
             <el-button
-              v-if="commonView.isAuth('sys:user:update')"
+              v-if="commonView.isAuth('geo:layer:view')"
               link
+              size="small"
               type="primary"
               @click="
                 router.push({
@@ -91,6 +102,15 @@ const statusMap = commonView.dictMap.get('user_status')
               "
             >
               预览
+            </el-button>
+            <el-button
+              v-if="commonView.isAuth('geo:layer:delete')"
+              link
+              size="small"
+              type="danger"
+              @click="commonView.deleteHandle(scope.row.id)"
+            >
+              删除
             </el-button>
           </template>
         </el-table-column>

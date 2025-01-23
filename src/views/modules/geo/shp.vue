@@ -94,14 +94,6 @@ watch(
             <el-button
               link
               size="small"
-              type="danger"
-              @click="commonView.deleteHandle(scope.row.id)"
-            >
-              删除
-            </el-button>
-            <el-button
-              link
-              size="small"
               type="primary"
               v-if="commonView.isAuth('geo:data:view')"
               @click="
@@ -147,6 +139,14 @@ watch(
               "
             >
               导出GeoJson
+            </el-button>
+            <el-button
+              link
+              size="small"
+              type="danger"
+              @click="commonView.deleteHandle(scope.row.id)"
+            >
+              删除
             </el-button>
           </template>
         </el-table-column>
