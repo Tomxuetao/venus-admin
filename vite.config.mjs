@@ -13,6 +13,16 @@ export default defineConfig({
   base: '/venus-admin',
   server: {
     proxy: {
+      '/venus-data': {
+        target: 'https://tomxuetao.xyz',
+        secure: true,
+        changeOrigin: true
+      },
+      '/geoserver': {
+        target: 'http://127.0.0.1:6350',
+        secure: true,
+        changeOrigin: true
+      },
       '/venus-api': {
         target: 'http://127.0.0.1:8888',
         secure: true,
@@ -24,16 +34,6 @@ export default defineConfig({
         secure: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/event-stream/, '')
-      },
-      '/venus-data': {
-        target: 'https://tomxuetao.xyz',
-        secure: true,
-        changeOrigin: true
-      },
-      '/geoserver': {
-        target: 'http://127.0.0.1:6350',
-        secure: true,
-        changeOrigin: true
       }
     },
     host: '127.0.0.1'
