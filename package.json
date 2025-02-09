@@ -48,7 +48,7 @@
     "nano-staged": "^0.8.0",
     "postcss": "^8.5.1",
     "postcss-px-to-viewport-8-plugin": "^1.2.5",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.0",
     "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.84.0",
     "unplugin-auto-import": "^0.18.6",
