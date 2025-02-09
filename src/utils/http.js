@@ -2,8 +2,6 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { emitter } from '@/utils/emitter'
 
-axios.defaults.withCredentials = true
-
 /**
  * 创建axios实例
  * @returns {AxiosInstance}
