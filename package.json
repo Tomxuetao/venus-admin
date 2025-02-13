@@ -75,7 +75,7 @@
   "engines": {
     "pnpm": ">= 10.2.1"
   },
-  "packageManager": "pnpm@10.2.1",
+  "packageManager": "pnpm",
   "nano-staged": {
     "*.md": "prettier --write",
     "*.{tsx,js,vue}": "eslint --fix",

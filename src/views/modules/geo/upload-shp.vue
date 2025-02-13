@@ -13,16 +13,6 @@ const uploadUrl = defineModel('uploadUrl', {
   default: '/api/file/upload'
 })
 
-// 上传成功
-const successUploadHandle = (response) => {
-  if (response?.code === 200) {
-    const { data } = response
-    ossUrl.value = data.src.replace('/venus-data/', '')
-  } else {
-    ElMessage.error(response.msg)
-  }
-}
-
 /**
  * 上传前验证
  * @param file
@@ -45,35 +35,18 @@ const beforeUploadHandle = async (file) => {
     return true
   }
 }
-
-/**
- * 超过限制数量
- * @param files
- */
-const onExceedHandle = (files) => {
-  ElMessage.error('只能上传一个文件')
-  if (files.length > 1) {
-    ElMessage.error('只能上传一个文件')
-  }
-}
 </script>
 
 <template>
-  <el-upload
+  <common-upload
+    v-model="ossUrl"
     drag
     :limit="1"
     accept=".zip"
     style="width: 100%"
     :auto-upload="true"
     :action="uploadUrl"
-    :on-exceed="onExceedHandle"
-    :on-success="successUploadHandle"
     :before-upload="beforeUploadHandle"
-    :on-remove="
-      () => {
-        ossUrl = undefined
-      }
-    "
   >
     <el-icon class="el-icon--upload">
       <upload-filled />
@@ -81,7 +54,7 @@ const onExceedHandle = (files) => {
     <div class="el-upload__text">
       请上传单个Shp压缩文件，压缩包内不能包含文件夹！
     </div>
-  </el-upload>
+  </common-upload>
 </template>
 
 <style scoped lang="scss"></style>

@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus'
 import { venusServer } from '@/utils/http'
 
 import UploadShp from '@/views/modules/geo/upload-shp.vue'
+import { UploadFilled } from '@element-plus/icons-vue'
 
 const router = useRouter()
 
@@ -165,6 +166,23 @@ watch(
       :close-on-press-escape="false"
       @close="() => (uploadVisible = false)"
     >
+      <common-upload
+        v-model="ossUrl"
+        drag
+        :limit="1"
+        accept=".zip"
+        style="width: 100%"
+        :auto-upload="true"
+        :action="uploadUrl"
+        :before-upload="beforeUploadHandle"
+      >
+        <el-icon class="el-icon--upload">
+          <upload-filled />
+        </el-icon>
+        <div class="el-upload__text">
+          请上传单个Shp压缩文件，压缩包内不能包含文件夹！
+        </div>
+      </common-upload>
       <upload-shp v-model="ossUrl" :upload-url="uploadUrl"></upload-shp>
     </el-dialog>
   </div>

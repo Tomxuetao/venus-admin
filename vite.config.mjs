@@ -14,25 +14,30 @@ export default defineConfig({
   server: {
     proxy: {
       '/venus-data': {
-        target: 'https://tomxuetao.xyz',
         secure: true,
-        changeOrigin: true
+        changeOrigin: true,
+        target: 'https://tomxuetao.xyz'
       },
       '/geoserver': {
-        target: 'http://127.0.0.1:6350',
         secure: true,
-        changeOrigin: true
+        changeOrigin: true,
+        target: 'http://127.0.0.1:6350'
       },
       '/venus-api': {
-        target: 'http://127.0.0.1:8888',
         secure: true,
         changeOrigin: true,
+        target: 'http://127.0.0.1:8888',
         rewrite: (path) => path.replace(/^\/venus-api/, '')
       },
-      '/event-stream': {
-        target: 'http://127.0.0.1:8888',
+      '/open-api': {
         secure: true,
         changeOrigin: true,
+        target: 'http://127.0.0.1:8888'
+      },
+      '/event-stream': {
+        secure: true,
+        changeOrigin: true,
+        target: 'http://127.0.0.1:8888',
         rewrite: (path) => path.replace(/^\/event-stream/, '')
       }
     },

@@ -10,6 +10,7 @@ declare module 'vue' {
     CommonDesc: typeof import('./src/components/common-desc.vue')['default']
     CommonMap: typeof import('./src/components/common-map.vue')['default']
     CommonPager: typeof import('./src/components/common-pager.vue')['default']
+    CommonUpload: typeof import('./src/components/common-upload.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElDialog: typeof import('element-plus/es')['ElDialog']
