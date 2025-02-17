@@ -5,7 +5,6 @@ import AddOrUpdate from './layer-add.vue'
 const commonView = reactive({
   ...useView({
     isPage: true,
-    deleteIsBatch: false,
     deleteUrl: '/geo/layer/delete',
     dataListUrl: '/geo/layer/page',
     dataForm: {}
@@ -116,6 +115,7 @@ const statusMap = commonView.dictMap.get('user_status')
         </el-table-column>
       </el-table>
     </div>
+    <common-pager v-model="commonView"></common-pager>
     <add-or-update
       ref="addOrUpdateRef"
       v-if="commonView.addOrUpdateVisible"
