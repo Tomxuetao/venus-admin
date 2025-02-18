@@ -13,7 +13,6 @@ export const validateIsSingleShpZip = async (
   const arrayBuffer = await zipFile.arrayBuffer()
   const zipCtx = unzipSync(new Uint8Array(arrayBuffer))
   const fileNames = Object.keys(zipCtx)
-  console.log(fileNames)
   const shpFiles = fileNames.filter(
     (fileName) =>
       fileName.toLowerCase().endsWith('.shp') || fileName.includes('/')

@@ -2,9 +2,9 @@ import Map from 'ol/Map'
 import View from 'ol/View'
 import { defaults } from 'ol/control'
 import {
-  createBaseLayers,
-  changeBaseLayer,
   getLayerByName,
+  changeBaseLayer,
+  createBaseLayers,
   removeLayerByName,
   changeLayersByNames
 } from '@/utils/layer-utils'
