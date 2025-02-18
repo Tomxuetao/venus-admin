@@ -28,15 +28,12 @@ const getCapabilities = (
       fetch(url)
         .then((data) => data.text())
         .then((text) => {
-          resolve(parser.read(text))
+          capabilities = parser.read(text)
+          resolve(capabilities)
         })
     }
   })
 }
-
-getCapabilities().then((data) => {
-  capabilities = data
-})
 
 /**
  * 创建WMS图层
