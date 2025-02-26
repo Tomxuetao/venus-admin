@@ -20,7 +20,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.7.9",
-    "element-plus": "^2.9.4",
+    "element-plus": "^2.9.5",
     "fflate": "^0.8.2",
     "layout-vue3": "^0.0.26",
     "mitt": "^3.0.1",
@@ -33,12 +33,11 @@
   },
   "devDependencies": {
     "@changesets/changelog-git": "^0.2.1",
-    "@changesets/cli": "^2.28.0",
+    "@changesets/cli": "^2.28.1",
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@eslint/js": "^9.20.0",
     "@vitejs/plugin-vue": "^5.2.1",
-    "commitizen": "^4.3.1",
     "eslint": "^9.20.1",
     "eslint-plugin-vue": "^9.32.0",
     "execa": "^9.5.2",
@@ -57,11 +56,6 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-svg-loader": "^5.1.0"
   },
-  "config": {
-    "commitizen": {
-      "path": "git-cz"
-    }
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -75,7 +69,6 @@
   "engines": {
     "pnpm": ">= 10.2.1"
   },
-  "packageManager": "pnpm",
   "nano-staged": {
     "*.md": "prettier --write",
     "*.{tsx,js,vue}": "eslint --fix",
