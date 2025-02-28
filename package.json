@@ -50,8 +50,8 @@
     "prettier": "^3.5.2",
     "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.85.1",
-    "unplugin-auto-import": "^19.1.0",
-    "unplugin-vue-components": "^28.4.0",
+    "unplugin-auto-import": "^19.1.1",
+    "unplugin-vue-components": "^28.4.1",
     "vite": "^6.2.0",
     "vite-plugin-compression": "^0.5.1",
     "vite-svg-loader": "^5.1.0"
