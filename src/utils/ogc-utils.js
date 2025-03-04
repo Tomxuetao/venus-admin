@@ -44,6 +44,7 @@ export const createWmsLayer = (layerName) => {
   return new TileLayer({
     className: layerName,
     source: new TileWMS({
+      projection: 'EPSG:4326',
       url: '/geoserver/gwc/service/wms',
       params: {
         TILED: true,

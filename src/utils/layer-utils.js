@@ -1,55 +1,82 @@
-import XYZ from 'ol/source/XYZ'
-import TileLayer from 'ol/layer/Tile'
+import { WMTS } from 'ol/source'
 import { GeoJSON, WKB } from 'ol/format'
+import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
+import WMTSTileGrid from 'ol/tilegrid/WMTS'
 import { instance } from '@/utils/create-map'
-import { Vector as VectorLayer } from 'ol/layer'
+import WebGLTileLayer from 'ol/layer/WebGLTile'
+
+const matrixIds = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19'
+]
+const resolutions = [
+  0.703125, 0.3515625, 0.17578125, 0.087890625, 0.0439453125, 0.02197265625,
+  0.010986328125, 0.0054931640625, 0.00274658203125, 0.001373291015625,
+  0.0006866455078125, 0.00034332275390625, 0.000171661376953125,
+  0.0000858306884765625, 0.00004291534423828125, 0.000021457672119140625,
+  0.000010728836059570312, 0.000005364418029785156, 0.000002682209014892578
+]
+
+const createBaseLayer = (
+  layerName,
+  className,
+  tk = 'c77eddc667c5bed016fded560baf93e7'
+) => {
+  const [name, matrixSet] = layerName.split('_')
+  return new WebGLTileLayer({
+    className: className,
+    cacheSize: 20240,
+    source: new WMTS({
+      crossOrigin: 'anonymous',
+      projection: 'EPSG:4490',
+      wrapX: true,
+      layer: name,
+      style: 'default',
+      version: '1.0.0',
+      format: 'image/png',
+      matrixSet: matrixSet,
+      tileGrid: new WMTSTileGrid({
+        matrixIds: matrixIds,
+        origin: [-180.0, 90.0],
+        resolutions: resolutions
+      }),
+      url: `https://t{0-7}.tianditu.gov.cn/${layerName}/wmts?tk=${tk}`
+    }),
+    zIndex: -1
+  })
+}
 
 export const createBaseLayers = (tk) => {
   return {
-    // 影像图层
-    baseImgLayer: new TileLayer({
-      className: 'img-layer',
-      source: new XYZ({
-        crossOrigin: 'anonymous',
-        tileSize: 256,
-        url: `https://t{0-7}.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=${tk}`
-      }),
-      zIndex: -1
-    }),
-
-    // 影像注记
-    baseCiaLayer: new TileLayer({
-      className: 'img-layer',
-      source: new XYZ({
-        crossOrigin: 'anonymous',
-        tileSize: 256,
-        url: `https://t{0-7}.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=${tk}`
-      }),
-      zIndex: -1
-    }),
-
     // 矢量图层
-    baseVecLayer: new TileLayer({
-      className: 'vec-layer',
-      source: new XYZ({
-        crossOrigin: 'anonymous',
-        tileSize: 256,
-        url: `https://t{0-7}.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=${tk}`
-      }),
-      zIndex: -1
-    }),
+    baseVecLayer: createBaseLayer('vec_c', 'vec-layer', tk),
 
     // 矢量注记
-    baseCvaLayer: new TileLayer({
-      className: 'vec-layer',
-      source: new XYZ({
-        crossOrigin: 'anonymous',
-        tileSize: 256,
-        url: `https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=${tk}`
-      }),
-      zIndex: -1
-    })
+    baseCvaLayer: createBaseLayer('cva_c', 'vec-layer', tk),
+
+    // 影像图层
+    baseImgLayer: createBaseLayer('img_c', 'img-layer', tk),
+
+    // 影像注记
+    baseCiaLayer: createBaseLayer('cia_c', 'img-layer', tk)
   }
 }
 

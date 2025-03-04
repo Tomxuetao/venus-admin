@@ -14,7 +14,7 @@ const mainRoutes = [
     name: 'main-dynamic',
     meta: { title: '主入口整体布局' },
     children: [],
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (to, _, next) => {
       const { menuTree } = useCommonStore()
       if (to.name === 'main-dynamic') {
         next({

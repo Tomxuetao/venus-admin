@@ -1,6 +1,8 @@
 import Map from 'ol/Map'
+import proj4 from 'proj4'
 import View from 'ol/View'
 import { defaults } from 'ol/control'
+import { register } from 'ol/proj/proj4'
 import {
   getLayerByName,
   changeBaseLayer,
@@ -9,15 +11,18 @@ import {
   changeLayersByNames
 } from '@/utils/layer-utils'
 
+proj4.defs('EPSG:4490', '+proj=longlat +ellps=GRS80 +no_defs')
+register(proj4)
+
 export let instance
 export const createMapInstance = (config) => {
   const innerConfig = Object.assign(
     {
       zoom: 12,
       maxZoom: 18,
-      minZoom: 8,
+      minZoom: 4,
       baseLayer: 'vec-layer',
-      projection: 'EPSG:4326',
+      projection: 'EPSG:4490',
       center: [120.188, 30.246],
       tk: 'c77eddc667c5bed016fded560baf93e7'
     },
