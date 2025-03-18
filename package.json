@@ -22,7 +22,7 @@
     "axios": "^1.8.3",
     "element-plus": "^2.9.6",
     "fflate": "^0.8.2",
-    "layout-vue3": "^0.0.26",
+    "layout-vue3": "^0.0.28",
     "mitt": "^3.0.1",
     "normalize.css": "^8.0.1",
     "ol": "^10.4.0",

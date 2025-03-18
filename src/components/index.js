@@ -1,3 +1,4 @@
+import { Layout } from 'layout-vue3'
 import IconSvg from '@/components/icon-svg.vue'
 import CommonMap from '@/components/common-map.vue'
 import CommonDesc from '@/components/common-desc.vue'
@@ -7,6 +8,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 export default (Vue) => {
   Vue.component('icon-svg', IconSvg)
+  Vue.component(Layout.name, Layout)
   Vue.component('common-map', CommonMap)
   Vue.component('common-desc', CommonDesc)
   Vue.component('common-pager', CommonPager)

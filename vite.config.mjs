@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 import ViteCompression from 'vite-plugin-compression'
+import { LayoutResolver } from 'layout-vue3/es/utils/auto-import'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
@@ -53,7 +54,7 @@ export default defineConfig({
     AutoImport({
       viteOptimizeDeps: true,
       dts: './auto-imports.d.ts',
-      resolvers: [ElementPlusResolver()],
+      resolvers: [LayoutResolver(), ElementPlusResolver()],
       imports: ['vue', 'pinia', 'vue-router'],
       eslintrc: {
         enabled: false,
@@ -67,7 +68,7 @@ export default defineConfig({
       extensions: ['vue'],
       dirs: ['src/components'],
       include: [/\.vue$/, /\.vue\?vue/],
-      resolvers: [ElementPlusResolver()]
+      resolvers: [LayoutResolver(), ElementPlusResolver()]
     }),
     ViteCompression({
       algorithm: 'gzip',

@@ -21,8 +21,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       layout-vue3:
-        specifier: ^0.0.26
-        version: 0.0.26(element-plus@2.9.6(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3))
+        specifier: ^0.0.28
+        version: 0.0.28(element-plus@2.9.6(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3))
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
@@ -1522,11 +1522,12 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  layout-vue3@0.0.26:
-    resolution: {integrity: sha512-DKjZI+fu0aCdHe8He4kegu/ZDoYaQdwCQOpVdbnQsdA2hBv2nWUFnn2nGxEQPHlgotvBJdFXW0vGfH4Wswnohg==}
+  layout-vue3@0.0.28:
+    resolution: {integrity: sha512-Qci+uW/6KKYLEF7ghoH9h6PzU5URcOoEInb1qiJzss4cqxkJVz4GZaBpYKnSE28nqo8LEGf00x2sXFlQK5dRXw==}
+    engines: {pnpm: '>= 10.2.1'}
     peerDependencies:
-      element-plus: ^2.8.8
-      vue: ^3.5.12
+      element-plus: ^2.9.4
+      vue: ^3.5.13
 
   lerc@3.0.0:
     resolution: {integrity: sha512-Rm4J/WaHhRa93nCN2mwWDZFoRVF18G1f47C+kvQWyHGEZxFpTUi73p7lMVSAndyxGt6lJ2/CFbOcf9ra5p8aww==}
@@ -3732,7 +3733,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  layout-vue3@0.0.26(element-plus@2.9.6(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3)):
+  layout-vue3@0.0.28(element-plus@2.9.6(vue@3.5.13(typescript@5.5.3)))(vue@3.5.13(typescript@5.5.3)):
     dependencies:
       element-plus: 2.9.6(vue@3.5.13(typescript@5.5.3))
       vue: 3.5.13(typescript@5.5.3)

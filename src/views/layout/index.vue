@@ -2,7 +2,6 @@
 import { commonApi } from '@/api/common-api'
 import ImgBg from '@/assets/img/img-bg.webp'
 import SvgIcon from '@/components/icon-svg.vue'
-import { Layout as EvLayout } from 'layout-vue3'
 import { useRouter, useRoute } from 'vue-router'
 import LayoutConfig from '@/views/layout/layout-config.vue'
 import {
