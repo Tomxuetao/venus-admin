@@ -38,10 +38,9 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.22.0",
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue": "^5.2.3",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "^10.0.0",
-    "vue-eslint-parser": "^10.1.1",
     "execa": "^9.5.2",
     "git-cz": "^4.9.0",
     "globals": "^15.15.0",
@@ -51,12 +50,13 @@
     "postcss-px-to-viewport-8-plugin": "^1.2.5",
     "prettier": "^3.5.3",
     "rollup-plugin-visualizer": "^5.14.0",
-    "sass": "^1.85.1",
+    "sass": "^1.86.0",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
-    "vite": "^6.2.1",
+    "vite": "^6.2.2",
     "vite-plugin-compression": "^0.5.1",
-    "vite-svg-loader": "^5.1.0"
+    "vite-svg-loader": "^5.1.0",
+    "vue-eslint-parser": "^10.1.1"
   },
   "commitlint": {
     "extends": [
