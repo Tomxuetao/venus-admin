@@ -97,10 +97,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          'ol': ['ol'],
           'vue': ['vue'],
           'axios': ['axios'],
           'pinia': ['pinia'],
-          'vue-router': ['vue-router']
+          'vue-router': ['vue-router'],
+          'element-plus': ['element-plus']
         }
       }
     }
