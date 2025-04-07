@@ -10,6 +10,11 @@ const ossUrl = defineModel({
   default: ''
 })
 
+const fileList = defineModel('file-list', {
+  type: Array,
+  default: () => []
+})
+
 const uploadUrl = defineModel('uploadUrl', {
   type: String,
   default: `${venusServer}/sys/oss/upload?token=${sessionStorage.getItem('token')}`
@@ -41,10 +46,6 @@ const props = defineProps({
     default: 'text',
     validator: (value) => ['text', 'picture', 'picture-card'].includes(value)
   },
-  fileList: {
-    type: Array,
-    default: () => []
-  },
   multiple: {
     type: Boolean,
     default: false
@@ -59,12 +60,8 @@ const props = defineProps({
   }
 })
 
-const innerFileList = ref([])
-
 const onRemove = (file) => {
-  innerFileList.value = innerFileList.value.filter(
-    (item) => item.id !== file.id
-  )
+  fileList.value = fileList.value.filter((item) => item.id !== file.id)
 }
 
 const onExceed = () => {
@@ -76,8 +73,8 @@ const onSuccess = (response, file) => {
     const { data } = response
     ossUrl.value = data.src.replace('/venus-data/', '')
     file.id = data.id
-    innerFileList.value.push(data)
-    emit('success', innerFileList.value)
+    fileList.value.push(data)
+    emit('success', fileList.value)
     ElMessage.success('上传成功')
   } else {
     ElMessage.error(response.msg)
@@ -90,7 +87,7 @@ const beforeUpload = (file) => {
     return false
   }
 
-  if (innerFileList.value.length >= props.limit) {
+  if (fileList.value.length >= props.limit) {
     ElMessage.error(`上传文件数量不能超过 ${props.limit}个!`)
     return false
   }

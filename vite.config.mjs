@@ -54,7 +54,10 @@ export default defineConfig({
     AutoImport({
       viteOptimizeDeps: true,
       dts: './auto-imports.d.ts',
-      resolvers: [ElementPlusResolver(), LayoutResolver()],
+      resolvers: [
+        LayoutResolver(),
+        ElementPlusResolver()
+      ],
       imports: ['vue', 'pinia', 'vue-router'],
       eslintrc: {
         enabled: false,
@@ -68,7 +71,10 @@ export default defineConfig({
       extensions: ['vue'],
       dirs: ['src/components'],
       include: [/\.vue$/, /\.vue\?vue/],
-      resolvers: [ElementPlusResolver(), LayoutResolver()]
+      resolvers: [
+        LayoutResolver(),
+        ElementPlusResolver()
+      ]
     }),
     ViteCompression({
       algorithm: 'gzip',

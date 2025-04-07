@@ -3,8 +3,8 @@ import useView from '@/hooks/useView'
 import { ElMessage } from 'element-plus'
 import { venusServer } from '@/utils/http'
 
-import UploadShp from '@/views/modules/geo/upload-shp.vue'
 import { UploadFilled } from '@element-plus/icons-vue'
+import UploadShp from '@/views/modules/geo/upload-shp.vue'
 
 const router = useRouter()
 
