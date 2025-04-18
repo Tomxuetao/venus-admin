@@ -8,7 +8,10 @@ const commonView = reactive({
     deleteUrl: '/city/site/delete',
     dataListUrl: '/city/site/page',
     importUrl: '/city/site/import',
-    dataForm: {}
+    dataForm: {
+      name: undefined,
+      area: undefined
+    }
   })
 })
 
@@ -28,6 +31,25 @@ const showImportDialog = async () => {
   <div class="layers-mod mod-wrap">
     <el-form :inline="true">
       <el-form-item>
+        <el-input
+          v-model="commonView.dataForm.name"
+          clearable
+          placeholder="点位名称"
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          v-model="commonView.dataForm.area"
+          clearable
+          placeholder="所属区县"
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="commonView.getDataList()" icon="Search"
+          >查询</el-button
+        >
         <el-button
           v-if="commonView.isAuth('city:site:import')"
           type="success"

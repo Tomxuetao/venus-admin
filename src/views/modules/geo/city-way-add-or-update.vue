@@ -127,7 +127,7 @@ defineExpose({
         <el-input v-model="dataForm.area" placeholder="所属城区"></el-input>
       </el-form-item>
       <el-form-item prop="street" label="所属街道">
-        <el-input v-model="dataForm.street" placeholder="所属街道"></el-input>
+        <el-input v-model="dataForm.s" placeholder="所属街道"></el-input>
       </el-form-item>
       <el-form-item prop="address" label="详细地址">
         <el-input
