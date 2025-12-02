@@ -102,13 +102,19 @@ export default defineConfig({
     chunkSizeWarningLimit: 512,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'ol': ['ol'],
-          'vue': ['vue'],
-          'axios': ['axios'],
-          'pinia': ['pinia'],
-          'vue-router': ['vue-router'],
-          'element-plus': ['element-plus']
+        manualChunks(id) {
+          if (['vue', 'pinia', 'vue-router'].some(pkg => id.includes(`node_modules/${pkg}/`))) {
+            return 'vendor-core'
+          }
+          if (id.includes('node_modules/ol/')) {
+            return 'vendor-ol'
+          }
+          if (['element-plus'].some(pkg => id.includes(`node_modules/${pkg}/`))) {
+            return 'vendor-ui'
+          }
+          if (['qs', 'mitt', 'axios', 'fflate'].some(pkg => id.includes(`node_modules/${pkg}/`))) {
+            return 'vendor-utils'
+          }
         }
       }
     }
