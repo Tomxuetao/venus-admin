@@ -1,6 +1,6 @@
 import { execa } from 'execa'
 
-const hosts = ['124.221.201.64', '101.35.244.65']
+const hosts = ['124.221.201.64', '101.35.244.65', '124.223.99.198']
 
 const pkgName = 'venus-admin'
 const tempName = 'temp'

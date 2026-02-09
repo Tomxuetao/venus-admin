@@ -24,16 +24,16 @@ export default defineConfig({
         changeOrigin: true,
         target: 'http://127.0.0.1:6350'
       },
+      '/open-api': {
+        secure: true,
+        changeOrigin: true,
+        target: 'http://127.0.0.1:8888'
+      },
       '/venus-api': {
         secure: true,
         changeOrigin: true,
         target: 'http://127.0.0.1:8888',
         rewrite: (path) => path.replace(/^\/venus-api/, '')
-      },
-      '/open-api': {
-        secure: true,
-        changeOrigin: true,
-        target: 'http://127.0.0.1:8888'
       },
       '/event-stream': {
         secure: true,

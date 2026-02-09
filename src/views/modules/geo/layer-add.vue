@@ -7,22 +7,37 @@ import UploadShp from '@/views/modules/geo/upload-shp.vue'
 const visible = defineModel()
 const emit = defineEmits(['refresh-data-list'])
 
-const validateName = (rule, value, callback) => {
+const dataFormRef = ref()
+
+const workspaceList = ref([])
+const dataStoreList = ref([])
+const layerNameList = ref([])
+
+const dataForm = reactive({
+  id: undefined,
+  name: undefined,
+  title: undefined,
+  ossUrl: undefined,
+  workspace: undefined,
+  datastore: undefined
+})
+
+const validateName = (_, value, callback) => {
   if (!value) {
     callback(new Error('请输入图层名称'))
   }
-  if (layerNameList.value.includes(value)) {
+  if (layerNameList.value?.includes(value)) {
     callback(new Error('图层名称已存在'))
   } else {
     callback()
   }
 }
 
-const validateStore = (rule, value, callback) => {
+const validateStore = (_, value, callback) => {
   if (!value) {
     callback(new Error('请输入数据存储'))
   } else {
-    if (dataStoreList.value.includes(value)) {
+    if (dataStoreList.value?.includes(value)) {
       callback(new Error('数据存储已存在'))
     } else {
       callback()
@@ -38,21 +53,6 @@ const dataRule = {
   workspace: [{ required: true, message: '请选择工作空间', trigger: 'change' }]
 }
 
-const dataForm = reactive({
-  id: undefined,
-  name: undefined,
-  title: undefined,
-  ossUrl: undefined,
-  workspace: undefined,
-  datastore: undefined
-})
-
-const dataFormRef = ref()
-
-const workspaceList = ref([])
-const dataStoreList = ref([])
-const layerNameList = ref([])
-
 const initDialogHandle = async (id) => {
   visible.value = true
   if (id) {
@@ -63,7 +63,9 @@ const initDialogHandle = async (id) => {
 }
 
 const submitLoading = ref(false)
-const uploadUrl = `${venusServer}/geo/layer/upload?token=${sessionStorage.getItem('token')}`
+const uploadUrl = ref(
+  `${venusServer}/geo/layer/upload?token=${sessionStorage.getItem('token')}`
+)
 
 const dataFormSubmit = () => {
   dataFormRef.value.validate(async (valid) => {
@@ -101,7 +103,7 @@ const getWorkspaces = async () => {
 
 getWorkspaces()
 
-const getDatastores = async (workspace) => {
+const getDataStores = async (workspace) => {
   if (workspace) {
     const {
       dataStores: { dataStore: dataStoreArray }
@@ -148,7 +150,7 @@ defineExpose({
       <el-form-item label="工作空间" prop="workspace">
         <el-select
           v-model="dataForm.workspace"
-          @change="(value) => getDatastores(value)"
+          @change="(value) => getDataStores(value)"
         >
           <el-option
             v-for="role in workspaceList"
