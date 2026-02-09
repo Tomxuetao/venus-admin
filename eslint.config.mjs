@@ -38,7 +38,6 @@ export default [
       'no-useless-escape': 'off',
       quotes: ['error', 'single'],
       'import/no-unresolved': 'off',
-      'no-useless-assignment': 'off',
       'import/no-absolute-path': 'off',
       'comma-dangle': ['error', 'never'],
       'max-len': ['error', { code: 500 }],
